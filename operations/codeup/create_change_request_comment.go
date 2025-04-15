@@ -29,7 +29,7 @@ var CreateChangeRequestCommentOptions = []mcp.ToolOption{
 }
 
 var CreateChangeRequestCommentTool = func() mcp.Tool {
-	return mcp.NewTool(CreateChangeRequestComment, CreateChangeRequestOptions...)
+	return mcp.NewTool(CreateChangeRequestComment, CreateChangeRequestCommentOptions...)
 }()
 
 func CreateChangeRequestCommentFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {

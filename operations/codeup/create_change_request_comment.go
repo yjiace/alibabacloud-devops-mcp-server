@@ -35,7 +35,7 @@ func CreateChangeRequestCommentFunc(ctx context.Context, request mcp.CallToolReq
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	repositoryId := request.Params.Arguments["repositoryId"].(string)
 	localId := request.Params.Arguments["localId"].(string)
-	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s/changeRequests/{localId}/comments", organizationId, repositoryId, localId)
+	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s/changeRequests/%s/comments", organizationId, repositoryId, localId)
 
 	yunxiaoClient := utils.NewYunxiaoClient("POST", apiUrl, utils.WithPayload(request.Params.Arguments))
 	comment := &types.ChangeRequestComment{}

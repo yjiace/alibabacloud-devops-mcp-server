@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"devops.aliyun.com/mcp-yunxiao/operations/codeup"
+	"devops.aliyun.com/mcp-yunxiao/operations/projex"
 	"errors"
 	"fmt"
 
@@ -65,9 +66,13 @@ func main() {
 
 	s.AddTool(codeup.ListRepositoriesTool, codeup.ListRepositoriesFunc)
 
+	s.AddTool(codeup.GetRepositoryTool, codeup.GetRepositoryFunc)
+
 	s.AddTool(codeup.ListChangeRequestsTool, codeup.ListChangeRequestsFunc)
 
 	s.AddTool(codeup.CreateChangeRequestCommentTool, codeup.CreateChangeRequestCommentFunc)
+
+	s.AddTool(projex.GetWorkItemTool, projex.GetWorkItemFunc)
 
 	// Start the server
 	if err := server.ServeStdio(s); err != nil {

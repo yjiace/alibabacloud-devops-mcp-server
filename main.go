@@ -65,6 +65,10 @@ func main() {
 
 	s.AddTool(codeup.ListRepositoriesTool, codeup.ListRepositoriesFunc)
 
+	s.AddTool(codeup.ListChangeRequestsTool, codeup.ListChangeRequestsFunc)
+
+	s.AddTool(codeup.CreateChangeRequestCommentTool, codeup.CreateChangeRequestCommentFunc)
+
 	// Start the server
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Printf("Server error: %v\n", err)

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	ListRepositories = "list repositories"
+	ListRepositories = "list_repositories"
 )
 
 var ListRepositoriesOptions = []mcp.ToolOption{
@@ -27,7 +27,7 @@ func ListRepositoriesFunc(ctx context.Context, request mcp.CallToolRequest) (*mc
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories", organizationId)
 
-	giteeClient := utils.NewYunxiaoClient("GET", apiUrl)
+	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)
 	repositories := make([]types.Repository, 0)
-	return giteeClient.HandleMCPResult(&repositories)
+	return yunxiaoClient.HandleMCPResult(&repositories)
 }

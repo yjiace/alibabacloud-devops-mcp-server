@@ -35,7 +35,7 @@ func CreateChangeRequestFunc(ctx context.Context, request mcp.CallToolRequest) (
 	repositoryId := request.Params.Arguments["repositoryId"].(string)
 	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s/changeRequests", organizationId, repositoryId)
 
-	giteeClient := utils.NewYunxiaoClient("POST", apiUrl, utils.WithPayload(request.Params.Arguments))
+	yunxiaoClient := utils.NewYunxiaoClient("POST", apiUrl, utils.WithPayload(request.Params.Arguments))
 	changeRequest := &types.ChangeRequest{}
-	return giteeClient.HandleMCPResult(changeRequest)
+	return yunxiaoClient.HandleMCPResult(changeRequest)
 }

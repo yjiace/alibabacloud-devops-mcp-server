@@ -19,13 +19,12 @@ var CreateChangeRequestCommentOptions = []mcp.ToolOption{
 		mcp.Required()),
 	mcp.WithString("repositoryId", mcp.Description("repository id"), mcp.Required()),
 	mcp.WithString("localId", mcp.Description("local id"), mcp.Required()),
-	mcp.WithString("comment_type", mcp.Description("comment type, GLOBAL_COMMENT,INLINE_COMMENT"), mcp.Required()),
+	mcp.WithString("comment_type", mcp.Description("comment type, GLOBAL_COMMENT,INLINE_COMMENT"), mcp.Required(), mcp.Enum("GLOBAL_COMMENT", "INLINE_COMMENT")),
 	mcp.WithString("content", mcp.Description("content"), mcp.Required()),
 	mcp.WithBoolean("draft", mcp.Description("draft"), mcp.Required()),
 	mcp.WithNumber("line_number", mcp.Description("line number")),
 	mcp.WithBoolean("resolved", mcp.Description("resolved"), mcp.Required()),
 	mcp.WithString("patchset_biz_id", mcp.Description("patchset_biz_id"), mcp.Required()),
-	mcp.WithString("targetProjectId", mcp.Description("target project id"), mcp.Required()),
 }
 
 var CreateChangeRequestCommentTool = func() mcp.Tool {

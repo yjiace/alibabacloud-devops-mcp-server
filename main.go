@@ -72,6 +72,10 @@ func main() {
 
 	s.AddTool(codeup.CreateChangeRequestCommentTool, codeup.CreateChangeRequestCommentFunc)
 
+	s.AddTool(codeup.GetCompareTool, codeup.GetCompareFunc)
+
+	s.AddTool(codeup.ListChangeRequestPatchSetsTool, codeup.ListChangeRequestPatchSetsFunc)
+
 	s.AddTool(projex.GetWorkItemTool, projex.GetWorkItemFunc)
 
 	// Start the server

@@ -62,7 +62,7 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 	_payload, _ := json.Marshal(g.Payload)
 	req, err := http.NewRequest(g.Method, g.Url, bytes.NewReader(_payload))
 	if err != nil {
-		return nil, NewNetworkError(err)
+		return nil, NewNetworkError(0, err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -79,7 +79,7 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return g, NewNetworkError(err)
+		return g, NewNetworkError(resp.StatusCode, err)
 	}
 
 	g.Response = resp
@@ -113,19 +113,19 @@ func (g *YunxiaoClient) HandleMCPResult(object any) (*mcp.CallToolResult, error)
 	body, err := g.GetRespBody()
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("Failed to read response body: %s", err.Error())),
-			NewNetworkError(err)
+			NewNetworkError(g.Response.StatusCode, err)
 	}
 
 	if err = json.Unmarshal(body, object); err != nil {
 		bodyStr := string(body)
 		errorMessage := fmt.Sprintf("Failed to parse body response: %v body: %s", err, bodyStr)
-		return mcp.NewToolResultError(errorMessage), NewNetworkError(errors.New(errorMessage))
+		return mcp.NewToolResultError(errorMessage), NewNetworkError(g.Response.StatusCode, errors.New(errorMessage))
 	}
 
 	result, err := json.MarshalIndent(object, "", "  ")
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("Failed to format result response: %s", err.Error())),
-			NewNetworkError(err)
+			NewNetworkError(g.Response.StatusCode, err)
 	}
 
 	return mcp.NewToolResultText(string(result)), nil

@@ -9,13 +9,16 @@ import (
 )
 
 const (
-	ListChangeRequestPatchSets = "list_change_requests"
+	ListChangeRequestPatchSets = "list_change_requests_patch_sets"
 )
 
 var ListChangeRequestPatchSetsOptions = []mcp.ToolOption{
 	mcp.WithDescription("list change request patch sets"),
 	mcp.WithString(
 		"organizationId", mcp.Description("organization id"),
+		mcp.Required()),
+	mcp.WithString(
+		"repositoryId", mcp.Description("repository id"),
 		mcp.Required()),
 	mcp.WithString(
 		"localId", mcp.Description("local id"),

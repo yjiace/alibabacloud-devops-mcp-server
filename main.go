@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/operations/codeup"
-	"devops.aliyun.com/mcp-yunxiao/operations/projex"
+	"devops.aliyun.com/mcp-yunxiao/tools/codeup"
+	"devops.aliyun.com/mcp-yunxiao/tools/projex"
 	"errors"
 	"fmt"
 
@@ -22,7 +22,7 @@ func main() {
 
 	// Add a calculator tool
 	calculatorTool := mcp.NewTool("calculate",
-		mcp.WithDescription("Perform basic arithmetic operations"),
+		mcp.WithDescription("Perform basic arithmetic tools"),
 		mcp.WithString("operation",
 			mcp.Required(),
 			mcp.Description("The operation to perform (add, subtract, multiply, divide)"),

@@ -31,6 +31,8 @@ func main() {
 
 	s.AddTool(codeup.ListChangeRequestPatchSetsTool, codeup.ListChangeRequestPatchSetsFunc)
 
+	s.AddTool(codeup.GetChangeRequestTool, codeup.GetChangeRequestFunc)
+
 	s.AddTool(projex.GetWorkItemTool, projex.GetWorkItemFunc)
 
 	// Start the server

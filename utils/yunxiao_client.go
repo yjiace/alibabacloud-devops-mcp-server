@@ -48,16 +48,13 @@ func NewYunxiaoClient(method, urlString string, opts ...Option) *YunxiaoClient {
 		fmt.Fprintf(os.Stderr, "  输入URL: %s\n", urlString)
 	}
 
-	// 检查urlString是否已经包含基础URL
 	var fullUrl string
 	if strings.HasPrefix(urlString, "http") {
-		// 如果urlString已经是完整URL，直接使用
 		fullUrl = urlString
 		if Debug {
 			fmt.Fprintf(os.Stderr, "  URL已包含http前缀，使用原始URL\n")
 		}
 	} else {
-		// 否则添加默认基础URL
 		fullUrl = DefaultYunxiaoUrl + urlString
 		if Debug {
 			fmt.Fprintf(os.Stderr, "  添加基础URL: %s + %s = %s\n", DefaultYunxiaoUrl, urlString, fullUrl)
@@ -97,6 +94,21 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 		fmt.Fprintf(os.Stderr, "解析后的URL: %v\n", g.parsedUrl)
 	}
 
+	// 处理查询参数
+	if g.Query != nil && len(g.Query) > 0 {
+		q := g.parsedUrl.Query()
+		for k, v := range g.Query {
+			q.Set(k, v)
+		}
+
+		g.parsedUrl.RawQuery = q.Encode()
+		g.Url = g.parsedUrl.String()
+
+		if Debug {
+			fmt.Fprintf(os.Stderr, "添加查询参数后的URL: %s\n", g.Url)
+		}
+	}
+
 	// 创建请求时，不为GET请求添加请求体
 	var reqBody io.Reader
 	if g.Method != "GET" && g.Payload != nil {
@@ -114,7 +126,6 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 		return nil, NewNetworkError(0, err)
 	}
 
-	// 只设置最基本的请求头，与直接HTTP请求相同
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "mcp-yunxiao "+Version+" Go/"+runtime.GOOS+"/"+runtime.GOARCH+"/"+runtime.Version())
 
@@ -125,14 +136,16 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 
 	req.Header.Set("x-yunxiao-token", accessToken)
 
-	// 应用自定义头部
 	for key, value := range g.Headers {
 		req.Header.Set(key, value)
 	}
 
 	if Debug {
 		fmt.Fprintf(os.Stderr, "===== YunxiaoClient 请求详情 =====\n")
-		fmt.Fprintf(os.Stderr, "原始URL构建: 基础URL=%s + 路径=%s\n", DefaultYunxiaoUrl, g.Url[len(DefaultYunxiaoUrl):])
+		fmt.Fprintf(os.Stderr, "请求URL: %s\n", g.Url)
+		if g.Query != nil && len(g.Query) > 0 {
+			fmt.Fprintf(os.Stderr, "查询参数: %v\n", g.Query)
+		}
 
 		reqDump, err := httputil.DumpRequestOut(req, true)
 		if err != nil {
@@ -159,6 +172,9 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 	resp.Body = io.NopCloser(bytes.NewBuffer(body))
 
 	if Debug {
+		fmt.Fprintf(os.Stderr, "===== YunxiaoClient 响应详情 =====\n")
+		fmt.Fprintf(os.Stderr, "状态码: %d\n", resp.StatusCode)
+		fmt.Fprintf(os.Stderr, "响应头: %v\n", resp.Header)
 		fmt.Fprintf(os.Stderr, "响应体长度: %d 字节\n", len(body))
 		if len(body) > 0 {
 			if len(body) > 1000 {
@@ -186,6 +202,28 @@ func GetYunxiaoAccessToken() string {
 func WithPayload(payload interface{}) Option {
 	return func(client *YunxiaoClient) {
 		client.Payload = payload
+	}
+}
+
+// WithQuery 添加单个查询参数
+func WithQuery(key, value string) Option {
+	return func(client *YunxiaoClient) {
+		if client.Query == nil {
+			client.Query = make(map[string]string)
+		}
+		client.Query[key] = value
+	}
+}
+
+// WithQueries 一次性添加多个查询参数
+func WithQueries(queries map[string]string) Option {
+	return func(client *YunxiaoClient) {
+		if client.Query == nil {
+			client.Query = make(map[string]string)
+		}
+		for k, v := range queries {
+			client.Query[k] = v
+		}
 	}
 }
 

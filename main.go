@@ -33,7 +33,21 @@ func main() {
 
 	s.AddTool(codeup.GetChangeRequestTool, codeup.GetChangeRequestFunc)
 
+	s.AddTool(codeup.GetBranchTool, codeup.GetBranchFunc)
+
+	s.AddTool(codeup.ListBranchesTool, codeup.ListBranchesFunc)
+
+	s.AddTool(codeup.CreateBranchTool, codeup.CreateBranchFunc)
+
+	s.AddTool(codeup.DeleteBranchTool, codeup.DeleteBranchFunc)
+
 	s.AddTool(projex.GetWorkItemTool, projex.GetWorkItemFunc)
+
+	s.AddTool(projex.SearchProjectsTool, projex.SearchProjectsFunc)
+
+	s.AddTool(projex.GetProjectTool, projex.GetProjectFunc)
+
+	s.AddTool(projex.ListSprintsTool, projex.ListSprintsFunc)
 
 	// Start the server
 	if err := server.ServeStdio(s); err != nil {

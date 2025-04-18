@@ -8,7 +8,8 @@ cp mcp-yunxiao /usr/local/bin/
 
 ## 配置mcp server
 设置mcp命令： mcp-yunxiao
-设置环境变量： YUNXIAO_ACCESS_TOKEN,值为云效的个人token
+设置环境变量： YUNXIAO_ACCESS_TOKEN,值为云效的个人令牌(https://help.aliyun.com/zh/yunxiao/user-guide/personal-access-token)
+创建个人令牌时最好赋予所有api权限。
 
 
 open api:

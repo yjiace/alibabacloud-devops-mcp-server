@@ -13,7 +13,7 @@ const (
 )
 
 var GetWorkItemOptions = []mcp.ToolOption{
-	mcp.WithDescription("list repositories"),
+	mcp.WithDescription("get work item"),
 	mcp.WithString(
 		"organizationId", mcp.Description("organization id"),
 		mcp.Required()),
@@ -29,6 +29,13 @@ var GetWorkItemTool = func() mcp.Tool {
 func GetWorkItemFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	workItemId := request.Params.Arguments["workItemId"].(string)
+
+	//oldDebug := utils.Debug
+	//utils.Debug = true
+	//defer func() {
+	//	utils.Debug = oldDebug
+	//}()
+
 	apiUrl := fmt.Sprintf("/oapi/v1/projex/organizations/%s/workitems/%s", organizationId, workItemId)
 
 	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)

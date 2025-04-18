@@ -30,6 +30,7 @@ func GetWorkItemFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.Cal
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	workItemId := request.Params.Arguments["workItemId"].(string)
 
+	//// 临时开启调试模式
 	//oldDebug := utils.Debug
 	//utils.Debug = true
 	//defer func() {

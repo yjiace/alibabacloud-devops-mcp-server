@@ -1,1 +1,1 @@
-npx @modelcontextprotocol/inspector -e YUNXIAO_ACCESS_TOKEN="pt-l2E9eWbrbR5z0oWGAyycUUOY_b1020c37-dc7d-4c94-bf24-c25202402d80"  mcp-yunxiao
+npx @modelcontextprotocol/inspector -e YUNXIAO_ACCESS_TOKEN="pt-l2E9eWbrbR5z0oWGAyycUUOY_b1020c37-dc7d-4c94-bf24-c25202402d80"  bin/mcp-yunxiao

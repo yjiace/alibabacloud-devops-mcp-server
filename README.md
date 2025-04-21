@@ -93,6 +93,14 @@ mcp-yunxiao集成了多种工具，包括：
 - `get_file_blobs`: 获取文件内容
 - `list_files`: 查询文件树
 - `update_file`: 更新文件内容
+- `create_change_request`: 创建合并请求
+- `create_change_request_comment`: 创建合并请求评论
+- `get_change_request`: 查询合并请求
+- `list_change_request_patch_sets`: 查询合并请求版本列表
+- `list_change_request`: 查询合并请求列表
+- `get_compare`: 代码比较
+- `get_repository`: 获取仓库详情
+- `list_repositories`: 获取仓库列表
 
 ### 项目管理工具
 
@@ -100,7 +108,6 @@ mcp-yunxiao集成了多种工具，包括：
 - `search_projects`: 搜索项目
 - `get_sprint`: 获取迭代详情
 - `get_work_item`: 获取工作项详情
-- `search_workitems`: 搜索工作项
 
 ### 流水线工具
 

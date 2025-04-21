@@ -62,7 +62,7 @@ func main() {
 
 	s.AddTool(projex.GetSprintTool, projex.GetSprintFunc)
 
-	s.AddTool(projex.SearchWorkitemsTool, projex.SearchWorkitemsFunc)
+	//s.AddTool(projex.SearchWorkitemsTool, projex.SearchWorkitemsFunc)
 
 	s.AddTool(flow.ListPipelinesTool, flow.ListPipelinesFunc)
 

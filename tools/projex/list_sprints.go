@@ -48,11 +48,11 @@ func ListSprintsFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.Cal
 		queryParams["status"] = status
 	}
 
-	if page, ok := request.Params.Arguments["page"]; ok {
+	if page, ok := request.Params.Arguments["page"]; ok && page != nil {
 		queryParams["page"] = fmt.Sprintf("%v", page)
 	}
 
-	if perPage, ok := request.Params.Arguments["perPage"]; ok {
+	if perPage, ok := request.Params.Arguments["perPage"]; ok && perPage != nil {
 		queryParams["perPage"] = fmt.Sprintf("%v", perPage)
 	}
 

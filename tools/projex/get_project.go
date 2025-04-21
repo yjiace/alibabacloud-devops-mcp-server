@@ -30,11 +30,11 @@ func GetProjectFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.Call
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	projectId := request.Params.Arguments["id"].(string)
 
-	// 构建API URL
 	apiUrl := fmt.Sprintf("/oapi/v1/projex/organizations/%s/projects/%s", organizationId, projectId)
 
-	// 创建客户端
 	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)
+
 	projectInfo := &types.ProjectInfo{}
+
 	return yunxiaoClient.HandleMCPResult(projectInfo)
 }

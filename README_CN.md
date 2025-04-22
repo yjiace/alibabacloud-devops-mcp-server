@@ -109,12 +109,10 @@ mcp-yunxiao集成了多种工具，包括：
 - `list_pipeline_runs`: 获取流水线运行实例列表
 
 ## 使用实例
-1、获取工作项详情：
-![img.png](img/img.png)
+完成云效工作项中的需求并提交Merge Request到Codeup
 
-![img.png](img/img_1.png)
+![img.png](img/img_4.png)
 
-2、根据工作项描述实现编码 & 创建 Pull Request
-![img.png](img/img_2.png)
+![img.png](img/img_5.png)
 
-![img.png](img/img_3.png)
+![img.png](img/img_6.png)

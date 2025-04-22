@@ -107,12 +107,10 @@ mcp-yunxiao integrates various tools, including:
 - `list_pipeline_runs`: Get pipeline run instance list
 
 ## Usage Examples
-1. Get work item details:
-![img.png](img/img.png)
+Implement code based on Yunxiao Projex work item description and create Merge Request to Yunxiao Codeup.
 
-![img.png](img/img_1.png)
+![img.png](img/img_4.png)
 
-2. Implement code based on work item description & create Pull Request
-![img.png](img/img_2.png)
+![img.png](img/img_5.png)
 
-![img.png](img/img_3.png) 
+![img.png](img/img_6.png)

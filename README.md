@@ -42,19 +42,7 @@ make build
 ```
 
 ### Usage
-
-#### Direct execution
-
-```bash
-./bin/mcp-yunxiao
-```
-
-Or using Docker:
-
-```bash
-make docker
-make docker-run
-```
+Move ./bin/mcp-yunxiao PATH env
 
 ## Cross-Platform Build
 

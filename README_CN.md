@@ -43,22 +43,12 @@ make build
 
 ### 使用方法
 
-#### 直接运行
+将 ./bin/mcp-yunxiao 移动至环境变量
 
-```bash
-./bin/mcp-yunxiao
-```
-
-或者使用Docker：
-
-```bash
-make docker
-make docker-run
-```
 
 ## 跨平台构建
 
-MCP-Yunxiao支持多种操作系统和架构：
+mcp-yunxiao支持多种操作系统和架构：
 
 * Windows (AMD64, ARM64)
 * macOS (AMD64, ARM64)

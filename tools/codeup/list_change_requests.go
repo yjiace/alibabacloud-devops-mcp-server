@@ -22,7 +22,7 @@ var ListChangeRequestsOptions = []mcp.ToolOption{
 	mcp.WithNumber(
 		"perPage", mcp.Description("每页大小")),
 	mcp.WithString(
-		"projectIds", mcp.Description("代码库ID或者路径列表，多个以逗号分隔")),
+		"projectIds", mcp.Description("代码库ID或者组织ID与仓库名称的组合列表，例如: 2835387 或 organizationId%2Frepo-name（注意：斜杠需URL编码为%2F），多个以逗号分隔")),
 	mcp.WithString(
 		"authorIds", mcp.Description("创建者用户ID列表，多个以逗号分隔")),
 	mcp.WithString(

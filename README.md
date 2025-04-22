@@ -1,76 +1,64 @@
 # mcp-yunxiao
 
-mcp-yunxiao是一个为阿里云云效(Yunxiao)平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
+mcp-yunxiao is an API integration tool built for Alibaba Cloud Yunxiao platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
 
-## 功能特性
+## Features
 
-mcp-yunxiao提供了以下功能，让AI助手能够：
+mcp-yunxiao provides the following functionalities, enabling AI assistants to:
 
-* **代码仓库管理**：创建、查询、管理代码仓库及其分支
-* **文件操作**：创建、更新、删除和获取代码文件内容
-* **代码评审**：创建和管理代码评审流程
-* **项目管理**：搜索项目、获取项目详情
-* **迭代管理**：查询迭代列表及详情
-* **流水线管理**：创建、查询、运行流水线及获取运行记录
+* **Code Repository Management**: Create, query, and manage code repositories and their branches
+* **File Operations**: Create, update, delete, and retrieve code file contents
+* **Code Review**: Create and manage code review processes
+* **Project Management**: Search projects, get project details
+* **Sprint Management**: Query sprint lists and details
+* **Pipeline Management**: Create, query, run pipelines, and get execution records
 
-## 快速开始
+## Quick Start
 
-### 先决条件
+### Prerequisites
 
-* Go 1.24.0或以上版本
-* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
+* Go 1.24.0 or higher
+* Alibaba Cloud Yunxiao personal access token, [Get it here](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
 
-### 安装
+### Installation
 
-1. 克隆仓库：
+1. Clone the repository:
 
 ```bash
 git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
 cd mcp-yunxiao
 ```
 
-2. 安装依赖：
+2. Install dependencies:
 
 ```bash
 make deps
 ```
 
-3. 构建应用：
+3. Build the application:
 
 ```bash
 make build
 ```
 
-### 使用方法
+### Usage
+Move ./bin/mcp-yunxiao PATH env
 
-#### 直接运行
+## Cross-Platform Build
 
-```bash
-./bin/mcp-yunxiao
-```
-
-或者使用Docker：
-
-```bash
-make docker
-make docker-run
-```
-
-## 跨平台构建
-
-MCP-Yunxiao支持多种操作系统和架构：
+MCP-Yunxiao supports multiple operating systems and architectures:
 
 * Windows (AMD64, ARM64)
 * macOS (AMD64, ARM64)
 * Linux (AMD64, ARM64)
 
-构建所有平台的二进制文件：
+Build binaries for all platforms:
 
 ```bash
 make build-all
 ```
 
-构建特定平台：
+Build for specific platforms:
 
 ```bash
 make build-windows
@@ -78,53 +66,53 @@ make build-darwin
 make build-linux
 ```
 
-## 工具列表
+## Tool List
 
-mcp-yunxiao集成了多种工具，包括：
+mcp-yunxiao integrates various tools, including:
 
-### 代码管理工具
+### Code Management Tools
 
-- `create_branch`: 创建分支
-- `delete_branch`: 删除分支
-- `get_branch`: 获取分支信息
-- `list_branches`: 获取分支列表
-- `create_file`: 创建文件
-- `delete_file`: 删除文件
-- `get_file_blobs`: 获取文件内容
-- `list_files`: 查询文件树
-- `update_file`: 更新文件内容
-- `create_change_request`: 创建合并请求
-- `create_change_request_comment`: 创建合并请求评论
-- `get_change_request`: 查询合并请求
-- `list_change_request_patch_sets`: 查询合并请求版本列表
-- `list_change_request`: 查询合并请求列表
-- `get_compare`: 代码比较
-- `get_repository`: 获取仓库详情
-- `list_repositories`: 获取仓库列表
+- `create_branch`: Create a branch
+- `delete_branch`: Delete a branch
+- `get_branch`: Get branch information
+- `list_branches`: Get branch list
+- `create_file`: Create a file
+- `delete_file`: Delete a file
+- `get_file_blobs`: Get file content
+- `list_files`: Query file tree
+- `update_file`: Update file content
+- `create_change_request`: Create a merge request
+- `create_change_request_comment`: Create a merge request comment
+- `get_change_request`: Query merge request
+- `list_change_request_patch_sets`: Query merge request version list
+- `list_change_request`: Query merge request list
+- `get_compare`: Compare code
+- `get_repository`: Get repository details
+- `list_repositories`: Get repository list
 
-### 项目管理工具
+### Project Management Tools
 
-- `get_project`: 获取项目详情
-- `search_projects`: 搜索项目
-- `get_sprint`: 获取迭代详情
-- `get_work_item`: 获取工作项详情
+- `get_project`: Get project details
+- `search_projects`: Search projects
+- `get_sprint`: Get sprint details
+- `get_work_item`: Get work item details
 
-### 流水线工具
+### Pipeline Tools
 
-- `create_pipeline`: 创建流水线
-- `get_pipeline`: 获取流水线详情
-- `list_pipelines`: 获取流水线列表
-- `get_pipeline_run`: 获取流水线运行实例
-- `get_latest_pipeline_run`: 获取最近一次流水线运行信息
-- `list_pipeline_runs`: 获取流水线运行实例列表
+- `create_pipeline`: Create a pipeline
+- `get_pipeline`: Get pipeline details
+- `list_pipelines`: Get pipeline list
+- `get_pipeline_run`: Get pipeline run instance
+- `get_latest_pipeline_run`: Get the latest pipeline run information
+- `list_pipeline_runs`: Get pipeline run instance list
 
-## 使用实例
-1、获取工作项详情：
+## Usage Examples
+1. Get work item details:
 ![img.png](img/img.png)
 
 ![img.png](img/img_1.png)
 
-2、根据工作项描述实现编码 & 创建 Pull Request
+2. Implement code based on work item description & create Pull Request
 ![img.png](img/img_2.png)
 
-![img.png](img/img_3.png)
+![img.png](img/img_3.png) 

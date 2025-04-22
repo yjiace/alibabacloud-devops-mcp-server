@@ -1,40 +1,120 @@
-使用go 1.24.0或以上版本
+# mcp-yunxiao
 
-## 创建二进制文件
-go build -o mcp-yunxiao main.go
+mcp-yunxiao是一个为阿里云云效(Yunxiao)平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
 
-## cp文件到$PATH
-cp mcp-yunxiao /usr/local/bin/ 
+## 功能特性
 
-## 配置mcp server
-设置mcp命令： mcp-yunxiao
-设置环境变量： YUNXIAO_ACCESS_TOKEN,值为云效的个人令牌(https://help.aliyun.com/zh/yunxiao/user-guide/personal-access-token)
-创建个人令牌时最好赋予所有api权限。
+mcp-yunxiao提供了以下功能，让AI助手能够：
+
+* **代码仓库管理**：创建、查询、管理代码仓库及其分支
+* **文件操作**：创建、更新、删除和获取代码文件内容
+* **代码评审**：创建和管理代码评审流程
+* **项目管理**：搜索项目、获取项目详情
+* **迭代管理**：查询迭代列表及详情
+* **流水线管理**：创建、查询、运行流水线及获取运行记录
+
+## 快速开始
+
+### 先决条件
+
+* Go 1.24.0或以上版本
+* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
+
+### 安装
+
+1. 克隆仓库：
+
+```bash
+git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
+cd mcp-yunxiao
+```
+
+2. 安装依赖：
+
+```bash
+make deps
+```
+
+3. 构建应用：
+
+```bash
+make build
+```
+
+### 使用方法
+
+将 ./bin/mcp-yunxiao 移动至环境变量
 
 
-open api:
-https://help.aliyun.com/zh/yunxiao/developer-reference/api-reference-standard-proprietary/?spm=a2c4g.11186623.help-menu-150040.d_5_0.37fe1fa8sOExwc&scm=20140722.H_2842380._.OR_help-T_cn~zh-V_1
+## 跨平台构建
 
-待实现的tool：
+mcp-yunxiao支持多种操作系统和架构：
 
-GetBrach: https://help.aliyun.com/zh/yunxiao/developer-reference/getbranch-query-branch-information?spm=a2c4g.11186623.help-menu-150040.d_5_0_4_2_2.1cc42a54yjRDWU&scm=20140722.H_2846575._.OR_help-T_cn~zh-V_1
-ListBranches: https://help.aliyun.com/zh/yunxiao/developer-reference/getbranch-query-branch-information?spm=a2c4g.11186623.help-menu-150040.d_5_0_4_2_2.1cc42a54yjRDWU&scm=20140722.H_2846575._.OR_help-T_cn~zh-V_1
-SearchProjects: https://help.aliyun.com/zh/yunxiao/developer-reference/searchprojects?spm=a2c4g.11186623.help-menu-150040.d_5_0_7_0_3.2ce9dc54369XOo&scm=20140722.H_2870160._.OR_help-T_cn~zh-V_1
-GetProject: https://help.aliyun.com/zh/yunxiao/developer-reference/getproject?spm=a2c4g.11186623.help-menu-150040.d_5_0_7_0_0.50d52ad0YB6C9E&scm=20140722.H_2870127._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/listsprints?spm=a2c4g.11186623.help-menu-150040.d_5_0_7_5_0.67fc23e3BUfKwg&scm=20140722.H_2870324._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/getsprint?spm=a2c4g.11186623.help-menu-150040.d_5_0_7_5_1.553555802cj6a1&scm=20140722.H_2870330._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/searchworkitems?spm=a2c4g.11186623.help-menu-150040.d_5_0_7_8_0.a2b150d67glsHx&scm=20140722.H_2870366._.OR_help-T_cn~zh-V_1
+* Windows (AMD64, ARM64)
+* macOS (AMD64, ARM64)
+* Linux (AMD64, ARM64)
 
+构建所有平台的二进制文件：
 
+```bash
+make build-all
+```
 
+构建特定平台：
 
-https://help.aliyun.com/zh/yunxiao/developer-reference/listpipelines-get-a-list-of-pipelines?spm=a2c4g.11186623.help-menu-150040.d_5_0_8_1_3.66a3d128EkFFJO&scm=20140722.H_2854231._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/getpipeline-get-pipeline-details?spm=a2c4g.11186623.help-menu-150040.d_5_0_8_1_2.7396d128OCMeUZ&scm=20140722.H_2854230._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/getpipelinerun?spm=a2c4g.11186623.help-menu-150040.d_5_0_8_3_2.7b5839ecwc45mT&scm=20140722.H_2854237._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/listpipelineruns?spm=a2c4g.11186623.help-menu-150040.d_5_0_8_3_3.7dc27804JFHH8u&scm=20140722.H_2854238._.OR_help-T_cn~zh-V_1
-https://help.aliyun.com/zh/yunxiao/developer-reference/getlatestpipelinerun?spm=a2c4g.11186623.help-menu-150040.d_5_0_8_3_1.6dfa1bd8PBDJ1X&scm=20140722.H_2862749._.OR_help-T_cn~zh-V_1
+```bash
+make build-windows
+make build-darwin
+make build-linux
+```
 
+## 工具列表
 
+mcp-yunxiao集成了多种工具，包括：
 
+### 代码管理工具
 
+- `create_branch`: 创建分支
+- `delete_branch`: 删除分支
+- `get_branch`: 获取分支信息
+- `list_branches`: 获取分支列表
+- `create_file`: 创建文件
+- `delete_file`: 删除文件
+- `get_file_blobs`: 获取文件内容
+- `list_files`: 查询文件树
+- `update_file`: 更新文件内容
+- `create_change_request`: 创建合并请求
+- `create_change_request_comment`: 创建合并请求评论
+- `get_change_request`: 查询合并请求
+- `list_change_request_patch_sets`: 查询合并请求版本列表
+- `list_change_request`: 查询合并请求列表
+- `get_compare`: 代码比较
+- `get_repository`: 获取仓库详情
+- `list_repositories`: 获取仓库列表
 
+### 项目管理工具
+
+- `get_project`: 获取项目详情
+- `search_projects`: 搜索项目
+- `get_sprint`: 获取迭代详情
+- `get_work_item`: 获取工作项详情
+
+### 流水线工具
+
+- `create_pipeline`: 创建流水线
+- `get_pipeline`: 获取流水线详情
+- `list_pipelines`: 获取流水线列表
+- `get_pipeline_run`: 获取流水线运行实例
+- `get_latest_pipeline_run`: 获取最近一次流水线运行信息
+- `list_pipeline_runs`: 获取流水线运行实例列表
+
+## 使用实例
+1、获取工作项详情：
+![img.png](img/img.png)
+
+![img.png](img/img_1.png)
+
+2、根据工作项描述实现编码 & 创建 Pull Request
+![img.png](img/img_2.png)
+
+![img.png](img/img_3.png)

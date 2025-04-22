@@ -4,6 +4,7 @@ import (
 	"context"
 	"devops.aliyun.com/mcp-yunxiao/types"
 	"devops.aliyun.com/mcp-yunxiao/utils"
+	"encoding/json"
 	"fmt"
 	"github.com/mark3labs/mcp-go/mcp"
 	"math"
@@ -23,17 +24,16 @@ var CreateChangeRequestOptions = []mcp.ToolOption{
 	mcp.WithString("title", mcp.Description("标题，不超过256个字符"), mcp.Required()),
 	mcp.WithString("description", mcp.Description("描述，不超过10000个字符")),
 	mcp.WithString("sourceBranch", mcp.Description("源分支名称"), mcp.Required()),
-	mcp.WithNumber("sourceProjectId", mcp.Description("源库ID（必须是数字ID，不能使用组织ID/仓库名称组合）"), mcp.Required()),
+	mcp.WithNumber("sourceProjectId", mcp.Description("源库ID（如不提供，会尝试自动获取）")),
 	mcp.WithString("targetBranch", mcp.Description("目标分支名称"), mcp.Required()),
-	mcp.WithNumber("targetProjectId", mcp.Description("目标库ID（必须是数字ID，不能使用组织ID/仓库名称组合）"), mcp.Required()),
+	mcp.WithNumber("targetProjectId", mcp.Description("目标库ID（如不提供，会尝试自动获取）")),
 	mcp.WithArray("reviewerUserIds", mcp.Description("评审人用户ID列表")),
 	mcp.WithArray("workItemIds", mcp.Description("关联工作项ID列表")),
 	mcp.WithString("createFrom", mcp.Description("创建来源：WEB - 页面创建；COMMAND_LINE - 命令行创建；默认为WEB"), mcp.Enum("WEB", "COMMAND_LINE")),
 }
 
-// 提示：sourceProjectId和targetProjectId通常需要与repositoryId相同，所以在调用此工具时，
-// 如果是使用数字ID作为repositoryId，也请将相同的值用于sourceProjectId和targetProjectId。
-// 如果使用的是organizationId%2Frepo-name格式，请先调用get_repository工具获取该仓库的数字ID。
+// 提示：sourceProjectId和targetProjectId会自动获取。如果repositoryId是数字ID，则直接使用该数字；
+// 如果是organizationId%2Frepo-name格式，会自动调用API获取对应的数字ID。
 
 var CreateChangeRequestTool = func() mcp.Tool {
 	return mcp.NewTool(CreateChangeRequest, CreateChangeRequestOptions...)
@@ -49,15 +49,48 @@ func floatToIntString(value interface{}) string {
 			return strValue // 如果转换失败，返回原字符串
 		}
 	}
-	
+
 	// 处理浮点数
 	if floatValue, ok := value.(float64); ok {
 		intValue := int(math.Floor(floatValue + 0.5)) // 四舍五入转整数
 		return strconv.Itoa(intValue)
 	}
-	
+
 	// 处理其他情况，直接转字符串
 	return fmt.Sprintf("%v", value)
+}
+
+// 通过API获取仓库的数字ID
+func getRepositoryNumericId(organizationId, repositoryId string) (string, error) {
+	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s", organizationId, repositoryId)
+	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)
+
+	// 执行请求
+	client, err := yunxiaoClient.Do()
+	if err != nil {
+		return "", fmt.Errorf("调用GetRepository API失败: %v", err)
+	}
+
+	// 读取响应体
+	body, err := client.GetRespBody()
+	if err != nil {
+		return "", fmt.Errorf("读取GetRepository API响应失败: %v", err)
+	}
+
+	// 解析响应
+	var repoInfo struct {
+		Id int `json:"id"`
+	}
+
+	if err := json.Unmarshal(body, &repoInfo); err != nil {
+		return "", fmt.Errorf("解析GetRepository API响应失败: %v", err)
+	}
+
+	if repoInfo.Id == 0 {
+		return "", fmt.Errorf("无法获取代码库ID")
+	}
+
+	return strconv.Itoa(repoInfo.Id), nil
 }
 
 func CreateChangeRequestFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -77,31 +110,58 @@ func CreateChangeRequestFunc(ctx context.Context, request mcp.CallToolRequest) (
 	}
 
 	// 检查参数中是否已包含sourceProjectId和targetProjectId
-	_, sourceIdExists := request.Params.Arguments["sourceProjectId"]
-	_, targetIdExists := request.Params.Arguments["targetProjectId"]
+	var sourceProjectId, targetProjectId string
+	var sourceIdExists, targetIdExists bool
+	var tempValue interface{}
 
-	// 如果repositoryId是纯数字，且sourceProjectId或targetProjectId未提供，尝试使用repositoryId的值
-	if _, err := strconv.Atoi(repositoryId); err == nil {
-		// 如果是数字ID，检查是否需要自动填充sourceProjectId或targetProjectId
+	// 检查并获取sourceProjectId
+	if tempValue, sourceIdExists = request.Params.Arguments["sourceProjectId"]; sourceIdExists && tempValue != nil {
+		sourceProjectId = floatToIntString(tempValue)
+	}
+
+	// 检查并获取targetProjectId
+	if tempValue, targetIdExists = request.Params.Arguments["targetProjectId"]; targetIdExists && tempValue != nil {
+		targetProjectId = floatToIntString(tempValue)
+	}
+
+	// 如果repositoryId是纯数字，且sourceProjectId或targetProjectId未提供，直接使用repositoryId的值
+	if numericId, err := strconv.Atoi(repositoryId); err == nil {
+		// 是数字ID，可以直接使用
 		if !sourceIdExists {
-			return mcp.NewToolResultError("必须提供参数sourceProjectId"),
-				fmt.Errorf("必须提供参数sourceProjectId，可使用与repositoryId相同的值: %s", repositoryId)
+			sourceProjectId = strconv.Itoa(numericId)
 		}
 		if !targetIdExists {
-			return mcp.NewToolResultError("必须提供参数targetProjectId"),
-				fmt.Errorf("必须提供参数targetProjectId，可使用与repositoryId相同的值: %s", repositoryId)
+			targetProjectId = strconv.Itoa(numericId)
 		}
 	} else if strings.Contains(repositoryId, "%2F") {
-		// 如果是组织ID与仓库名称的组合，提示用户需要获取对应的数字ID
-		return mcp.NewToolResultError("当使用'组织ID%2F仓库名称'格式时，必须先获取该仓库的数字ID并用于sourceProjectId和targetProjectId参数"),
-			fmt.Errorf("请先使用get_repository工具获取'%s'的数字ID，然后使用该ID作为sourceProjectId和targetProjectId的值", repositoryId)
+		// 如果是组织ID与仓库名称的组合，调用API获取数字ID
+		if !sourceIdExists || !targetIdExists {
+			numericId, err := getRepositoryNumericId(organizationId, repositoryId)
+			if err != nil {
+				return mcp.NewToolResultError("当使用'组织ID%2F仓库名称'格式时，必须先获取该仓库的数字ID并用于sourceProjectId和targetProjectId参数"),
+					fmt.Errorf("请先使用get_repository工具获取'%s'的数字ID，然后使用该ID作为sourceProjectId和targetProjectId的值", repositoryId)
+			}
+
+			if !sourceIdExists {
+				sourceProjectId = numericId
+			}
+			if !targetIdExists {
+				targetProjectId = numericId
+			}
+		}
+	}
+
+	// 确保sourceProjectId和targetProjectId已设置
+	if sourceProjectId == "" {
+		return mcp.NewToolResultError("无法获取sourceProjectId"),
+			fmt.Errorf("无法获取sourceProjectId，请手动提供此参数")
+	}
+	if targetProjectId == "" {
+		return mcp.NewToolResultError("无法获取targetProjectId"),
+			fmt.Errorf("无法获取targetProjectId，请手动提供此参数")
 	}
 
 	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s/changeRequests", organizationId, repositoryId)
-
-	// 获取并处理sourceProjectId和targetProjectId，确保它们是整数字符串（没有小数点）
-	sourceProjectId := floatToIntString(request.Params.Arguments["sourceProjectId"])
-	targetProjectId := floatToIntString(request.Params.Arguments["targetProjectId"])
 
 	// 准备payload，确保类型正确
 	payload := map[string]interface{}{

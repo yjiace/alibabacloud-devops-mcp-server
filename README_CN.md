@@ -111,8 +111,7 @@ mcp-yunxiao集成了多种工具，包括：
 ## 使用实例
 完成云效工作项中的需求并提交Merge Request到Codeup
 
-![img.png](img/img_4.png)
+![img.png](img/img_7.png)
 
-![img.png](img/img_5.png)
+![img.png](img/img_8.png)
 
-![img.png](img/img_6.png)

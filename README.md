@@ -109,8 +109,6 @@ mcp-yunxiao integrates various tools, including:
 ## Usage Examples
 Implement code based on Yunxiao Projex work item description and create Merge Request to Yunxiao Codeup.
 
-![img.png](img/img_4.png)
+![img.png](img/img_7.png)
 
-![img.png](img/img_5.png)
-
-![img.png](img/img_6.png)
+![img.png](img/img_8.png)

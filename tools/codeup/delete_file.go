@@ -14,21 +14,21 @@ const (
 )
 
 var DeleteFileOptions = []mcp.ToolOption{
-	mcp.WithDescription("删除代码库文件"),
+	mcp.WithDescription("删除文件"),
 	mcp.WithString(
-		"organizationId", mcp.Description("组织ID"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 	mcp.WithString(
-		"filePath", mcp.Description("文件路径，需使用URL-Encoder编码进行处理"),
+		"filePath", mcp.Description("文件路径，需使用URL-Encoder编码进行处理，例如: src/main/test.java"),
 		mcp.Required()),
 	mcp.WithString(
-		"branch", mcp.Description("分支名称"),
+		"branch", mcp.Description("分支名称，指定要删除文件的分支"),
 		mcp.Required()),
 	mcp.WithString(
-		"commitMessage", mcp.Description("提交信息"),
+		"commitMessage", mcp.Description("提交信息，描述本次删除操作的说明"),
 		mcp.Required()),
 }
 

@@ -13,15 +13,15 @@ const (
 )
 
 var ListChangeRequestPatchSetsOptions = []mcp.ToolOption{
-	mcp.WithDescription("list change request patch sets"),
+	mcp.WithDescription("查询合并请求版本列表"),
 	mcp.WithString(
-		"organizationId", mcp.Description("organization id"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("repository id"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 	mcp.WithString(
-		"localId", mcp.Description("local id"),
+		"localId", mcp.Description("局部ID，表示代码库中第几个合并请求"),
 		mcp.Required()),
 }
 

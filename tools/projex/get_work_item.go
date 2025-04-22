@@ -13,12 +13,12 @@ const (
 )
 
 var GetWorkItemOptions = []mcp.ToolOption{
-	mcp.WithDescription("get work item"),
+	mcp.WithDescription("获取工作项详情"),
 	mcp.WithString(
-		"organizationId", mcp.Description("organization id"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"workItemId", mcp.Description("work item id"),
+		"workItemId", mcp.Description("工作项唯一标识，必填参数"),
 		mcp.Required()),
 }
 

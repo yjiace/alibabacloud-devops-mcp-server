@@ -13,22 +13,22 @@ const (
 )
 
 var ListBranchesOptions = []mcp.ToolOption{
-	mcp.WithDescription("list repository branches"),
+	mcp.WithDescription("查询分支列表"),
 	mcp.WithString(
-		"organizationId", mcp.Description("organization id"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("repository id or URL-encoded full path"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 	mcp.WithNumber(
-		"page", mcp.Description("page number")),
+		"page", mcp.Description("页码")),
 	mcp.WithNumber(
-		"perPage", mcp.Description("items per page")),
+		"perPage", mcp.Description("每页大小")),
 	mcp.WithString(
-		"sort", mcp.Description("sort order: name_asc, name_desc, updated_asc, updated_desc"),
+		"sort", mcp.Description("排序方式：name_asc - 名称升序，name_desc - 名称降序；updated_asc - 更新时间升序；updated_desc - 更新时间降序"),
 		mcp.Enum("name_asc", "name_desc", "updated_asc", "updated_desc")),
 	mcp.WithString(
-		"search", mcp.Description("search query")),
+		"search", mcp.Description("查询条件")),
 }
 
 var ListBranchesTool = func() mcp.Tool {

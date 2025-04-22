@@ -15,17 +15,18 @@ const (
 var ListFilesOptions = []mcp.ToolOption{
 	mcp.WithDescription("查询文件树"),
 	mcp.WithString(
-		"organizationId", mcp.Description("组织ID"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 	mcp.WithString(
-		"path", mcp.Description("指定查询的路径，例如需要查询src/main目录下的文件")),
+		"path", mcp.Description("指定查询的路径，例如需要查询 src/main 目录下的文件")),
 	mcp.WithString(
-		"ref", mcp.Description("指定引用名，一般为分支名，可为分支名、标签名和CommitSHA，若不传值，则为当前代码库的默认分支")),
+		"ref", mcp.Description("指定引用名，一般为分支名，可为分支名、标签名和CommitSHA，若不传值，则为当前代码库的默认分支，如 master")),
 	mcp.WithString(
-		"type", mcp.Description("文件树获取方式：DIRECT-仅获取当前目录(默认)；RECURSIVE-递归查找当前路径下的所有文件；FLATTEN-扁平化展示")),
+		"type", mcp.Description("文件树获取方式：DIRECT - 仅获取当前目录，默认方式；RECURSIVE - 递归查找当前路径下的所有文件；FLATTEN - 扁平化展示（如果是目录，递归查找，直到子目录包含文件或多个目录为止）"),
+		mcp.Enum("DIRECT", "RECURSIVE", "FLATTEN")),
 }
 
 var ListFilesTool = func() mcp.Tool {

@@ -13,12 +13,12 @@ const (
 )
 
 var GetRepositoryOptions = []mcp.ToolOption{
-	mcp.WithDescription("get repository"),
+	mcp.WithDescription("查询代码库"),
 	mcp.WithString(
-		"organizationId", mcp.Description("organization id"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("repository id"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 }
 

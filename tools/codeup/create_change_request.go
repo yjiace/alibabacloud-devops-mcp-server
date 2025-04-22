@@ -13,18 +13,18 @@ const (
 )
 
 var CreateChangeRequestOptions = []mcp.ToolOption{
-	mcp.WithDescription("create change request"),
-	mcp.WithString("organizationId", mcp.Description("organization id"), mcp.Required()),
-	mcp.WithString("repositoryId", mcp.Description("repository id"), mcp.Required()),
-	mcp.WithString("title", mcp.Description("title, max 256 chars"), mcp.Required()),
-	mcp.WithString("description", mcp.Description("description, max 10000 chars")),
-	mcp.WithString("sourceBranch", mcp.Description("source branch"), mcp.Required()),
-	mcp.WithNumber("sourceProjectId", mcp.Description("source project id"), mcp.Required()),
-	mcp.WithString("targetBranch", mcp.Description("target branch"), mcp.Required()),
-	mcp.WithNumber("targetProjectId", mcp.Description("target project id"), mcp.Required()),
-	mcp.WithArray("reviewerUserIds", mcp.Description("reviewer user id list")),
-	mcp.WithArray("workItemIds", mcp.Description("related work item id list")),
-	mcp.WithString("createFrom", mcp.Description("creation source: WEB or COMMAND_LINE"), mcp.Enum("WEB", "COMMAND_LINE")),
+	mcp.WithDescription("创建合并请求"),
+	mcp.WithString("organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"), mcp.Required()),
+	mcp.WithString("repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"), mcp.Required()),
+	mcp.WithString("title", mcp.Description("标题，不超过256个字符"), mcp.Required()),
+	mcp.WithString("description", mcp.Description("描述，不超过10000个字符")),
+	mcp.WithString("sourceBranch", mcp.Description("源分支名称"), mcp.Required()),
+	mcp.WithNumber("sourceProjectId", mcp.Description("源库ID"), mcp.Required()),
+	mcp.WithString("targetBranch", mcp.Description("目标分支名称"), mcp.Required()),
+	mcp.WithNumber("targetProjectId", mcp.Description("目标库ID"), mcp.Required()),
+	mcp.WithArray("reviewerUserIds", mcp.Description("评审人用户ID列表")),
+	mcp.WithArray("workItemIds", mcp.Description("关联工作项ID列表")),
+	mcp.WithString("createFrom", mcp.Description("创建来源：WEB - 页面创建；COMMAND_LINE - 命令行创建；默认为WEB"), mcp.Enum("WEB", "COMMAND_LINE")),
 }
 
 var CreateChangeRequestTool = func() mcp.Tool {

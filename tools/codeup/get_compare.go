@@ -13,25 +13,25 @@ const (
 )
 
 var GetCompareOptions = []mcp.ToolOption{
-	mcp.WithDescription("get repository"),
+	mcp.WithDescription("查询代码比较内容"),
 	mcp.WithString(
-		"organizationId", mcp.Description("organization id"),
+		"organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"),
 		mcp.Required()),
 	mcp.WithString(
-		"repositoryId", mcp.Description("repository id"),
+		"repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"),
 		mcp.Required()),
 	mcp.WithString(
-		"from", mcp.Description("from"),
+		"from", mcp.Description("可为CommitSHA、分支名或者标签名"),
 		mcp.Required()),
 	mcp.WithString(
-		"to", mcp.Description("to"),
+		"to", mcp.Description("可为CommitSHA、分支名或者标签名"),
 		mcp.Required()),
 	mcp.WithString(
-		"sourceType", mcp.Description("source type")),
+		"sourceType", mcp.Description("可选值：branch、tag；若是commit比较，可不传；若是分支比较，则需传入：branch，亦可不传，但需要确保不存在分支或tag重名的情况；若是tag比较，则需传入：tag；若是存在分支和标签同名的情况，则需要严格传入branch或者tag")),
 	mcp.WithString(
-		"targetType", mcp.Description("target type")),
+		"targetType", mcp.Description("可选值：branch、tag；若是commit比较，可不传；若是分支比较，则需传入：branch，亦可不传，但需要确保不存在分支或Tag重名的情况；若是tag比较，则需传入：tag；若是存在分支和标签同名的情况，则需要严格传入branch或者tag")),
 	mcp.WithString(
-		"straight", mcp.Description("straight")),
+		"straight", mcp.Description("是否使用Merge-Base：straight=false，表示使用Merge-Base；straight=true，表示不使用Merge-Base；默认为false，即使用Merge-Base")),
 }
 
 var GetCompareTool = func() mcp.Tool {

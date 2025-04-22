@@ -13,21 +13,21 @@ const (
 )
 
 var CreateChangeRequestCommentOptions = []mcp.ToolOption{
-	mcp.WithDescription("create change request comments"),
-	mcp.WithString("organizationId", mcp.Description("organization id"), mcp.Required()),
-	mcp.WithString("repositoryId", mcp.Description("repository id"), mcp.Required()),
-	mcp.WithString("localId", mcp.Description("local id"), mcp.Required()),
-	mcp.WithString("comment_type", mcp.Description("comment type, GLOBAL_COMMENT or INLINE_COMMENT"), mcp.Required(), mcp.Enum("GLOBAL_COMMENT", "INLINE_COMMENT")),
-	mcp.WithString("content", mcp.Description("comment content (1-65535 chars)"), mcp.Required()),
-	mcp.WithBoolean("draft", mcp.Description("whether this is a draft comment (defaults to false)"), mcp.Required()),
-	mcp.WithBoolean("resolved", mcp.Description("whether this comment is resolved (defaults to false)"), mcp.Required()),
-	mcp.WithString("patchset_biz_id", mcp.Description("associated version id"), mcp.Required()),
+	mcp.WithDescription("创建合并请求评论"),
+	mcp.WithString("organizationId", mcp.Description("组织ID，前往组织管理后台的基本信息页面获取"), mcp.Required()),
+	mcp.WithString("repositoryId", mcp.Description("代码库ID或者URL-Encoder编码的全路径，例如: 2835387 或 codeup-org-id%2Fcodeup-demo"), mcp.Required()),
+	mcp.WithString("localId", mcp.Description("局部ID，表示代码库中第几个合并请求"), mcp.Required()),
+	mcp.WithString("comment_type", mcp.Description("评论类型"), mcp.Required(), mcp.Enum("GLOBAL_COMMENT", "INLINE_COMMENT")),
+	mcp.WithString("content", mcp.Description("评论内容，长度必须在1到65535之间"), mcp.Required()),
+	mcp.WithBoolean("draft", mcp.Description("是否草稿评论"), mcp.Required()),
+	mcp.WithBoolean("resolved", mcp.Description("是否标记已解决"), mcp.Required()),
+	mcp.WithString("patchset_biz_id", mcp.Description("关联版本ID，如果是INLINE_COMMENT，则选择from_patchset_biz_id或to_patchset_biz_id中的一个"), mcp.Required()),
 	// 可选参数
-	mcp.WithString("file_path", mcp.Description("file path (required for INLINE_COMMENT)")),
-	mcp.WithNumber("line_number", mcp.Description("line number (required for INLINE_COMMENT)")),
-	mcp.WithString("from_patchset_biz_id", mcp.Description("from patchset biz id (required for INLINE_COMMENT)")),
-	mcp.WithString("to_patchset_biz_id", mcp.Description("to patchset biz id (required for INLINE_COMMENT)")),
-	mcp.WithString("parent_comment_biz_id", mcp.Description("parent comment biz id")),
+	mcp.WithString("file_path", mcp.Description("文件名称，只有行内评论才有")),
+	mcp.WithNumber("line_number", mcp.Description("行号，只有行内评论才有")),
+	mcp.WithString("from_patchset_biz_id", mcp.Description("比较的起始版本ID，INLINE_COMMENT类型的评论必传")),
+	mcp.WithString("to_patchset_biz_id", mcp.Description("比较的目标版本ID，INLINE_COMMENT类型的评论必传")),
+	mcp.WithString("parent_comment_biz_id", mcp.Description("父评论ID")),
 }
 
 var CreateChangeRequestCommentTool = func() mcp.Tool {
@@ -50,14 +50,14 @@ func CreateChangeRequestCommentFunc(ctx context.Context, request mcp.CallToolReq
 		"content":         request.Params.Arguments["content"],
 		"patchset_biz_id": request.Params.Arguments["patchset_biz_id"],
 	}
-	
+
 	// 处理布尔值参数，如果未提供则使用默认值false
 	if draft, ok := request.Params.Arguments["draft"]; ok && draft != nil {
 		payload["draft"] = draft
 	} else {
 		payload["draft"] = false
 	}
-	
+
 	if resolved, ok := request.Params.Arguments["resolved"]; ok && resolved != nil {
 		payload["resolved"] = resolved
 	} else {

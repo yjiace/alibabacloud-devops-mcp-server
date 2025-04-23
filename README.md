@@ -1,10 +1,10 @@
-# mcp-yunxiao
+# aliyun/yunxiao-devops
 
-mcp-yunxiao is an API integration tool built for Alibaba Cloud Yunxiao platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
+aliyun/yunxiao-devops is an API integration tool built for Alibaba Cloud Devops platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
 
 ## Features
 
-mcp-yunxiao provides the following functionalities, enabling AI assistants to:
+aliyun/yunxiao-devops provides the following functionalities, enabling AI assistants to:
 
 * **Code Repository Management**: Create, query, and manage code repositories and their branches
 * **File Operations**: Create, update, delete, and retrieve code file contents
@@ -46,7 +46,7 @@ Move ./bin/mcp-yunxiao PATH env
 
 macos for example：
 ```bash
-cp ./binmcp-yunxiao /usr/local/bin/ 
+cp ./bin/mcp-yunxiao /usr/local/bin/ 
 ```
 
 ## Cross-Platform Build
@@ -73,7 +73,7 @@ make build-linux
 
 ## Tool List
 
-mcp-yunxiao integrates various tools, including:
+aliyun/yunxiao-devops integrates various tools, including:
 
 ### Code Management Tools
 

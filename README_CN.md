@@ -45,6 +45,11 @@ make build
 
 将 ./bin/mcp-yunxiao 移动至环境变量
 
+比如macos下：
+```bash
+cp ./binmcp-yunxiao /usr/local/bin/ 
+```
+
 
 ## 跨平台构建
 

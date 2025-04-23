@@ -44,6 +44,11 @@ make build
 ### Usage
 Move ./bin/mcp-yunxiao PATH env
 
+macos for example：
+```bash
+cp ./binmcp-yunxiao /usr/local/bin/ 
+```
+
 ## Cross-Platform Build
 
 MCP-Yunxiao supports multiple operating systems and architectures:

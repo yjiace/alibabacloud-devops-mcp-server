@@ -20,9 +20,9 @@ var (
 	Debug              = false // 默认禁用调试输出
 )
 
-const (
+var (
 	DefaultYunxiaoUrl = "https://openapi-rdc.aliyuncs.com"
-	Version           = "0.0.1"
+	Version           = "v1.0.0"
 )
 
 type Option func(client *YunxiaoClient)
@@ -190,6 +190,10 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 	}
 
 	return g, nil
+}
+
+func SetYunxiaoAccessToken(token string) {
+	yunxiaoAccessToken = token
 }
 
 func GetYunxiaoAccessToken() string {

@@ -1,23 +1,33 @@
 package main
 
 import (
+	"context"
 	"devops.aliyun.com/mcp-yunxiao/tools/codeup"
 	"devops.aliyun.com/mcp-yunxiao/tools/flow"
 	"devops.aliyun.com/mcp-yunxiao/tools/projex"
+	"devops.aliyun.com/mcp-yunxiao/utils"
+	"flag"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func main() {
-	// Create a new MCP server
-	s := server.NewMCPServer(
-		"Yunxiao mcp server",
-		"1.0.0",
+var (
+	Version = utils.Version
+)
+
+func newMCPServer() *server.MCPServer {
+	return server.NewMCPServer(
+		"mcp-yunxiao",
+		Version,
 		server.WithResourceCapabilities(true, true),
 		server.WithLogging(),
 	)
+}
 
+func addTools(s *server.MCPServer) {
 	s.AddTool(codeup.CreateChangeRequestTool, codeup.CreateChangeRequestFunc)
 
 	s.AddTool(codeup.ListRepositoriesTool, codeup.ListRepositoriesFunc)
@@ -75,9 +85,68 @@ func main() {
 	s.AddTool(flow.ListPipelineRunsTool, flow.ListPipelineRunsFunc)
 
 	s.AddTool(flow.GetLatestPipelineRunTool, flow.GetLatestPipelineRunFunc)
+}
+
+func run(transport, addr string) error {
+	s := newMCPServer()
+	addTools(s)
+
+	switch transport {
+	case "stdio":
+		if err := server.ServeStdio(s); err != nil {
+			if err == context.Canceled {
+				return nil
+			}
+			return err
+		}
+	case "sse":
+		log.Printf("Yunxiao MCP Server (SSE) listening on %s", addr)
+		srv := server.NewSSEServer(s, server.WithSSEEndpoint("http://"+addr))
+		if err := srv.Start(addr); err != nil {
+			if err == context.Canceled {
+				return nil
+			}
+			return fmt.Errorf("服务器错误: %v", err)
+		}
+	default:
+		return fmt.Errorf(
+			"invalid transport type: %s. Must be 'stdio' or 'sse'",
+			transport,
+		)
+	}
+	return nil
+}
+
+func main() {
+	accessToken := flag.String("token", "", "YUNXIAO_ACCESS_TOKEN")
+	apiBase := flag.String("api-base", "", "https://openapi-rdc.aliyuncs.com")
+	showVersion := flag.Bool("version", false, "Show version information")
+	transport := flag.String("transport", "stdio", "Transport type (stdio or sse)")
+	addr := flag.String("sse-address", "localhost:8000", "The host and port to start the sse server on")
+	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("mcp-yunxiao\n")
+		fmt.Printf("Version: %s\n", Version)
+		os.Exit(0)
+	}
+
+	if *accessToken == "" {
+		*accessToken = os.Getenv("YUNXIAO_ACCESS_TOKEN")
+	}
+
+	if *accessToken == "" {
+		log.Fatal("Must provide Yunxiao access token, either through the --token parameter or the YUNXIAO_ACCESS_TOKEN environment variable.")
+	}
+
+	if *apiBase != "" {
+		utils.DefaultYunxiaoUrl = *apiBase
+	}
+
+	utils.SetYunxiaoAccessToken(*accessToken)
 
 	// Start the server
-	if err := server.ServeStdio(s); err != nil {
-		fmt.Printf("Server error: %v\n", err)
+	if err := run(*transport, *addr); err != nil {
+		log.Fatalf("Run Server error: %v\n", err)
 	}
 }

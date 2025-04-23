@@ -30,4 +30,8 @@ coverage.out
 .DS_Store
 
 # Go工作目录
-/go.work 
+/go.work
+
+# 临时文件
+republish.sh
+test.sh

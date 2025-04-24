@@ -50,16 +50,6 @@ make deps
 make build
 ```
 
-### 使用方法
-
-将 ./bin/alibaba-devops-mcp-server 移动至环境变量
-
-比如macos下：
-```bash
-cp ./bin/alibaba-devops-mcp-server /usr/local/bin/ 
-```
-
-
 ## 跨平台构建
 
 alibaba-devops-mcp-server支持多种操作系统和架构：
@@ -81,6 +71,37 @@ make build-windows
 make build-darwin
 make build-linux
 ```
+
+## 使用方法
+
+首先确保 ./bin/alibaba-devops-mcp-server文件路径在环境变量$PATH里，或者将该文件移动到一个已存在的$PATH中
+
+### curosr等工具中配置mcp server:
+
+```json
+{
+    "alibaba-devops": {
+      "command": "alibaba-devops-mcp-server",
+      "env": {
+        "YUNXIAO_ACCESS_TOKEN": "xxxxxx"
+      }
+    }
+}
+
+```
+
+### 通义灵码插件中配置
+
+![img.png](img/mcpconfig1.jpg)
+![img.png](img/mcpconfig2.jpg)
+
+
+比如macos下：
+```bash
+cp ./bin/alibaba-devops-mcp-server /usr/local/bin/ 
+```
+
+
 
 ## 工具列表
 

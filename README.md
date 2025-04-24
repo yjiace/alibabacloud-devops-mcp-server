@@ -50,14 +50,6 @@ make deps
 make build
 ```
 
-### Usage
-Move ./bin/alibaba-devops-mcp-server PATH env
-
-macos for example：
-```bash
-cp ./bin/alibaba-devops-mcp-server /usr/local/bin/ 
-```
-
 ## Cross-Platform Build
 
 MCP-Yunxiao supports multiple operating systems and architectures:
@@ -79,6 +71,28 @@ make build-windows
 make build-darwin
 make build-linux
 ```
+
+## Usage
+Move ./bin/alibaba-devops-mcp-server PATH env folder
+
+### config in curor or other tools:
+
+```json
+{
+    "alibaba-devops": {
+      "command": "alibaba-devops-mcp-server",
+      "env": {
+        "YUNXIAO_ACCESS_TOKEN": "xxxxxx"
+      }
+    }
+}
+
+```
+
+### config in lingma
+
+![img.png](img/mcpconfig1.jpg)
+![img.png](img/mcpconfig2.jpg)
 
 ## Tool List
 

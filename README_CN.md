@@ -1,10 +1,10 @@
-# alibaba-devops-mcp-server
+# alibabacloud-devops-mcp-server
 
-alibaba-devops-mcp-server(云效mcp-server)是一个为阿里云云效平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
+alibabacloud-devops-mcp-server(云效mcp-server)是一个为阿里云云效平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
 
 ## 功能特性
 
-alibaba-devops-mcp-server提供了以下功能，让AI助手能够：
+alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 
 * **代码仓库管理**：创建、查询、管理代码仓库及其分支
 * **文件操作**：创建、更新、删除和获取代码文件内容
@@ -22,14 +22,14 @@ alibaba-devops-mcp-server提供了以下功能，让AI助手能够：
 
 ### 直接下载二进制包
 
-* [macos amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_amd64)
-* [macos arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_arm64)
-* [linux amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_amd64)
-* [linux arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_arm64)
-* [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe)
-* [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe)
+* [macos amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_darwin_amd64)
+* [macos arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_darwin_arm64)
+* [linux amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_linux_amd64)
+* [linux arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_linux_arm64)
+* [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_windows_amd64.exe)
+* [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_windows_arm64.exe)
 
-下载后将二进制包重命名为alibaba-devops-mcp-server并放置到$PATH包含的目录中。
+下载后将二进制包重命名为alibabacloud-devops-mcp-server并放置到$PATH包含的目录中。
 
 ### 通过源码安装
 
@@ -54,7 +54,7 @@ make build
 
 ## 跨平台构建
 
-alibaba-devops-mcp-server支持多种操作系统和架构：
+alibabacloud-devops-mcp-server支持多种操作系统和架构：
 
 * Windows (AMD64, ARM64)
 * macOS (AMD64, ARM64)
@@ -76,14 +76,14 @@ make build-linux
 
 ## 使用方法
 
-首先确保./bin/alibaba-devops-mcp-server文件路径在环境变量$PATH里，或者将该文件移动到一个已存在的$PATH中
+首先确保./bin/alibabacloud-devops-mcp-server文件路径在环境变量$PATH里，或者将该文件移动到一个已存在的$PATH中
 
 ### cursor等工具中配置mcp server:
 
 ```json
 {
     "alibaba-devops": {
-      "command": "alibaba-devops-mcp-server",
+      "command": "alibabacloud-devops-mcp-server",
       "env": {
         "YUNXIAO_ACCESS_TOKEN": "xxxxxx"
       }
@@ -100,14 +100,14 @@ make build-linux
 
 比如macos下：
 ```bash
-cp ./bin/alibaba-devops-mcp-server /usr/local/bin/ 
+cp ./bin/alibabacloud-devops-mcp-server /usr/local/bin/ 
 ```
 
 
 
 ## 工具列表
 
-alibaba-devops-mcp-server集成了多种工具，包括：
+alibabacloud-devops-mcp-server集成了多种工具，包括：
 
 ### 代码管理工具
 

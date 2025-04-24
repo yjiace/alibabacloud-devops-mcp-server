@@ -20,7 +20,7 @@ var (
 
 func newMCPServer() *server.MCPServer {
 	return server.NewMCPServer(
-		"alibaba-devops-mcp-server",
+		"alibabacloud-devops-mcp-server",
 		Version,
 		server.WithResourceCapabilities(true, true),
 		server.WithLogging(),
@@ -126,7 +126,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Printf("alibaba-devops-mcp-server\n")
+		fmt.Printf("alibabacloud-devops-mcp-server\n")
 		fmt.Printf("Version: %s\n", Version)
 		os.Exit(0)
 	}

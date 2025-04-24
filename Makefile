@@ -1,5 +1,5 @@
 # 项目名称
-PROJECT_NAME := alibaba-devops-mcp-server
+PROJECT_NAME := devops-mcp-server
 # 主程序入口
 MAIN_FILE := main.go
 # 目标输出目录

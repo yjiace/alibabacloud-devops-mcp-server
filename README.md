@@ -1,10 +1,10 @@
-# alibaba-devops-mcp-server
+# devops-mcp-server
 
-alibaba-devops-mcp-server is an API integration tool built for Alibaba Cloud Devops platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
+alibabacloud-devops-mcp-server is an API integration tool built for Alibaba Cloud Devops platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
 
 ## Features
 
-alibaba-devops-mcp-server provides the following functionalities, enabling AI assistants to:
+alibabacloud-devops-mcp-server provides the following functionalities, enabling AI assistants to:
 
 * **Code Repository Management**: Create, query, and manage code repositories and their branches
 * **File Operations**: Create, update, delete, and retrieve code file contents
@@ -22,14 +22,14 @@ alibaba-devops-mcp-server provides the following functionalities, enabling AI as
 
 ### Download 
 
-* [macos amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_amd64)
-* [macos arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_arm64)
-* [linux amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_amd64)
-* [linux arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_arm64)
-* [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe)
-* [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe)
+* [macos amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_darwin_amd64)
+* [macos arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_darwin_arm64)
+* [linux amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_linux_amd64)
+* [linux arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_linux_arm64)
+* [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_windows_amd64.exe)
+* [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/alibabacloud-devops-mcp-server_windows_arm64.exe)
 
-download file and rename to alibaba-devops-mcp-server, put it in the $PATH directory.
+download file and rename to alibabacloud-devops-mcp-server, put it in the $PATH directory.
 
 ### Installation from sources
 
@@ -75,14 +75,14 @@ make build-linux
 ```
 
 ## Usage
-Move ./bin/alibaba-devops-mcp-server  to PATH env folder
+Move ./bin/alibabacloud-devops-mcp-server  to PATH env folder
 
 ### config in cursor or other tools:
 
 ```json
 {
     "alibaba-devops": {
-      "command": "alibaba-devops-mcp-server",
+      "command": "alibabacloud-devops-mcp-server",
       "env": {
         "YUNXIAO_ACCESS_TOKEN": "xxxxxx"
       }
@@ -98,7 +98,7 @@ Move ./bin/alibaba-devops-mcp-server  to PATH env folder
 
 ## Tool List
 
-alibaba-devops-mcp-server integrates various tools, including:
+alibabacloud-devops-mcp-server integrates various tools, including:
 
 ### Code Management Tools
 

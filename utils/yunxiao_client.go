@@ -127,7 +127,7 @@ func (g *YunxiaoClient) Do() (*YunxiaoClient, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "mcp-yunxiao "+Version+" Go/"+runtime.GOOS+"/"+runtime.GOARCH+"/"+runtime.Version())
+	req.Header.Set("User-Agent", "alibaba-devops-mcp-server "+Version+" Go/"+runtime.GOOS+"/"+runtime.GOARCH+"/"+runtime.Version())
 
 	accessToken := GetYunxiaoAccessToken()
 	if accessToken == "" {

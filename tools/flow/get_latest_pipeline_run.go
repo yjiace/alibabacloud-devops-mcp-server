@@ -2,9 +2,9 @@ package flow
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/types"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/types"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -33,7 +33,7 @@ func GetLatestPipelineRunFunc(ctx context.Context, request mcp.CallToolRequest) 
 	apiUrl := fmt.Sprintf("/oapi/v1/flow/organizations/%s/pipelines/%s/runs/latestPipelineRun", organizationId, pipelineId)
 
 	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)
-	
+
 	response := types.PipelineRunInfo{}
 
 	return yunxiaoClient.HandleMCPResult(&response)

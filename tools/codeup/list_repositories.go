@@ -2,9 +2,9 @@ package codeup
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/types"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/types"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -43,28 +43,28 @@ func ListRepositoriesFunc(ctx context.Context, request mcp.CallToolRequest) (*mc
 
 	// 添加查询参数
 	queries := make(map[string]string)
-	
+
 	// 添加可选参数
 	if page, ok := request.Params.Arguments["page"]; ok && page != nil {
 		queries["page"] = fmt.Sprintf("%v", page)
 	}
-	
+
 	if perPage, ok := request.Params.Arguments["perPage"]; ok && perPage != nil {
 		queries["perPage"] = fmt.Sprintf("%v", perPage)
 	}
-	
+
 	if orderBy, ok := request.Params.Arguments["orderBy"]; ok && orderBy != nil {
 		queries["orderBy"] = orderBy.(string)
 	}
-	
+
 	if sort, ok := request.Params.Arguments["sort"]; ok && sort != nil {
 		queries["sort"] = sort.(string)
 	}
-	
+
 	if search, ok := request.Params.Arguments["search"]; ok && search != nil {
 		queries["search"] = search.(string)
 	}
-	
+
 	if archived, ok := request.Params.Arguments["archived"]; ok && archived != nil {
 		queries["archived"] = fmt.Sprintf("%v", archived)
 	}

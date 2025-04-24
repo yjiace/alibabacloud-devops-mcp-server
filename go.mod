@@ -1,4 +1,4 @@
-module devops.aliyun.com/mcp-yunxiao
+module github.com/aliyun/alibaba-devops-mcp-server
 
 go 1.24
 

@@ -2,10 +2,10 @@ package projex
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/types"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"encoding/json"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/types"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 	"strings"
 )

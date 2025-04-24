@@ -2,8 +2,8 @@ package flow
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 

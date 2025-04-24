@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/tools/codeup"
-	"devops.aliyun.com/mcp-yunxiao/tools/flow"
-	"devops.aliyun.com/mcp-yunxiao/tools/projex"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"flag"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/tools/codeup"
+	"github.com/aliyun/alibaba-devops-mcp-server/tools/flow"
+	"github.com/aliyun/alibaba-devops-mcp-server/tools/projex"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"log"
 	"os"
 

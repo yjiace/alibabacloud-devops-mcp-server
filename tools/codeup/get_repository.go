@@ -2,9 +2,9 @@ package codeup
 
 import (
 	"context"
-	"devops.aliyun.com/mcp-yunxiao/types"
-	"devops.aliyun.com/mcp-yunxiao/utils"
 	"fmt"
+	"github.com/aliyun/alibaba-devops-mcp-server/types"
+	"github.com/aliyun/alibaba-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 	"net/url"
 	"strings"
@@ -31,7 +31,7 @@ var GetRepositoryTool = func() mcp.Tool {
 func GetRepositoryFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	repositoryId := request.Params.Arguments["repositoryId"].(string)
-	
+
 	// 自动处理repositoryId中未编码的斜杠
 	if strings.Contains(repositoryId, "/") {
 		// 发现未编码的斜杠，自动进行URL编码
@@ -43,7 +43,7 @@ func GetRepositoryFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp.C
 			repositoryId = parts[0] + "%2F" + encodedRepoName
 		}
 	}
-	
+
 	apiUrl := fmt.Sprintf("/oapi/v1/codeup/organizations/%s/repositories/%s", organizationId, repositoryId)
 
 	yunxiaoClient := utils.NewYunxiaoClient("GET", apiUrl)

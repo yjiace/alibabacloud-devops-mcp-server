@@ -22,12 +22,12 @@ alibaba-devops-mcp-server提供了以下功能，让AI助手能够：
 
 ### 直接下载二进制包
 
-* macos amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_amd64
-* macos arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_arm64
-* linux amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_amd64
-* linux arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_arm64
-* windows amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe
-* windows arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe
+* [macos amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_amd64)
+* [macos arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_darwin_arm64)
+* [linux amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_amd64)
+* [linux arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_linux_arm64)
+* [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe)
+* [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe)
 
 ### 通过源码安装
 

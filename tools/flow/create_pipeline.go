@@ -3,7 +3,7 @@ package flow
 import (
 	"context"
 	"fmt"
-	"github.com/aliyun/alibaba-devops-mcp-server/utils"
+	"github.com/aliyun/alibabacloud-devops-mcp-server/utils"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 

@@ -20,7 +20,16 @@ aliyun/yunxiao-devops提供了以下功能，让AI助手能够：
 * Go 1.24.0或以上版本
 * 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
 
-### 安装
+### 直接下载二进制包
+
+* macos amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_darwin_amd64
+* macos arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_darwin_arm64
+* linux amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_linux_amd64
+* linux arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_linux_arm64
+* windows amd: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_windows_amd64.exe
+* windows arm: https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/yunxiao-devops-mcp/mcp-yunxiao_windows_arm64.exe
+
+### 通过源码安装
 
 1. 克隆仓库：
 

@@ -29,6 +29,8 @@ alibaba-devops-mcp-server提供了以下功能，让AI助手能够：
 * [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe)
 * [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe)
 
+下载后将二进制包重命名为alibaba-devops-mcp-server并放置到$PATH包含的目录中。
+
 ### 通过源码安装
 
 1. 克隆仓库：
@@ -74,9 +76,9 @@ make build-linux
 
 ## 使用方法
 
-首先确保 ./bin/alibaba-devops-mcp-server文件路径在环境变量$PATH里，或者将该文件移动到一个已存在的$PATH中
+首先确保./bin/alibaba-devops-mcp-server文件路径在环境变量$PATH里，或者将该文件移动到一个已存在的$PATH中
 
-### curosr等工具中配置mcp server:
+### cursor等工具中配置mcp server:
 
 ```json
 {

@@ -29,6 +29,8 @@ alibaba-devops-mcp-server provides the following functionalities, enabling AI as
 * [windows amd](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_amd64.exe)
 * [windows arm](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibaba-devops-mcp-server/alibaba-devops-mcp-server_windows_arm64.exe)
 
+download file and rename to alibaba-devops-mcp-server, put it in the $PATH directory.
+
 ### Installation from sources
 
 1. Clone the repository:
@@ -73,9 +75,9 @@ make build-linux
 ```
 
 ## Usage
-Move ./bin/alibaba-devops-mcp-server PATH env folder
+Move ./bin/alibaba-devops-mcp-server  to PATH env folder
 
-### config in curor or other tools:
+### config in cursor or other tools:
 
 ```json
 {

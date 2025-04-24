@@ -1,4 +1,4 @@
-# aliyun/alibaba-devops-mcp-server
+# alibaba-devops-mcp-server
 
 alibaba-devops-mcp-server is an API integration tool built for Alibaba Cloud Devops platform. This tool is based on the Model Context Protocol (MCP), providing AI assistants with the ability to interact with the Yunxiao platform.
 

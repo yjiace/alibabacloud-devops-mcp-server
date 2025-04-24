@@ -1,4 +1,4 @@
-# aliyun/alibaba-devops-mcp-server
+# alibaba-devops-mcp-server
 
 alibaba-devops-mcp-server(云效mcp-server)是一个为阿里云云效平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
 

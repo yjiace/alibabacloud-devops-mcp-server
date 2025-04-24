@@ -1,10 +1,10 @@
-# aliyun/yunxiao-devops
+# aliyun/alibaba-devops-mcp-server
 
-云效mcp server是一个为阿里云云效平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
+alibaba-devops-mcp-server(云效mcp-server)是一个为阿里云云效平台构建的API集成工具。该工具基于模型上下文协议(Model Context Protocol，MCP)协议]，为AI助手提供了与云效平台交互的能力。
 
 ## 功能特性
 
-aliyun/yunxiao-devops提供了以下功能，让AI助手能够：
+alibaba-devops-mcp-server提供了以下功能，让AI助手能够：
 
 * **代码仓库管理**：创建、查询、管理代码仓库及其分支
 * **文件操作**：创建、更新、删除和获取代码文件内容
@@ -52,17 +52,17 @@ make build
 
 ### 使用方法
 
-将 ./bin/mcp-yunxiao 移动至环境变量
+将 ./bin/alibaba-devops-mcp-server 移动至环境变量
 
 比如macos下：
 ```bash
-cp ./bin/mcp-yunxiao /usr/local/bin/ 
+cp ./bin/alibaba-devops-mcp-server /usr/local/bin/ 
 ```
 
 
 ## 跨平台构建
 
-aliyun/yunxiao-devops支持多种操作系统和架构：
+alibaba-devops-mcp-server支持多种操作系统和架构：
 
 * Windows (AMD64, ARM64)
 * macOS (AMD64, ARM64)
@@ -84,7 +84,7 @@ make build-linux
 
 ## 工具列表
 
-aliyun/yunxiao-devops集成了多种工具，包括：
+alibaba-devops-mcp-server集成了多种工具，包括：
 
 ### 代码管理工具
 

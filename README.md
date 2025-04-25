@@ -114,6 +114,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_change_request`: Query merge request
 - `list_change_request_patch_sets`: Query merge request version list
 - `list_change_request`: Query merge request list
+- `list_change_request_comments`: Query merge request comments list
 - `get_compare`: Compare code
 - `get_repository`: Get repository details
 - `list_repositories`: Get repository list
@@ -124,6 +125,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `search_projects`: Search projects
 - `get_sprint`: Get sprint details
 - `get_work_item`: Get work item details
+- `search_workitems`: Search work items
 
 ### Pipeline Tools
 

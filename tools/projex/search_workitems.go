@@ -26,7 +26,8 @@ var SearchWorkitemsOptions = []mcp.ToolOption{
 		"category", mcp.Description("搜索的工作项类型，例如 Req(需求)、Task(任务)、Bug(缺陷)等，多值用逗号隔开"),
 		mcp.Required()),
 	mcp.WithString(
-		"spaceId", mcp.Description("空间ID, 项目唯一标识")),
+		"spaceId", mcp.Description("项目ID, 项目唯一标识"),
+		mcp.Required()),
 
 	// 简化的搜索参数
 	mcp.WithString(
@@ -47,12 +48,6 @@ var SearchWorkitemsOptions = []mcp.ToolOption{
 		"advancedConditions", mcp.Description("高级过滤条件，JSON格式")),
 	mcp.WithString(
 		"orderBy", mcp.Description("排序字段，默认为gmtCreate"), mcp.DefaultString("gmtCreate")),
-	mcp.WithNumber(
-		"page", mcp.Description("分页参数，第几页")),
-	mcp.WithNumber(
-		"perPage", mcp.Description("分页参数，每页大小")),
-	mcp.WithString(
-		"sort", mcp.Description("排序方式，desc或asc")),
 }
 
 var SearchWorkitemsTool = func() mcp.Tool {
@@ -85,6 +80,7 @@ func SearchWorkitemsFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp
 
 	// 添加必填参数
 	payload["category"] = request.Params.Arguments["category"]
+	payload["spaceId"] = request.Params.Arguments["spaceId"]
 
 	// 处理条件参数
 	conditions := buildWorkitemConditions(request.Params.Arguments)
@@ -95,22 +91,8 @@ func SearchWorkitemsFunc(ctx context.Context, request mcp.CallToolRequest) (*mcp
 	// 添加其他可选参数
 	if orderBy, ok := request.Params.Arguments["orderBy"].(string); ok && orderBy != "" {
 		payload["orderBy"] = orderBy
-	}
-
-	if page, ok := request.Params.Arguments["page"]; ok {
-		payload["page"] = page
-	}
-
-	if perPage, ok := request.Params.Arguments["perPage"]; ok {
-		payload["perPage"] = perPage
-	}
-
-	if sort, ok := request.Params.Arguments["sort"].(string); ok && sort != "" {
-		payload["sort"] = sort
-	}
-
-	if spaceId, ok := request.Params.Arguments["spaceId"].(string); ok && spaceId != "" {
-		payload["spaceId"] = spaceId
+	} else {
+		payload["orderBy"] = "gmtCreate"
 	}
 
 	// 创建客户端

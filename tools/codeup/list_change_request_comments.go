@@ -34,9 +34,6 @@ func ListChangeRequestCommentsFunc(ctx context.Context, request mcp.CallToolRequ
 	organizationId := request.Params.Arguments["organizationId"].(string)
 	repositoryId := request.Params.Arguments["repositoryId"].(string)
 	localId := request.Params.Arguments["localId"].(string)
-	commentType := request.Params.Arguments["comment_type"].(string)
-	commentState := request.Params.Arguments["state"].(string)
-	resolved := request.Params.Arguments["resolved"].(bool)
 
 	// 自动处理repositoryId中未编码的斜杠
 	if strings.Contains(repositoryId, "/") {
@@ -55,11 +52,7 @@ func ListChangeRequestCommentsFunc(ctx context.Context, request mcp.CallToolRequ
 		organizationId, repositoryId, localId)
 
 	// 准备payload
-	payload := map[string]interface{}{
-		"commentType": commentType,
-		"state":       commentState,
-		"resolved":    resolved,
-	}
+	payload := map[string]interface{}{}
 
 	// 处理patchSetBizIds参数，确保有默认空数组
 	if val, exists := request.Params.Arguments["patchSetBizIds"]; exists && val != nil {
@@ -68,13 +61,31 @@ func ListChangeRequestCommentsFunc(ctx context.Context, request mcp.CallToolRequ
 		payload["patchSetBizIds"] = []interface{}{}
 	}
 
-	// 添加可选参数
-	if val, ok := request.Params.Arguments["filePath"]; ok && val != nil {
-		payload["filePath"] = val.(string)
+	// 添加其他可选参数
+	if val, exists := request.Params.Arguments["commentType"]; exists && val != nil {
+		payload["commentType"] = val
+	} else {
+		payload["commentType"] = "GLOBAL_COMMENT" // 默认值
+	}
+
+	if val, exists := request.Params.Arguments["state"]; exists && val != nil {
+		payload["state"] = val
+	} else {
+		payload["state"] = "OPENED" // 默认值
+	}
+
+	if val, exists := request.Params.Arguments["resolved"]; exists && val != nil {
+		payload["resolved"] = val
+	} else {
+		payload["resolved"] = false // 默认值
+	}
+
+	if val, exists := request.Params.Arguments["filePath"]; exists && val != nil {
+		payload["filePath"] = val
 	}
 
 	// 创建客户端并发送请求
 	yunxiaoClient := utils.NewYunxiaoClient("POST", apiUrl, utils.WithPayload(payload))
-	comment := &types.ChangeRequestComment{}
-	return yunxiaoClient.HandleMCPResult(comment)
+	comments := &[]types.ChangeRequestComment{}
+	return yunxiaoClient.HandleMCPResult(comments)
 }

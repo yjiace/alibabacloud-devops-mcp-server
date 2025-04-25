@@ -34,8 +34,8 @@ download file and rename to alibabacloud-devops-mcp-server, put it in the $PATH 
 1. Clone the repository:
 
 ```bash
-git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
-cd mcp-yunxiao
+git clone git@github.com:aliyun/alibabacloud-devops-mcp-server.git
+cd alibabacloud-devops-mcp-server
 ```
 
 2. Install dependencies， require Go 1.24.0 or higher
@@ -52,7 +52,7 @@ make build
 
 ## Cross-Platform Build
 
-MCP-Yunxiao supports multiple operating systems and architectures:
+alibabacloud-devops-mcp-server supports multiple operating systems and architectures:
 
 * Windows (AMD64, ARM64)
 * macOS (AMD64, ARM64)

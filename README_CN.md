@@ -34,8 +34,8 @@ alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 1. 克隆仓库：
 
 ```bash
-git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
-cd mcp-yunxiao
+git clone git@github.com:aliyun/alibabacloud-devops-mcp-server.git
+cd alibabacloud-devops-mcp-server
 ```
 
 2. 安装依赖, 需要Go 1.24.0或以上版本：

@@ -16,9 +16,7 @@ alibabacloud-devops-mcp-server provides the following functionalities, enabling 
 ## Quick Start
 
 ### Prerequisites
-
-* Go 1.24.0 or higher
-* Alibaba Cloud Yunxiao personal access token, [Get it here](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
+* Alibaba Cloud Yunxiao personal access token, [Get it here](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i), please grant full api permissions.
 
 ### Download 
 
@@ -40,7 +38,7 @@ git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
 cd mcp-yunxiao
 ```
 
-2. Install dependencies:
+2. Install dependencies， require Go 1.24.0 or higher
 
 ```bash
 make deps

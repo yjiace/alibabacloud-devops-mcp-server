@@ -16,9 +16,7 @@ alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 ## 快速开始
 
 ### 先决条件
-
-* Go 1.24.0或以上版本
-* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)
+* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)，尽量赋予所有api读写权限。
 
 ### 直接下载二进制包
 
@@ -40,7 +38,7 @@ git clone git@gitlab.alibaba-inc.com:yunxiao-packages/mcp-yunxiao.git
 cd mcp-yunxiao
 ```
 
-2. 安装依赖：
+2. 安装依赖, 需要Go 1.24.0或以上版本：
 
 ```bash
 make deps

@@ -38,6 +38,8 @@ func addTools(s *server.MCPServer) {
 
 	s.AddTool(codeup.CreateChangeRequestCommentTool, codeup.CreateChangeRequestCommentFunc)
 
+	s.AddTool(codeup.ListChangeRequestCommentsTool, codeup.ListChangeRequestCommentsFunc)
+
 	s.AddTool(codeup.GetCompareTool, codeup.GetCompareFunc)
 
 	s.AddTool(codeup.ListChangeRequestPatchSetsTool, codeup.ListChangeRequestPatchSetsFunc)
@@ -72,7 +74,7 @@ func addTools(s *server.MCPServer) {
 
 	s.AddTool(projex.GetSprintTool, projex.GetSprintFunc)
 
-	//s.AddTool(projex.SearchWorkitemsTool, projex.SearchWorkitemsFunc)
+	s.AddTool(projex.SearchWorkitemsTool, projex.SearchWorkitemsFunc)
 
 	s.AddTool(flow.ListPipelinesTool, flow.ListPipelinesFunc)
 

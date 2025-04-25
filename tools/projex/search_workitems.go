@@ -25,12 +25,14 @@ var SearchWorkitemsOptions = []mcp.ToolOption{
 	mcp.WithString(
 		"category", mcp.Description("搜索的工作项类型，例如 Req(需求)、Task(任务)、Bug(缺陷)等，多值用逗号隔开"),
 		mcp.Required()),
+	mcp.WithString(
+		"spaceId", mcp.Description("空间ID, 项目唯一标识")),
 
 	// 简化的搜索参数
 	mcp.WithString(
 		"subject", mcp.Description("标题包含的文本")),
 	mcp.WithString(
-		"status", mcp.Description("状态ID，多个用逗号分隔")),
+		"status", mcp.Description("状态ID，多个用逗号分隔。状态名称及其ID：待确认（28），待处理（100005），再次打开（30），推迟修复（34），已确认（32），已选择（625489），分析中（154395），分析完成（165115），处理中（100010），设计中（156603），设计完成（307012），开发中（142838），开发完成（100011），测试中（100012）")),
 	mcp.WithString(
 		"createdAfter", mcp.Description("创建时间不早于，格式：YYYY-MM-DD")),
 	mcp.WithString(
@@ -44,15 +46,13 @@ var SearchWorkitemsOptions = []mcp.ToolOption{
 	mcp.WithString(
 		"advancedConditions", mcp.Description("高级过滤条件，JSON格式")),
 	mcp.WithString(
-		"orderBy", mcp.Description("排序字段，默认为gmtCreate")),
+		"orderBy", mcp.Description("排序字段，默认为gmtCreate"), mcp.DefaultString("gmtCreate")),
 	mcp.WithNumber(
 		"page", mcp.Description("分页参数，第几页")),
 	mcp.WithNumber(
 		"perPage", mcp.Description("分页参数，每页大小")),
 	mcp.WithString(
 		"sort", mcp.Description("排序方式，desc或asc")),
-	mcp.WithString(
-		"spaceId", mcp.Description("空间ID")),
 }
 
 var SearchWorkitemsTool = func() mcp.Tool {

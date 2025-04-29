@@ -53,6 +53,7 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 
 ### 先决条件
 * 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)，尽量赋予所有api读写权限。
+* node 版本  >= 16.0.0
 
 ### 通过 NPX 运行 MCP 服务器
 ```json
@@ -100,7 +101,7 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ## 使用体验（以在通义灵码中使用为例）
 1.本地配置
 
-![img6.png](/img/img_6.png)
+![img6.png](img/img_6.png)
 
 ![img0.png](img/img_0.png)
 

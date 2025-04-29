@@ -100,7 +100,7 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ## 使用体验（以在通义灵码中使用为例）
 1.本地配置
 
-![img6.png](img/img_6.png)
+![img6.png](/img/img_6.png)
 
 ![img0.png](img/img_0.png)
 

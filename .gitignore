@@ -1,40 +1,6 @@
-# 构建输出目录
-/build/
-/bin/
-
-# 编译产物
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# 测试二进制文件
-*.test
-
-# 输出的覆盖率文件
-*.out
-coverage.out
-
-# IDE目录
-.idea/
-.vscode/
-
-# 依赖目录
-/vendor/
-
-# 日志文件
+node_modules
+dist
 *.log
-
-# Mac系统文件
-.DS_Store
-
-# Go工作目录
-/go.work
-
-# 临时文件
-republish.sh
-test.sh
-.idea/
-bin/
-/.idea/
+.env
+.idea
+.vscode

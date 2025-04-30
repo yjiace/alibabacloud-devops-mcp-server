@@ -49,7 +49,7 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 ## 用法
 
 ### 先决条件
-* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)，尽量赋予所有api读写权限。
+* 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)，授予组织管理、项目协作、代码管理下所有api的读写权限。
 * node 版本  >= 16.0.0
 
 ### 通过 NPX 运行 MCP 服务器

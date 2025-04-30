@@ -2,9 +2,6 @@ import { z } from "zod";
 
 // Organization related types
 export const CurrentOrganizationInfoSchema = z.object({
-  id: z.string().optional().describe("User ID"),
-  name: z.string().optional().describe("Display name"),
-  email: z.string().optional().describe("Email"),
   lastOrganization: z.string().optional().describe("Last logged-in organization"),
 });
 

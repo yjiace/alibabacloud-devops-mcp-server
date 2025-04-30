@@ -49,8 +49,10 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 ## Usage
 
 ### Prerequisites
-* Alibaba Cloud Yunxiao Personal Access Token, [click here to obtain](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i). Grant read and write permissions to all APIs under organization management, project collaboration, and code management. 
 * node version >= 16.0.0
+* Alibaba Cloud Yunxiao Personal Access Token, [click here to obtain](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i). Grant read and write permissions to all APIs under organization management, project collaboration, and code management.
+
+  ![The personal token authorization page](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.png)
 
 ### Run MCP Server via NPX
 ```json

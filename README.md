@@ -1,6 +1,6 @@
 # alibabacloud-devops-mcp-server
 
-alibabacloud-devops-mcp-server is an API integration tool built for Alibaba Cloud Yunxiao (Cloud Effectiveness) platform. Based on the Model Context Protocol (MCP), it provides AI assistants with the ability to interact with the Yunxiao platform, enabling them to deeply understand projects, work items, code repositories, and Merge Requests. This allows AI assistants to directly participate in development collaboration, helping teams optimize development processes and improve efficiency. With alibabacloud-devops-mcp-server, AI assistants can read work item content, understand requirements, automatically write code, execute code management tasks, and submit merge requests.
+alibabacloud-devops-mcp-server (Yunxiao MCP Server) provides AI assistants with the ability to interact with the Yunxiao platform, enabling them to read work item contents in projects, automatically write code after understanding requirements, and submit code merge requests. Enterprise development teams can use it to assist with code reviews, optimize task management, reduce repetitive operations, and thus focus on more important innovation and product delivery.
 
 Enterprise development teams can use it to assist with code reviews, optimize task management, reduce repetitive operations, and focus on more important innovations and product delivery.
 

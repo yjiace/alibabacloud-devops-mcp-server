@@ -99,23 +99,3 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 
 ## Related Links
 - [Alibaba Cloud Yunxiao](https://devops.aliyun.com)
-
-## Usage Experience (Example with Lingma-Alibaba Cloud AI Coding)
-1.Local Config
-
-![img6.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_6.png)
-
-![img0.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_0.png)
-
-success：
-
-![img7.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_7.png)
-
-2.Using AI Models to Call MCP Server for Completing Requirements in Yunxiao and Creating Merge Requests
-
-![img.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img.png)
-![img1.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_1.png)
-![img2.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_2.png)
-![img3.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_3.png)
-![img4.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_4.png)
-![img5.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_5.png)

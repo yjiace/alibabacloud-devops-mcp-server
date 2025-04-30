@@ -1,8 +1,5 @@
 # alibabacloud-devops-mcp-server
-
 Yunxiao MCP Server provides AI assistants with the ability to interact with the Yunxiao platform, enabling them to read work item contents in projects, automatically write code after understanding requirements, and submit code merge requests. Enterprise development teams can use it to assist with code reviews, optimize task management, reduce repetitive operations, and thus focus on more important innovation and product delivery.
-
-Enterprise development teams can use it to assist with code reviews, optimize task management, reduce repetitive operations, and focus on more important innovations and product delivery.
 
 ## Features
 

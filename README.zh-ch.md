@@ -103,19 +103,19 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ## 使用体验（以在通义灵码中使用为例）
 1.本地配置
 
-![img6.png](img/img_6.png)
+![img6.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_6.png)
 
-![img0.png](img/img_0.png)
+![img0.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_0.png)
 
 配置成功后如下：
 
-![img7.png](img/img_7.png)
+![img7.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_7.png)
 
 2.让模型调用MCP服务器完成云效需求并创建合并请求
 
-![img.png](img/img.png)
-![img1.png](img/img_1.png)
-![img2.png](img/img_2.png)
-![img3.png](img/img_3.png)
-![img4.png](img/img_4.png)
-![img5.png](img/img_5.png)
+![img.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img.png)
+![img1.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_1.png)
+![img2.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_2.png)
+![img3.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_3.png)
+![img4.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_4.png)
+![img5.png](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_5.png)

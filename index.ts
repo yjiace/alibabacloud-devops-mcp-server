@@ -18,6 +18,7 @@ import * as project from './operations/projex/project.js';
 import * as sprint from './operations/projex/sprint.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
+import * as pipeline from './operations/flow/pipeline.js'
 import {
     isYunxiaoError,
     YunxiaoAuthenticationError, YunxiaoConflictError,
@@ -207,6 +208,38 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "search_workitems",
                 description: "Search work items with various filter conditions",
                 inputSchema: zodToJsonSchema(workitem.SearchWorkitemsSchema),
+            },
+
+            // Pipeline Operations
+            {
+                name: "get_pipeline",
+                description: "Get details of a specific pipeline in an organization",
+                inputSchema: zodToJsonSchema(pipeline.GetPipelineSchema),
+            },
+            {
+                name: "list_pipelines",
+                description: "Get a list of pipelines in an organization with filtering options",
+                inputSchema: zodToJsonSchema(pipeline.ListPipelinesSchema),
+            },
+            {
+                name: "create_pipeline_run",
+                description: "Run a pipeline with optional parameters",
+                inputSchema: zodToJsonSchema(pipeline.CreatePipelineRunSchema),
+            },
+            {
+                name: "get_latest_pipeline_run",
+                description: "Get information about the latest pipeline run",
+                inputSchema: zodToJsonSchema(pipeline.GetLatestPipelineRunSchema),
+            },
+            {
+                name: "get_pipeline_run",
+                description: "Get details of a specific pipeline run instance",
+                inputSchema: zodToJsonSchema(pipeline.GetPipelineRunSchema),
+            },
+            {
+                name: "list_pipeline_runs",
+                description: "Get a list of pipeline run instances with filtering options",
+                inputSchema: zodToJsonSchema(pipeline.ListPipelineRunsSchema),
             }
         ],
     };
@@ -603,6 +636,101 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(workItems, null, 2) }],
+                };
+            }
+
+            // Pipeline Operations
+            case "get_pipeline": {
+                const args = pipeline.GetPipelineSchema.parse(request.params.arguments);
+                const pipelineInfo = await pipeline.getPipelineFunc(
+                    args.organizationId,
+                    args.pipelineId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelineInfo, null, 2) }],
+                };
+            }
+
+            case "list_pipelines": {
+                const args = pipeline.ListPipelinesSchema.parse(request.params.arguments);
+                const pipelines = await pipeline.listPipelinesFunc(
+                    args.organizationId,
+                    {
+                        createStartTime: args.createStartTime,
+                        createEndTime: args.createEndTime,
+                        executeStartTime: args.executeStartTime,
+                        executeEndTime: args.executeEndTime,
+                        pipelineName: args.pipelineName,
+                        statusList: args.statusList,
+                        perPage: args.perPage,
+                        page: args.page
+                    }
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelines, null, 2) }],
+                };
+            }
+
+            case "create_pipeline_run": {
+                const args = pipeline.CreatePipelineRunSchema.parse(request.params.arguments);
+                const runId = await pipeline.createPipelineRunFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    {
+                        params: args.params,
+                        description: args.description,
+                        branches: args.branches,
+                        branchMode: args.branchMode,
+                        releaseBranch: args.releaseBranch,
+                        createReleaseBranch: args.createReleaseBranch,
+                        environmentVariables: args.environmentVariables,
+                        repositories: args.repositories
+                    }
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(runId, null, 2) }],
+                };
+            }
+
+            case "get_latest_pipeline_run": {
+                const args = pipeline.GetLatestPipelineRunSchema.parse(request.params.arguments);
+                const pipelineRun = await pipeline.getLatestPipelineRunFunc(
+                    args.organizationId,
+                    args.pipelineId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelineRun, null, 2) }],
+                };
+            }
+
+            case "get_pipeline_run": {
+                const args = pipeline.GetPipelineRunSchema.parse(request.params.arguments);
+                const pipelineRun = await pipeline.getPipelineRunFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.pipelineRunId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelineRun, null, 2) }],
+                };
+            }
+
+            case "list_pipeline_runs": {
+                const args = pipeline.ListPipelineRunsSchema.parse(request.params.arguments);
+                const pipelineRuns = await pipeline.listPipelineRunsFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    {
+                        perPage: args.perPage,
+                        page: args.page,
+                        startTime: args.startTime,
+                        endTime: args.endTime,
+                        status: args.status,
+                        triggerMode: args.triggerMode
+                    }
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelineRuns, null, 2) }],
                 };
             }
 

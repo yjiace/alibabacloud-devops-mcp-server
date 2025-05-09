@@ -129,3 +129,84 @@ export function pathEscape(filePath: string): string {
 
   return encoded;
 }
+
+/**
+ * Handle repository ID encoding
+ * @param repositoryId Repository ID which may contain unencoded slash
+ * @returns Properly encoded repository ID
+ */
+export function handleRepositoryIdEncoding(repositoryId: string): string {
+  let encodedRepoId = repositoryId;
+
+  // Automatically handle unencoded slashes in repositoryId
+  if (repositoryId.includes("/")) {
+    // Found unencoded slash, automatically URL encode it
+    const parts = repositoryId.split("/", 2);
+    if (parts.length === 2) {
+      const encodedRepoName = encodeURIComponent(parts[1]);
+      // Remove + signs from encoding (spaces are encoded as +, but we need %20)
+      const formattedEncodedName = encodedRepoName.replace(/\+/g, "%20");
+      encodedRepoId = `${parts[0]}%2F${formattedEncodedName}`;
+    }
+  }
+
+  return encodedRepoId;
+}
+
+/**
+ * Converts a floating point number to an integer string (removes decimal point and decimal part)
+ * Used primarily for handling numeric IDs that might come as floats from JSON parsing
+ * @param value Value to convert
+ * @returns Integer string representation
+ */
+export function floatToIntString(value: any): string {
+  // 如果传入的是字符串，先尝试转为浮点数
+  if (typeof value === 'string') {
+    const floatValue = parseFloat(value);
+    if (!isNaN(floatValue)) {
+      value = floatValue;
+    } else {
+      return value; // 如果转换失败，返回原字符串
+    }
+  }
+
+  // 处理浮点数
+  if (typeof value === 'number') {
+    const intValue = Math.floor(value + 0.5); // 四舍五入转整数
+    return intValue.toString();
+  }
+
+  // 处理其他情况，直接转字符串
+  return String(value);
+}
+
+
+/**
+ * 将各种时间格式转换为毫秒时间戳
+ * 支持：
+ * - 已有时间戳（number）直接返回
+ * - Date对象转换为时间戳
+ * - ISO格式日期字符串 (如: '2023-01-01T00:00:00Z')
+ * - 日期字符串 (如: '2023-01-01')
+ *
+ * @param time 时间输入
+ * @returns 毫秒时间戳
+ */
+export function convertToTimestamp(time: number | string | Date): number {
+  if (typeof time === 'number') {
+    // 如果已经是数字，假设已是时间戳
+    return time;
+  } else if (time instanceof Date) {
+    // 如果是Date对象，转换为时间戳
+    return time.getTime();
+  } else if (typeof time === 'string') {
+    // 尝试解析日期字符串
+    const date = new Date(time);
+    if (!isNaN(date.getTime())) {
+      return date.getTime();
+    }
+  }
+
+  // 无法转换时返回原值（如果是数字）或当前时间戳
+  return typeof time === 'number' ? time : Date.now();
+}

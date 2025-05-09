@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { yunxiaoRequest, buildUrl } from "../../common/utils.js";
+import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding, floatToIntString } from "../../common/utils.js";
 import { ChangeRequestSchema, PatchSetSchema } from "../../common/types.js";
-import { handleRepositoryIdEncoding, floatToIntString } from "./utils.js";
+
 
 // Schema definitions
 export const GetChangeRequestSchema = z.object({

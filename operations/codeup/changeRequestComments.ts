@@ -1,7 +1,6 @@
 import { z } from "zod";
-import { yunxiaoRequest, buildUrl } from "../../common/utils.js";
+import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding } from "../../common/utils.js";
 import { ChangeRequestCommentSchema } from "../../common/types.js";
-import { handleRepositoryIdEncoding } from "./utils.js";
 
 // Schema definitions
 export const CreateChangeRequestCommentSchema = z.object({

@@ -83,28 +83,6 @@ export const ProjectInfoSchema = z.object({
   }).nullable().optional().describe("Status information"),
 });
 
-// export const ProjectListSchema = z.object({
-//   totalCount: z.number().optional().describe("Total count of projects"),
-//   result: z.array(ProjectInfoSchema).optional().describe("List of projects"),
-// });
-//
-// export const SearchProjectsParamsSchema = z.object({
-//   organizationId: z.string().describe("Organization ID"),
-//   name: z.string().optional().describe("Text contained in project name"),
-//   creator: z.string().optional().describe("Creator"),
-//   admin: z.string().optional().describe("Administrator"),
-//   status: z.string().optional().describe("Project status ID, multiple separated by commas"),
-//   createdBefore: z.string().optional().describe("Created not later than, format: YYYY-MM-DD"),
-//   createdAfter: z.string().optional().describe("Created not earlier than, format: YYYY-MM-DD"),
-//   logicalStatus: z.string().optional().describe("Logical status, e.g., NORMAL"),
-//   extraConditions: z.string().optional().describe("Additional filter conditions"),
-//   advancedConditions: z.string().optional().describe("Advanced filter conditions, JSON format"),
-//   page: z.number().optional().describe("Page number"),
-//   perPage: z.number().optional().describe("Page size, 0-200, default value is 20"),
-//   orderBy: z.string().optional().describe("Sort field, default is gmtCreate"),
-//   sort: z.string().optional().describe("Sort order, default is desc"),
-// });
-
 // Sprint related types
 export const SprintInfoSchema = z.object({
   identifier: z.string().optional().describe("Sprint identifier"),
@@ -265,15 +243,6 @@ export const RepositorySchema = z.object({
   path: z.string().optional().describe("Repository path"),
 });
 
-// export const CodeupUserSchema = z.object({
-//   userId: z.string().optional().describe("User ID"),
-//   username: z.string().optional().describe("Username"),
-//   name: z.string().optional().describe("Full name"),
-//   email: z.string().optional().describe("Email address"),
-//   avatar: z.string().optional().describe("Avatar URL"),
-//   state: z.string().optional().describe("User state"),
-// });
-
 export const PatchSetSchema = z.object({
   commitId: z.string().nullable().optional(),
   createTime: z.string().nullable().optional(),
@@ -284,13 +253,6 @@ export const PatchSetSchema = z.object({
   shortId: z.string().optional(),
   versionNo: z.number().int().optional(),
 });
-
-// export const CommentLocationSchema = z.object({
-//   canLocated: z.boolean().optional().describe("Can be located"),
-//   locatedFilePath: z.string().optional().describe("Located file path"),
-//   locatedLineNumber: z.number().optional().describe("Located line number"),
-//   locatedPatchSetBizId: z.string().optional().describe("Located patch set business ID"),
-// });
 
 export const ChangeRequestCommentSchema = z.object({
   author: z.object({
@@ -415,42 +377,6 @@ export const ChangeRequestSchema = z.object({
   webUrl: z.string().nullable().optional().describe("页面地址")
 });
 
-// export const StatsSchema = z.object({
-//   additions: z.number().optional().describe("Added lines"),
-//   deletions: z.number().optional().describe("Deleted lines"),
-//   total: z.number().optional().describe("Total lines"),
-// });
-
-// export const CommitSchema = z.object({
-//   authorEmail: z.string().optional().describe("Author email"),
-//   authorName: z.string().optional().describe("Author name"),
-//   authoredDate: z.string().optional().describe("Authored date"),
-//   committedDate: z.string().optional().describe("Committed date"),
-//   committerEmail: z.string().optional().describe("Committer email"),
-//   committerName: z.string().optional().describe("Committer name"),
-//   id: z.string().optional().describe("Commit ID"),
-//   message: z.string().optional().describe("Commit message"),
-//   parentIds: z.array(z.string()).nullable().optional().describe("Parent commit IDs"),
-//   shortId: z.string().optional().describe("Short ID"),
-//   stats: StatsSchema.nullable().optional().describe("Commit statistics"),
-//   title: z.string().optional().describe("Title"),
-//   webUrl: z.string().optional().describe("Web URL"),
-// });
-//
-// export const DiffSchema = z.object({
-//   aMode: z.string().optional().describe("A mode"),
-//   bMode: z.string().optional().describe("B mode"),
-//   deletedFile: z.boolean().optional().describe("Whether the file was deleted"),
-//   diff: z.string().optional().describe("Diff content"),
-//   isBinary: z.boolean().optional().describe("Whether the file is binary"),
-//   newFile: z.boolean().optional().describe("Whether the file is new"),
-//   newId: z.string().optional().describe("New ID"),
-//   newPath: z.string().optional().describe("New path"),
-//   oldId: z.string().optional().describe("Old ID"),
-//   oldPath: z.string().optional().describe("Old path"),
-//   renamedFile: z.boolean().optional().describe("Whether the file was renamed"),
-// });
-
 export const CompareSchema = z.object({
   base_commit_sha: z.string().optional(),
   commits: z.array(z.unknown()).optional(),
@@ -474,50 +400,9 @@ export const DeleteFileResponseSchema = z.object({
   commitMessage: z.string().optional().describe("Commit message"),
 });
 
-// Type Exports
-// export type CurrentOrganizationInfo = z.infer<typeof CurrentOrganizationInfoSchema>;
-// export type OrganizationInfo = z.infer<typeof OrganizationInfoSchema>;
-// export type UserOrganizationsInfo = z.infer<typeof UserOrganizationsInfoSchema>;
-//
-// export type UserInfo = z.infer<typeof UserInfoSchema>;
-// export type FieldItem = z.infer<typeof FieldItemSchema>;
-// export type CustomFieldValues = z.infer<typeof CustomFieldValuesSchema>;
-// export type Value = z.infer<typeof ValueSchema>;
-// export type CustomFieldValue = z.infer<typeof CustomFieldValueSchema>;
-//
-// export type ProjectStatusInfo = z.infer<typeof ProjectStatusInfoSchema>;
-// export type ProjectInfo = z.infer<typeof ProjectInfoSchema>;
-// export type ProjectList = z.infer<typeof ProjectListSchema>;
-// export type SearchProjectsParams = z.infer<typeof SearchProjectsParamsSchema>;
-//
-// export type SprintInfo = z.infer<typeof SprintInfoSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
-
-// export type WorkItemType = z.infer<typeof WorkItemTypeSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;
-// export type Label = z.infer<typeof LabelSchema>;
-// export type Version = z.infer<typeof VersionSchema>;
-// export type WorkItem = z.infer<typeof WorkItemSchema>;
-//
-// export type FilterCondition = z.infer<typeof FilterConditionSchema>;
-// export type Conditions = z.infer<typeof ConditionsSchema>;
-//
-// export type CodeupBranch = z.infer<typeof CodeupBranchSchema>;
-// export type FileContent = z.infer<typeof FileContentSchema>;
-// export type FileInfo = z.infer<typeof FileInfoSchema>;
-export type Repository = z.infer<typeof RepositorySchema>;
-// export type CodeupUser = z.infer<typeof CodeupUserSchema>;
-// export type PatchSet = z.infer<typeof PatchSetSchema>;
-// export type CommentLocation = z.infer<typeof CommentLocationSchema>;
-// export type ChangeRequestComment = z.infer<typeof ChangeRequestCommentSchema>;
-// export type ChangeRequest = z.infer<typeof ChangeRequestSchema>;
-// export type Stats = z.infer<typeof StatsSchema>;
-// export type Commit = z.infer<typeof CommitSchema>;
-// export type Diff = z.infer<typeof DiffSchema>;
-// export type Compare = z.infer<typeof CompareSchema>;
-// export type CreateFileResponse = z.infer<typeof CreateFileResponseSchema>;
-// export type DeleteFileResponse = z.infer<typeof DeleteFileResponseSchema>;
 
 // 添加流水线相关的Schema
 
@@ -798,29 +683,6 @@ export const SearchWorkitemsSchema = z.object({
   orderBy: z.string().optional().default("gmtCreate").describe("Sort field, default is gmtCreate. Possible values: gmtCreate, subject, status, priority, assignedTo"),
 });
 
-// // Sprint相关的Schema定义
-// export const GetSprintSchema = z.object({
-//   organizationId: z.string().describe("Organization ID"),
-//   projectId: z.string().describe("Project unique identifier"),
-//   id: z.string().describe("Sprint unique identifier"),
-// });
-//
-// export const ListSprintsSchema = z.object({
-//   organizationId: z.string().describe("Organization ID"),
-//   id: z.string().describe("Project unique identifier"),
-//   status: z.string().optional().describe("Filter by status: TODO, DOING, ARCHIVED, corresponding to not started, in progress, and completed; multiple statuses separated by commas"),
-//   page: z.number().optional().describe("Pagination parameter, page number"),
-//   perPage: z.number().optional().describe("Pagination parameter, page size"),
-// });
-
-// // 添加类型导出
-// export type GetProjectOptions = z.infer<typeof GetProjectSchema>;
-// export type SearchProjectsOptions = z.infer<typeof SearchProjectsSchema>;
-// export type GetWorkItemOptions = z.infer<typeof GetWorkItemSchema>;
-// export type SearchWorkitemsOptions = z.infer<typeof SearchWorkitemsSchema>;
-// export type GetSprintOptions = z.infer<typeof GetSprintSchema>;
-// export type ListSprintsOptions = z.infer<typeof ListSprintsSchema>;
-
 // Codeup branches related Schema definitions
 export const CreateBranchSchema = z.object({
   organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
@@ -1015,3 +877,4 @@ export type ListChangeRequestPatchSetsOptions = z.infer<typeof ListChangeRequest
 
 export type CreateChangeRequestCommentOptions = z.infer<typeof CreateChangeRequestCommentSchema>;
 export type ListChangeRequestCommentsOptions = z.infer<typeof ListChangeRequestCommentsSchema>;
+

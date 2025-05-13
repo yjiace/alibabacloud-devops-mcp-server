@@ -118,6 +118,41 @@ export async function listPipelinesFunc(
 }
 
 /**
+ * 智能查询流水线列表，能够解析自然语言中的时间表达
+ * @param organizationId 组织ID
+ * @param timeReference 自然语言时间引用，如"今天"、"本周"、"上个月"
+ * @param options 其他查询选项
+ * @returns 流水线列表
+ */
+export async function smartListPipelinesFunc(
+  organizationId: string,
+  timeReference?: string,
+  options?: Omit<ListPipelinesOptions, 'organizationId' | 'executeStartTime' | 'executeEndTime'>
+): Promise<{
+  items: PipelineListItem[],
+  pagination: {
+    nextPage: number | null,
+    page: number,
+    perPage: number,
+    prevPage: number | null,
+    total: number,
+    totalPages: number
+  }
+}> {
+  // 解析时间引用获取开始和结束时间戳
+  const { startTime, endTime } = utils.parseDateReference(timeReference);
+  
+  // 合并选项
+  const fullOptions: Omit<ListPipelinesOptions, 'organizationId'> = {
+    ...options,
+    executeStartTime: startTime,
+    executeEndTime: endTime
+  };
+  
+  return listPipelinesFunc(organizationId, fullOptions);
+}
+
+/**
  * 运行流水线
  * @param organizationId 组织ID
  * @param pipelineId 流水线ID

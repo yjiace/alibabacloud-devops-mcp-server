@@ -223,6 +223,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(types.ListPipelinesSchema),
             },
             {
+                name: "smart_list_pipelines",
+                description: "Intelligently search pipelines with natural language time references (e.g., 'today', 'this week')",
+                inputSchema: zodToJsonSchema(
+                    z.object({
+                        organizationId: z.string().describe("Organization ID"),
+                        timeReference: z.string().optional().describe("Natural language time reference such as 'today', 'yesterday', 'this week', 'last month', etc."),
+                        pipelineName: z.string().optional().describe("Pipeline name filter"),
+                        statusList: z.string().optional().describe("Pipeline status list, comma separated (SUCCESS,RUNNING,FAIL,CANCELED,WAITING)"),
+                        perPage: z.number().int().min(1).max(30).default(10).optional().describe("Number of items per page"),
+                        page: z.number().int().min(1).default(1).optional().describe("Page number")
+                    })
+                ),
+            },
+            {
                 name: "create_pipeline_run",
                 description: "Run a pipeline with optional parameters",
                 inputSchema: zodToJsonSchema(types.CreatePipelineRunSchema),
@@ -686,6 +700,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         page: args.page
                     }
                 );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelines, null, 2) }],
+                };
+            }
+
+            case "smart_list_pipelines": {
+                // Parse arguments using the schema defined in the tool registration
+                const args = z.object({
+                    organizationId: z.string(),
+                    timeReference: z.string().optional(),
+                    pipelineName: z.string().optional(),
+                    statusList: z.string().optional(),
+                    perPage: z.number().int().optional(),
+                    page: z.number().int().optional()
+                }).parse(request.params.arguments);
+                
+                // Call the smart list function
+                const pipelines = await pipeline.smartListPipelinesFunc(
+                    args.organizationId,
+                    args.timeReference,
+                    {
+                        pipelineName: args.pipelineName,
+                        statusList: args.statusList,
+                        perPage: args.perPage,
+                        page: args.page
+                    }
+                );
+                
                 return {
                     content: [{ type: "text", text: JSON.stringify(pipelines, null, 2) }],
                 };

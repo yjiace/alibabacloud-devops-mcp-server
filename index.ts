@@ -18,6 +18,8 @@ import * as project from './operations/projex/project.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
+import * as packageRepositories from './operations/packages/repositories.js'
+import * as artifacts from './operations/packages/artifacts.js'
 import {
     isYunxiaoError,
     YunxiaoAuthenticationError, YunxiaoConflictError,
@@ -239,6 +241,25 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "list_pipeline_runs",
                 description: "Get a list of pipeline run instances with filtering options",
                 inputSchema: zodToJsonSchema(types.ListPipelineRunsSchema),
+            },
+            
+            // Package Repository Operations
+            {
+                name: "list_package_repositories",
+                description: "List package repositories in an organization with filtering options",
+                inputSchema: zodToJsonSchema(types.ListPackageRepositoriesSchema),
+            },
+            
+            // Package Artifact Operations
+            {
+                name: "list_artifacts",
+                description: "List artifacts in a repository with filtering options",
+                inputSchema: zodToJsonSchema(types.ListArtifactsSchema),
+            },
+            {
+                name: "get_artifact",
+                description: "Get information about a single artifact in a repository",
+                inputSchema: zodToJsonSchema(types.GetArtifactSchema),
             }
         ],
     };
@@ -733,6 +754,52 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
+            // Package Repository Operations
+            case "list_package_repositories": {
+                const args = types.ListPackageRepositoriesSchema.parse(request.params.arguments);
+                const packageRepoList = await packageRepositories.listPackageRepositoriesFunc(
+                    args.organizationId,
+                    args.repoTypes ?? undefined,
+                    args.repoCategories ?? undefined,
+                    args.perPage,
+                    args.page
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(packageRepoList, null, 2) }],
+                };
+            }
+
+            // Package Artifact Operations
+            case "list_artifacts": {
+                const args = types.ListArtifactsSchema.parse(request.params.arguments);
+                const artifactsList = await artifacts.listArtifactsFunc(
+                    args.organizationId,
+                    args.repoId,
+                    args.repoType,
+                    args.page,
+                    args.perPage,
+                    args.search ?? undefined,
+                    args.orderBy,
+                    args.sort
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(artifactsList, null, 2) }],
+                };
+            }
+            
+            case "get_artifact": {
+                const args = types.GetArtifactSchema.parse(request.params.arguments);
+                const artifact = await artifacts.getArtifactFunc(
+                    args.organizationId,
+                    args.repoId,
+                    args.id,
+                    args.repoType
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(artifact, null, 2) }],
+                };
+            }
+
             default:
                 throw new Error(`Unknown tool: ${request.params.name}`);
         }
@@ -747,7 +814,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 });
 
-config();
+// config();
 
 async function runServer() {
     const transport = new StdioServerTransport();

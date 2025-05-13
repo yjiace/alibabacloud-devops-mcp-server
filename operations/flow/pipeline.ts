@@ -1,4 +1,3 @@
-import { z } from "zod";
 import * as utils from "../../common/utils.js";
 import {
   PipelineDetailSchema,
@@ -92,14 +91,12 @@ export async function listPipelinesFunc(
     queryParams.page = options.page;
   }
 
-  // 使用buildUrl函数构建带有查询参数的URL
   const url = utils.buildUrl(baseUrl, queryParams);
   
   const response = await utils.yunxiaoRequest(url, {
     method: "GET",
   });
 
-  // 处理响应头中的分页信息
   const pagination = {
     nextPage: null as number | null,
     page: 1,
@@ -109,7 +106,6 @@ export async function listPipelinesFunc(
     totalPages: 0
   };
 
-  // 如果响应中包含数组，则对每个对象进行解析
   let items: PipelineListItem[] = [];
   if (Array.isArray(response)) {
     items = response.map(item => PipelineListItemSchema.parse(item));
@@ -224,11 +220,9 @@ export async function createPipelineRunFunc(
       paramsObject.releaseBranch = options.branches[0];
     }
   }
-  
-  // 构建请求体
+
   const body: Record<string, any> = {};
-  
-  // 只有在有参数时才添加params字段
+
   if (Object.keys(paramsObject).length > 0) {
     body.params = JSON.stringify(paramsObject);
   }
@@ -237,8 +231,7 @@ export async function createPipelineRunFunc(
     method: "POST",
     body: body,
   });
-  
-  // API返回的是一个数字(流水线运行ID)
+
   return Number(response);
 }
 
@@ -322,7 +315,6 @@ export async function listPipelineRunsFunc(
   }
   
   if (options?.endTime !== undefined) {
-    // 注意文档中参数名称是endTme(没有i)，这里进行修正
     queryParams.endTme = utils.convertToTimestamp(options.endTime);
   }
   
@@ -334,14 +326,12 @@ export async function listPipelineRunsFunc(
     queryParams.triggerMode = options.triggerMode;
   }
 
-  // 使用buildUrl函数构建带有查询参数的URL
   const url = utils.buildUrl(baseUrl, queryParams);
   
   const response = await utils.yunxiaoRequest(url, {
     method: "GET",
   });
 
-  // 处理响应头中的分页信息
   const pagination = {
     nextPage: null as number | null,
     page: options?.page ?? 1,
@@ -351,7 +341,6 @@ export async function listPipelineRunsFunc(
     totalPages: 0
   };
 
-  // 如果响应中包含数组，则对每个对象进行解析
   let items: PipelineRunListItem[] = [];
   if (Array.isArray(response)) {
     items = response.map(item => PipelineRunListItemSchema.parse(item));

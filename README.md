@@ -55,6 +55,12 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_pipeline_run`: Get pipeline run details
 - `list_pipeline_runs`: Get pipeline run list
 
+### Packages Management Tools
+
+- `list_package_repositories`: Get package repositories details list
+- `list_artifacts`: Get artifacts details list
+- `get_artifact`: Get single artifact details
+
 ## Usage
 
 ### Prerequisites
@@ -62,6 +68,11 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 * Alibaba Cloud Yunxiao Personal Access Token, [click here to obtain](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i). Grant read and write permissions to all APIs under organization management, project collaboration, and code management.
 
   ![The personal token authorization page](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.png)
+
+### Install Yunxiao MCP server via MCP marketplace
+The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provided the Yunxiao MCP service. To install it, simply enter the MCP market in Lingma and search for "Yunxiao DevOps", then click install.
+
+![Install Yunxiao MCP Service from the MCP Market](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_9.png)
 
 ### Run MCP Server via NPX
 ```json
@@ -110,3 +121,5 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 
 ## Related Links
 - [Alibaba Cloud Yunxiao](https://devops.aliyun.com)
+- [MCP market](https://modelscope.cn/mcp/servers/@aliyun/alibabacloud-devops-mcp-server)
+- [Example Use Cases](https://mp.weixin.qq.com/s/KQsN6dQlnNeCNATC-QD7pg)

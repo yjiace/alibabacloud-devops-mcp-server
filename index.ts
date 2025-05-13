@@ -15,7 +15,6 @@ import * as changeRequests from './operations/codeup/changeRequests.js';
 import * as changeRequestComments from './operations/codeup/changeRequestComments.js';
 import * as organization from './operations/organization/organization.js';
 import * as project from './operations/projex/project.js';
-import * as sprint from './operations/projex/sprint.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
@@ -28,7 +27,7 @@ import {
 } from "./common/errors.js";
 import { VERSION } from "./common/version.js";
 import {config} from "dotenv";
-import {GetCompareSchema} from "./operations/codeup/compare.js";
+import * as types from "./common/types.js";
 
 
 const server = new Server(
@@ -73,93 +72,93 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: "create_branch",
                 description: "Create a new branch in a Codeup repository",
-                inputSchema: zodToJsonSchema(branches.CreateBranchSchema),
+                inputSchema: zodToJsonSchema(types.CreateBranchSchema),
             },
             {
                 name: "get_branch",
                 description: "Get information about a branch in a Codeup repository",
-                inputSchema: zodToJsonSchema(branches.GetBranchSchema),
+                inputSchema: zodToJsonSchema(types.GetBranchSchema),
             },
             {
                 name: "delete_branch",
                 description: "Delete a branch from a Codeup repository",
-                inputSchema: zodToJsonSchema(branches.DeleteBranchSchema),
+                inputSchema: zodToJsonSchema(types.DeleteBranchSchema),
             },
             {
                 name: "list_branches",
                 description: "List branches in a Codeup repository",
-                inputSchema: zodToJsonSchema(branches.ListBranchesSchema),
+                inputSchema: zodToJsonSchema(types.ListBranchesSchema),
             },
 
             // File Operations
             {
                 name: "get_file_blobs",
                 description: "Get file content from a Codeup repository",
-                inputSchema: zodToJsonSchema(files.GetFileBlobsSchema),
+                inputSchema: zodToJsonSchema(types.GetFileBlobsSchema),
             },
             {
                 name: "create_file",
                 description: "Create a new file in a Codeup repository",
-                inputSchema: zodToJsonSchema(files.CreateFileSchema),
+                inputSchema: zodToJsonSchema(types.CreateFileSchema),
             },
             {
                 name: "update_file",
                 description: "Update an existing file in a Codeup repository",
-                inputSchema: zodToJsonSchema(files.UpdateFileSchema),
+                inputSchema: zodToJsonSchema(types.UpdateFileSchema),
             },
             {
                 name: "delete_file",
                 description: "Delete a file from a Codeup repository",
-                inputSchema: zodToJsonSchema(files.DeleteFileSchema),
+                inputSchema: zodToJsonSchema(types.DeleteFileSchema),
             },
             {
                 name: "compare",
                 description: "Query code to compare content",
-                inputSchema: zodToJsonSchema(compare.GetCompareSchema),
+                inputSchema: zodToJsonSchema(types.GetCompareSchema),
             },
 
             // Repository Operations
             {
                 name: "get_repository",
                 description: "Get information about a Codeup repository",
-                inputSchema: zodToJsonSchema(repositories.GetRepositorySchema),
+                inputSchema: zodToJsonSchema(types.GetRepositorySchema),
             },
             {
                 name: "list_repositories",
                 description: "List repositories in an organization",
-                inputSchema: zodToJsonSchema(repositories.ListRepositoriesSchema),
+                inputSchema: zodToJsonSchema(types.ListRepositoriesSchema),
             },
 
             // Change Request Operations
             {
                 name: "get_change_request",
                 description: "Get information about a change request",
-                inputSchema: zodToJsonSchema(changeRequests.GetChangeRequestSchema),
+                inputSchema: zodToJsonSchema(types.GetChangeRequestSchema),
             },
             {
                 name: "list_change_requests",
                 description: "List change requests",
-                inputSchema: zodToJsonSchema(changeRequests.ListChangeRequestsSchema),
+                inputSchema: zodToJsonSchema(types.ListChangeRequestsSchema),
             },
             {
                 name: "create_change_request",
                 description: "Create a new change request",
-                inputSchema: zodToJsonSchema(changeRequests.CreateChangeRequestSchema),
+                inputSchema: zodToJsonSchema(types.CreateChangeRequestSchema),
             },
             {
                 name: "create_change_request_comment",
                 description: "Create a comment on a change request",
-                inputSchema: zodToJsonSchema(changeRequestComments.CreateChangeRequestCommentSchema),
+                inputSchema: zodToJsonSchema(types.CreateChangeRequestCommentSchema),
             },
             {
                 name: "list_change_request_comments",
                 description: "List comments on a change request",
-                inputSchema: zodToJsonSchema(changeRequestComments.ListChangeRequestCommentsSchema),
+                inputSchema: zodToJsonSchema(types.ListChangeRequestCommentsSchema),
             },
             {
                 name: "list_change_request_patch_sets",
                 description: "List patch sets for a change request",
-                inputSchema: zodToJsonSchema(changeRequests.ListChangeRequestPatchSetsSchema),
+                inputSchema: zodToJsonSchema(types.ListChangeRequestPatchSetsSchema),
             },
 
             // Organization Operations
@@ -178,12 +177,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: "get_project",
                 description: "Get information about a project",
-                inputSchema: zodToJsonSchema(project.GetProjectSchema),
+                inputSchema: zodToJsonSchema(types.GetProjectSchema),
             },
             {
                 name: "search_projects",
                 description: "Search projects with various filter conditions",
-                inputSchema: zodToJsonSchema(project.SearchProjectsSchema),
+                inputSchema: zodToJsonSchema(types.SearchProjectsSchema),
             },
 
             // Sprint Operations
@@ -202,44 +201,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: "get_work_item",
                 description: "Get information about a work item",
-                inputSchema: zodToJsonSchema(workitem.GetWorkItemSchema),
+                inputSchema: zodToJsonSchema(types.GetWorkItemSchema),
             },
             {
                 name: "search_workitems",
                 description: "Search work items with various filter conditions",
-                inputSchema: zodToJsonSchema(workitem.SearchWorkitemsSchema),
+                inputSchema: zodToJsonSchema(types.SearchWorkitemsSchema),
             },
 
             // Pipeline Operations
             {
                 name: "get_pipeline",
                 description: "Get details of a specific pipeline in an organization",
-                inputSchema: zodToJsonSchema(pipeline.GetPipelineSchema),
+                inputSchema: zodToJsonSchema(types.GetPipelineSchema),
             },
             {
                 name: "list_pipelines",
                 description: "Get a list of pipelines in an organization with filtering options",
-                inputSchema: zodToJsonSchema(pipeline.ListPipelinesSchema),
+                inputSchema: zodToJsonSchema(types.ListPipelinesSchema),
             },
             {
                 name: "create_pipeline_run",
                 description: "Run a pipeline with optional parameters",
-                inputSchema: zodToJsonSchema(pipeline.CreatePipelineRunSchema),
+                inputSchema: zodToJsonSchema(types.CreatePipelineRunSchema),
             },
             {
                 name: "get_latest_pipeline_run",
                 description: "Get information about the latest pipeline run",
-                inputSchema: zodToJsonSchema(pipeline.GetLatestPipelineRunSchema),
+                inputSchema: zodToJsonSchema(types.GetLatestPipelineRunSchema),
             },
             {
                 name: "get_pipeline_run",
                 description: "Get details of a specific pipeline run instance",
-                inputSchema: zodToJsonSchema(pipeline.GetPipelineRunSchema),
+                inputSchema: zodToJsonSchema(types.GetPipelineRunSchema),
             },
             {
                 name: "list_pipeline_runs",
                 description: "Get a list of pipeline run instances with filtering options",
-                inputSchema: zodToJsonSchema(pipeline.ListPipelineRunsSchema),
+                inputSchema: zodToJsonSchema(types.ListPipelineRunsSchema),
             }
         ],
     };
@@ -254,7 +253,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         switch (request.params.name) {
             // Branch Operations
             case "create_branch": {
-                const args = branches.CreateBranchSchema.parse(request.params.arguments);
+                const args = types.CreateBranchSchema.parse(request.params.arguments);
                 const branch = await branches.createBranchFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -267,7 +266,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "get_branch": {
-                const args = branches.GetBranchSchema.parse(request.params.arguments);
+                const args = types.GetBranchSchema.parse(request.params.arguments);
                 const branch = await branches.getBranchFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -279,7 +278,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "delete_branch": {
-                const args = branches.DeleteBranchSchema.parse(request.params.arguments);
+                const args = types.DeleteBranchSchema.parse(request.params.arguments);
                 const result = await branches.deleteBranchFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -291,7 +290,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_branches": {
-                const args = branches.ListBranchesSchema.parse(request.params.arguments);
+                const args = types.ListBranchesSchema.parse(request.params.arguments);
                 const branchList = await branches.listBranchesFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -307,7 +306,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // File Operations
             case "get_file_blobs": {
-                const args = files.GetFileBlobsSchema.parse(request.params.arguments);
+                const args = types.GetFileBlobsSchema.parse(request.params.arguments);
                 const fileContent = await files.getFileBlobsFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -320,7 +319,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "create_file": {
-                const args = files.CreateFileSchema.parse(request.params.arguments);
+                const args = types.CreateFileSchema.parse(request.params.arguments);
                 const result = await files.createFileFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -336,7 +335,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "update_file": {
-                const args = files.UpdateFileSchema.parse(request.params.arguments);
+                const args = types.UpdateFileSchema.parse(request.params.arguments);
                 const result = await files.updateFileFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -352,7 +351,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "delete_file": {
-                const args = files.DeleteFileSchema.parse(request.params.arguments);
+                const args = types.DeleteFileSchema.parse(request.params.arguments);
                 const result = await files.deleteFileFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -366,7 +365,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_files": {
-                const args = files.ListFilesSchema.parse(request.params.arguments);
+                const args = types.ListFilesSchema.parse(request.params.arguments);
                 const fileList = await files.listFilesFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -380,7 +379,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "compare": {
-                const args = compare.GetCompareSchema.parse(request.params.arguments);
+                const args = types.GetCompareSchema.parse(request.params.arguments);
                 const compareResult = await compare.getCompareFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -398,7 +397,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // Repository Operations
             case "get_repository": {
-                const args = repositories.GetRepositorySchema.parse(request.params.arguments);
+                const args = types.GetRepositorySchema.parse(request.params.arguments);
                 const repository = await repositories.getRepositoryFunc(
                     args.organizationId,
                     args.repositoryId
@@ -409,7 +408,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_repositories": {
-                const args = repositories.ListRepositoriesSchema.parse(request.params.arguments);
+                const args = types.ListRepositoriesSchema.parse(request.params.arguments);
                 const repositoryList = await repositories.listRepositoriesFunc(
                     args.organizationId,
                     args.page,
@@ -426,7 +425,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // Change Request Operations
             case "get_change_request": {
-                const args = changeRequests.GetChangeRequestSchema.parse(request.params.arguments);
+                const args = types.GetChangeRequestSchema.parse(request.params.arguments);
                 const changeRequest = await changeRequests.getChangeRequestFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -438,7 +437,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_change_requests": {
-                const args = changeRequests.ListChangeRequestsSchema.parse(request.params.arguments);
+                const args = types.ListChangeRequestsSchema.parse(request.params.arguments);
                 const changeRequestList = await changeRequests.listChangeRequestsFunc(
                     args.organizationId,
                     args.page,
@@ -459,7 +458,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "create_change_request": {
-                const args = changeRequests.CreateChangeRequestSchema.parse(request.params.arguments);
+                const args = types.CreateChangeRequestSchema.parse(request.params.arguments);
                 const changeRequest = await changeRequests.createChangeRequestFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -479,7 +478,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "create_change_request_comment": {
-                const args = changeRequestComments.CreateChangeRequestCommentSchema.parse(request.params.arguments);
+                const args = types.CreateChangeRequestCommentSchema.parse(request.params.arguments);
                 const comment = await changeRequestComments.createChangeRequestCommentFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -501,7 +500,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_change_request_comments": {
-                const args = changeRequestComments.ListChangeRequestCommentsSchema.parse(request.params.arguments);
+                const args = types.ListChangeRequestCommentsSchema.parse(request.params.arguments);
                 const comments = await changeRequestComments.listChangeRequestCommentsFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -518,7 +517,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_change_request_patch_sets": {
-                const args = changeRequests.ListChangeRequestPatchSetsSchema.parse(request.params.arguments);
+                const args = types.ListChangeRequestPatchSetsSchema.parse(request.params.arguments);
                 const patchSets = await changeRequests.listChangeRequestPatchSetsFunc(
                     args.organizationId,
                     args.repositoryId,
@@ -547,7 +546,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // Project Operations
             case "get_project": {
-                const args = project.GetProjectSchema.parse(request.params.arguments);
+                const args = types.GetProjectSchema.parse(request.params.arguments);
                 const projectInfo = await project.getProjectFunc(
                     args.organizationId,
                     args.id
@@ -558,7 +557,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "search_projects": {
-                const args = project.SearchProjectsSchema.parse(request.params.arguments);
+                const args = types.SearchProjectsSchema.parse(request.params.arguments);
                 const projects = await project.searchProjectsFunc(
                     args.organizationId,
                     args.name ?? undefined,
@@ -609,7 +608,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // Work Item Operations
             case "get_work_item": {
-                const args = workitem.GetWorkItemSchema.parse(request.params.arguments);
+                const args = types.GetWorkItemSchema.parse(request.params.arguments);
                 const workItemInfo = await workitem.getWorkItemFunc(
                     args.organizationId,
                     args.workItemId
@@ -620,7 +619,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "search_workitems": {
-                const args = workitem.SearchWorkitemsSchema.parse(request.params.arguments);
+                const args = types.SearchWorkitemsSchema.parse(request.params.arguments);
                 const workItems = await workitem.searchWorkitemsFunc(
                     args.organizationId,
                     args.category,
@@ -641,7 +640,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
             // Pipeline Operations
             case "get_pipeline": {
-                const args = pipeline.GetPipelineSchema.parse(request.params.arguments);
+                const args = types.GetPipelineSchema.parse(request.params.arguments);
                 const pipelineInfo = await pipeline.getPipelineFunc(
                     args.organizationId,
                     args.pipelineId
@@ -652,7 +651,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_pipelines": {
-                const args = pipeline.ListPipelinesSchema.parse(request.params.arguments);
+                const args = types.ListPipelinesSchema.parse(request.params.arguments);
                 const pipelines = await pipeline.listPipelinesFunc(
                     args.organizationId,
                     {
@@ -672,7 +671,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "create_pipeline_run": {
-                const args = pipeline.CreatePipelineRunSchema.parse(request.params.arguments);
+                const args = types.CreatePipelineRunSchema.parse(request.params.arguments);
                 const runId = await pipeline.createPipelineRunFunc(
                     args.organizationId,
                     args.pipelineId,
@@ -693,7 +692,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "get_latest_pipeline_run": {
-                const args = pipeline.GetLatestPipelineRunSchema.parse(request.params.arguments);
+                const args = types.GetLatestPipelineRunSchema.parse(request.params.arguments);
                 const pipelineRun = await pipeline.getLatestPipelineRunFunc(
                     args.organizationId,
                     args.pipelineId
@@ -704,7 +703,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "get_pipeline_run": {
-                const args = pipeline.GetPipelineRunSchema.parse(request.params.arguments);
+                const args = types.GetPipelineRunSchema.parse(request.params.arguments);
                 const pipelineRun = await pipeline.getPipelineRunFunc(
                     args.organizationId,
                     args.pipelineId,
@@ -716,7 +715,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "list_pipeline_runs": {
-                const args = pipeline.ListPipelineRunsSchema.parse(request.params.arguments);
+                const args = types.ListPipelineRunsSchema.parse(request.params.arguments);
                 const pipelineRuns = await pipeline.listPipelineRunsFunc(
                     args.organizationId,
                     args.pipelineId,
@@ -748,7 +747,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 });
 
-// config();
+config();
 
 async function runServer() {
     const transport = new StdioServerTransport();

@@ -46,6 +46,15 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_work_item`: 获取工作项详情
 - `search_workitems`: 搜索工作项
 
+### 流水线工具
+
+- `get_pipeline`: 获取流水线详情
+- `list_pipelines`: 获取流水线列表
+- `create_pipeline_run`: 运行流水线
+- `get_latest_pipeline_run`: 获取最近一次流水线运行信息
+- `get_pipeline_run`: 获取流水线运行实例
+- `list_pipeline_runs`: 获取流水线运行实例列表
+
 ## 用法
 
 ### 先决条件

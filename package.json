@@ -7,7 +7,7 @@
   "author": {
     "name": "Yunxiao",
     "email": "liyebin.lyb@alibaba-inc.com",
-    "url": "https://github.com/aliyun/alibabacloud-devops-mcp-server.git"
+    "url": "https://github.com/aliyun/alibabacloud-devops-mcp-server"
   },
   "homepage": "https://github.com/aliyun/alibabacloud-devops-mcp-server.git",
   "bin": {
@@ -21,11 +21,9 @@
     "url": "git@github.com:aliyun/alibabacloud-devops-mcp-server.git"
   },
   "keywords": [
-    "alibaba",
+    "alibaba-cloud",
     "aliyun",
-    "cloud",
     "devops",
-    "mcp",
     "mcp",
     "ai",
     "open api",

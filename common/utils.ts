@@ -36,9 +36,8 @@ async function parseResponseBody(response: Response): Promise<unknown> {
 
 export function buildUrl(baseUrl: string, params: Record<string, string | number | undefined>): string {
   // Handle baseUrl that doesn't have protocol
-  const fullBaseUrl = baseUrl.startsWith('http')
-    ? baseUrl
-    : `${getYunxiaoApiBaseUrl()}${baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`}`;
+  const isAbsolute = baseUrl.startsWith("http://") || baseUrl.startsWith("https://");
+  const fullBaseUrl = isAbsolute ? baseUrl : `${getYunxiaoApiBaseUrl()}${baseUrl.startsWith('/') ? baseUrl : `/${baseUrl}`}`;
 
   try {
     const url = new URL(fullBaseUrl);
@@ -89,7 +88,8 @@ export async function yunxiaoRequest(
   options: RequestOptions = {},
 ): Promise<unknown> {
   // Check if the URL is already a full URL or a path
-  let url = urlPath.startsWith("http") ? urlPath : `${getYunxiaoApiBaseUrl()}${urlPath.startsWith("/") ? urlPath : `/${urlPath}`}`;
+  const isAbsolute = urlPath.startsWith("http://") || urlPath.startsWith("https://");
+  let url = isAbsolute ? urlPath : `${getYunxiaoApiBaseUrl()}${urlPath.startsWith("/") ? urlPath : `/${urlPath}`}`;
   const requestHeaders: Record<string, string> = {
     "Accept": "application/json",
     "Content-Type": "application/json",

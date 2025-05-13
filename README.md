@@ -46,6 +46,15 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_work_item`: Get work item details
 - `search_workitems`: Search work items
 
+### Pipeline Management Tools
+
+- `get_pipeline`: Get pipeline details
+- `list_pipelines`: Get pipeline list
+- `create_pipeline_run`: Create a pipeline run instance
+- `get_latest_pipeline_run`: Get the latest pipeline run instance
+- `get_pipeline_run`: Get pipeline run details
+- `list_pipeline_runs`: Get pipeline run list
+
 ## Usage
 
 ### Prerequisites

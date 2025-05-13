@@ -151,7 +151,7 @@ export const WorkItemSchema = z.object({
   parentId: z.string().nullable().optional().describe("Parent ID"),
   serialNumber: z.string().nullable().optional().describe("Serial number"),
   statusStageId: z.string().nullable().optional().describe("Status stage ID"),
-  updateStatusAt: z.string().nullable().optional().describe("Status update time"),
+  updateStatusAt: z.number().int().nullable().optional().describe("Status update time"),
   idPath: z.string().nullable().optional().describe("ID path"),
   
   assignedTo: UserInfoSchema.nullable().optional().describe("Assignee"),

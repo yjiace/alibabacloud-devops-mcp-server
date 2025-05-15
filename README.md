@@ -9,7 +9,7 @@ alibabacloud-devops-mcp-server provides the following capabilities for AI assist
 * **File Operations**: Create, update, delete, and retrieve code file content
 * **Code Review**: Create and manage code review processes
 * **Project Management**: Search projects, get project details
-* **Pipeline Management**: Get pipeline details, get pipeline list, create a pipeline run instance, get the latest pipeline run instance, get pipeline run details, get pipeline run list
+* **Pipeline Management**: Get pipeline details, get pipeline list, create a pipeline run instance, get the latest pipeline run instance, get pipeline run details, get pipeline run list, Query / Run a pipeline deployment task
 * **Package Management**: Get package repository details list, Get artifacts details list, Get single artifact details
 
 ## Tools
@@ -56,6 +56,10 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_latest_pipeline_run`: Get the latest pipeline run instance
 - `get_pipeline_run`: Get pipeline run details
 - `list_pipeline_runs`: Get pipeline run list
+- `list_pipeline_jobs_by_category`: Get pipeline execution tasks by category
+- `list_pipeline_job_historys`: Get the execution history of a pipeline task
+- `execute_pipeline_job_run`: Manually run a pipeline task
+- `get_pipeline_job_run_log`: Get the execution logs of a pipeline job
 
 ### Packages Management Tools
 

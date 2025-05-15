@@ -18,6 +18,7 @@ import * as project from './operations/projex/project.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
+import * as pipelineJob from './operations/flow/pipelineJob.js'
 import * as packageRepositories from './operations/packages/repositories.js'
 import * as artifacts from './operations/packages/artifacts.js'
 import {
@@ -266,6 +267,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "list_pipeline_runs",
                 description: "[Pipeline Management] Get a list of pipeline run instances with filtering options",
                 inputSchema: zodToJsonSchema(types.ListPipelineRunsSchema),
+            },
+            {
+                name: "list_pipeline_jobs_by_category",
+                description: "[Pipeline Management] Get pipeline execution tasks by category. Currently only supports DEPLOY category.",
+                inputSchema: zodToJsonSchema(types.ListPipelineJobsByCategorySchema),
+            },
+            {
+                name: "list_pipeline_job_historys",
+                description: "[Pipeline Management] Get the execution history of a pipeline task. Retrieve all execution records for a specific task in a pipeline.",
+                inputSchema: zodToJsonSchema(types.ListPipelineJobHistorysSchema),
+            },
+            {
+                name: "execute_pipeline_job_run",
+                description: "[Pipeline Management] Manually run a pipeline task. Start a specific job in a pipeline run instance.",
+                inputSchema: zodToJsonSchema(types.ExecutePipelineJobRunSchema),
+            },
+            {
+                name: "get_pipeline_job_run_log",
+                description: "[Pipeline Management] Get the execution logs of a pipeline job. Retrieve the log content for a specific job in a pipeline run.",
+                inputSchema: zodToJsonSchema(types.GetPipelineJobRunLogSchema),
             },
             
             // Package Repository Operations
@@ -804,6 +825,59 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(pipelineRuns, null, 2) }],
+                };
+            }
+
+            case "list_pipeline_jobs_by_category": {
+                const args = types.ListPipelineJobsByCategorySchema.parse(request.params.arguments);
+                const jobs = await pipelineJob.listPipelineJobsByCategoryFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.category
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(jobs, null, 2) }],
+                };
+            }
+
+            case "list_pipeline_job_historys": {
+                const args = types.ListPipelineJobHistorysSchema.parse(request.params.arguments);
+                const jobHistorys = await pipelineJob.listPipelineJobHistorysFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.category,
+                    args.identifier,
+                    args.page,
+                    args.perPage
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(jobHistorys, null, 2) }],
+                };
+            }
+
+            case "execute_pipeline_job_run": {
+                const args = types.ExecutePipelineJobRunSchema.parse(request.params.arguments);
+                const result = await pipelineJob.executePipelineJobRunFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.pipelineRunId,
+                    args.jobId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+                };
+            }
+
+            case "get_pipeline_job_run_log": {
+                const args = types.GetPipelineJobRunLogSchema.parse(request.params.arguments);
+                const log = await pipelineJob.getPipelineJobRunLogFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.pipelineRunId,
+                    args.jobId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(log, null, 2) }],
                 };
             }
 

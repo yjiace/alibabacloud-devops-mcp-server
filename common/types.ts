@@ -943,12 +943,72 @@ export const GetArtifactSchema = z.object({
 export type PackageRepository = z.infer<typeof PackageRepositorySchema>;
 export type Artifact = z.infer<typeof ArtifactSchema>;
 
-// 添加概念区分的常量说明
-export const CONCEPT_DESCRIPTIONS = {
-  PROJECT: "项目（Project）是云效平台中的项目管理单元，包含工作项、迭代等管理概念，用于组织和管理软件开发工作。",
-  REPOSITORY: "代码库（Repository）是云效平台中的代码管理单元，属于CodeUp产品，用于存储和管理源代码。",
-  PIPELINE: "流水线（Pipeline）是云效平台中的持续集成/持续部署工具，用于自动化构建、测试和部署代码。",
-  WORKITEM: "工作项（WorkItem）是项目管理中的任务单元，可以是需求、缺陷、任务等类型。",
-  SPRINT: "迭代（Sprint）是敏捷开发中的时间盒，通常是一到四周的开发周期。"
-};
+
+// 添加流水线任务相关Schema
+export const ListPipelineJobsByCategorySchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  pipelineId: z.string().describe("Pipeline ID"),
+  category: z.string().describe("Task category, currently only supports DEPLOY")
+});
+
+export const PipelineJobItemSchema = z.object({
+  identifier: z.string().nullable().optional().describe("Task identifier"),
+  jobName: z.string().nullable().optional().describe("Task name"),
+  lastJobId: z.number().int().nullable().optional().describe("ID of the last executed task"),
+  lastJobParams: z.string().nullable().optional().describe("Parameters of the last executed task in JSON format")
+});
+
+// 添加类型导出
+export type PipelineJobItem = z.infer<typeof PipelineJobItemSchema>;
+
+// 添加流水线任务历史相关Schema
+export const ListPipelineJobHistorysSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  pipelineId: z.string().describe("Pipeline ID"),
+  category: z.string().describe("Task category, currently only supports DEPLOY"),
+  identifier: z.string().describe("Task identifier"),
+  perPage: z.number().int().min(1).max(30).default(10).optional().describe("Number of items per page, default 10, max 30"),
+  page: z.number().int().min(1).default(1).optional().describe("Page number, default 1")
+});
+
+export const PipelineJobHistoryItemSchema = z.object({
+  executeNumber: z.number().int().nullable().optional().describe("Task execution number"),
+  identifier: z.string().nullable().optional().describe("Task identifier"),
+  jobId: z.number().int().nullable().optional().describe("Job ID"),
+  jobName: z.string().nullable().optional().describe("Job name"),
+  operatorAccountId: z.string().nullable().optional().describe("Operator account ID"),
+  pipelineId: z.number().int().nullable().optional().describe("Pipeline ID"),
+  pipelineRunId: z.number().int().nullable().optional().describe("Pipeline run instance ID"),
+  sources: z.string().nullable().optional().describe("Code source information for the job run, in JSON format"),
+  status: z.string().nullable().optional().describe("Job execution status")
+});
+
+// 添加类型导出
+export type PipelineJobHistoryItem = z.infer<typeof PipelineJobHistoryItemSchema>;
+
+// 添加手动运行流水线任务相关Schema
+export const ExecutePipelineJobRunSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  pipelineId: z.string().describe("Pipeline ID"),
+  pipelineRunId: z.string().describe("Pipeline run instance ID"),
+  jobId: z.string().describe("Job ID for the pipeline run task")
+});
+
+// 添加获取流水线任务运行日志相关Schema
+export const GetPipelineJobRunLogSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  pipelineId: z.string().describe("Pipeline ID"),
+  pipelineRunId: z.string().describe("Pipeline run instance ID"),
+  jobId: z.string().describe("Job ID of the pipeline run task")
+});
+
+export const PipelineJobRunLogSchema = z.object({
+  content: z.string().nullable().optional().describe("Log content"),
+  last: z.number().int().nullable().optional().describe("Last log line number"),
+  more: z.boolean().nullable().optional().describe("Whether there are more logs available")
+});
+
+// 添加类型导出
+export type PipelineJobRunLog = z.infer<typeof PipelineJobRunLogSchema>;
+
 

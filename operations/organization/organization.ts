@@ -11,7 +11,20 @@ export async function getCurrentOrganizationInfoFunc(
     method: "GET",
   });
 
-  return CurrentOrganizationInfoSchema.parse(response);
+  // Type assertion to ensure TypeScript understands the response structure
+  const responseData = response as { 
+    lastOrganization?: string;
+    id?: string; 
+    name?: string;
+  };
+
+  const mappedResponse = {
+    lastOrganization: responseData.lastOrganization, // Organization ID
+    userId: responseData.id,                         // Map API's "id" to userId
+    userName: responseData.name                      // Map API's "name" to userName
+  };
+
+  return CurrentOrganizationInfoSchema.parse(mappedResponse);
 }
 
 export async function getUserOrganizationsFunc(

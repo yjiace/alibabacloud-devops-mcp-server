@@ -36,19 +36,26 @@ export async function searchProjectsFunc(
   createdAfter?: string,
   createdBefore?: string,
   creator?: string,
-  admin?: string,
+  adminUserId?: string, // Project administrator user ID
   logicalStatus?: string,
   advancedConditions?: string,
-  extraConditions?: string,
+  extraConditions?: string, // Should be constructed using buildExtraConditions for common filters
   orderBy?: string, // Possible values: "gmtCreate", "name"
   page?: number,
   perPage?: number,
-  sort?: string // Possible values: "desc", "asc"
+  sort?: string, // Possible values: "desc", "asc"
+  scenarioFilter?: "manage" | "participate" | "favorite", // Common project filter scenarios
+  userId?: string // User ID to use with scenarioFilter
 ): Promise<z.infer<typeof ProjectInfoSchema>[]> {
   const url = `/oapi/v1/projex/organizations/${organizationId}/projects:search`;
 
   // Prepare payload
   const payload: Record<string, any> = {};
+
+  // Handle scenarioFilter if provided
+  if (scenarioFilter && userId) {
+    extraConditions = buildExtraConditions(scenarioFilter, userId);
+  }
 
   // Process condition parameters
   const conditions = buildProjectConditions({
@@ -57,7 +64,7 @@ export async function searchProjectsFunc(
     createdAfter,
     createdBefore,
     creator,
-    admin,
+    adminUserId,
     logicalStatus,
     advancedConditions
   });
@@ -108,7 +115,7 @@ function buildProjectConditions(args: {
   createdAfter?: string;
   createdBefore?: string;
   creator?: string;
-  admin?: string;
+  adminUserId?: string;
   logicalStatus?: string;
   advancedConditions?: string;
 }): string | undefined {
@@ -177,8 +184,8 @@ function buildProjectConditions(args: {
   }
 
   // Process administrator
-  if (args.admin) {
-    const adminValues = args.admin.split(",");
+  if (args.adminUserId) {
+    const adminValues = args.adminUserId.split(",");
     const values = adminValues.map(v => v.trim());
 
     filterConditions.push({
@@ -215,4 +222,40 @@ function buildProjectConditions(args: {
 
   // Serialize to JSON
   return JSON.stringify(conditions);
-} 
+}
+
+/**
+ * Helper function to build extraConditions for common project filter scenarios
+ * @param scenario The filter scenario: "manage" (projects I manage), "participate" (projects I participate in), "favorite" (projects I favorited)
+ * @param userId The user ID to filter by
+ * @returns JSON string for extraConditions parameter
+ */
+export function buildExtraConditions(scenario: "manage" | "participate" | "favorite", userId: string): string {
+  let fieldIdentifier: string;
+  
+  switch (scenario) {
+    case "manage":
+      fieldIdentifier = "project.admin";
+      break;
+    case "participate":
+      fieldIdentifier = "users";
+      break;
+    case "favorite":
+      fieldIdentifier = "collectMembers";
+      break;
+    default:
+      throw new Error(`Unknown scenario: ${scenario}`);
+  }
+  
+  const conditions = {
+    conditionGroups: [[{
+      className: "user",
+      fieldIdentifier: fieldIdentifier,
+      format: "multiList",
+      operator: "CONTAINS",
+      value: [userId]
+    }]]
+  };
+  
+  return JSON.stringify(conditions);
+}

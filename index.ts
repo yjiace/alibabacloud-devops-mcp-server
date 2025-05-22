@@ -632,14 +632,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     args.createdAfter ?? undefined,
                     args.createdBefore ?? undefined,
                     args.creator ?? undefined,
-                    args.admin ?? undefined,
+                    args.adminUserId ?? undefined,
                     args.logicalStatus ?? undefined,
                     args.advancedConditions ?? undefined,
                     args.extraConditions ?? undefined,
                     args.orderBy,
                     args.page,
                     args.perPage,
-                    args.sort
+                    args.sort,
+                    args.scenarioFilter ?? undefined,
+                    args.userId ?? undefined,
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(projects, null, 2) }],

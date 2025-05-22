@@ -2,7 +2,9 @@ import { z } from "zod";
 
 // Organization related types
 export const CurrentOrganizationInfoSchema = z.object({
-  lastOrganization: z.string().optional().describe("Last logged-in organization"),
+  lastOrganization: z.string().optional().describe("Organization ID of the most recent login, used for subsequent API calls, should be used as organizationId"),
+  userId: z.string().optional().describe("Current user ID, not the organization ID"),
+  userName: z.string().optional().describe("Current user name"),
 });
 
 export const OrganizationInfoSchema = z.object({
@@ -647,12 +649,16 @@ export const SearchProjectsSchema = z.object({
   createdAfter: z.string().nullable().optional().describe("Created not earlier than, format: YYYY-MM-DD"),
   createdBefore: z.string().nullable().optional().describe("Created not later than, format: YYYY-MM-DD"),
   creator: z.string().nullable().optional().describe("Creator"),
-  admin: z.string().nullable().optional().describe("Administrator"),
+  adminUserId: z.string().nullable().optional().describe("Project administrator user ID, should use userId returned from getCurrentOrganizationInfoFunc or user-provided user ID, multiple IDs separated by commas"),
   logicalStatus: z.string().nullable().optional().describe("Logical status, e.g., NORMAL"),
+
+  // Special filter for common scenarios
+  scenarioFilter: z.enum(["manage", "participate", "favorite"]).nullable().optional().describe("Predefined filter scenarios: 'manage' (projects I manage), 'participate' (projects I participate in), 'favorite' (projects I favorited). Will be used to construct appropriate extraConditions. Requires userId from getCurrentOrganizationInfoFunc."),
+  userId: z.string().nullable().optional().describe("User ID to use with scenarioFilter, should be the userId returned from getCurrentOrganizationInfoFunc"),
 
   // Advanced parameters
   advancedConditions: z.string().nullable().optional().describe("Advanced filter conditions, JSON format"),
-  extraConditions: z.string().nullable().optional().describe("Additional filter conditions, e.g., projects I manage, projects I participate in, projects I favorited, etc."),
+  extraConditions: z.string().nullable().optional().describe("Additional filter conditions as JSON string. Should be constructed similar to the conditions parameter. For common scenarios: 1) For 'projects I manage': use fieldIdentifier 'project.admin' with the user ID; 2) For 'projects I participate in': use fieldIdentifier 'users' with the user ID; 3) For 'projects I favorited': use fieldIdentifier 'collectMembers' with the user ID. Example: JSON.stringify({conditionGroups:[[{className:'user',fieldIdentifier:'project.admin',format:'multiList',operator:'CONTAINS',value:[userId]}]]})"),
   orderBy: z.string().optional().default("gmtCreate").describe("Sort field, default is gmtCreate, supports: gmtCreate (creation time), name (name)"),
   page: z.number().int().default(1).optional().describe("Pagination parameter, page number"),
   perPage: z.number().int().default(20).optional().describe("Pagination parameter, page size, 0-200, default value is 20"),

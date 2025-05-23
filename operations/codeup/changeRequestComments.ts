@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding } from "../../common/utils.js";
 import { 
-  ChangeRequestCommentSchema,
-  CreateChangeRequestCommentSchema,
-  CreateChangeRequestCommentOptions,
-  ListChangeRequestCommentsSchema,
-  ListChangeRequestCommentsOptions
+  ChangeRequestCommentSchema
 } from "../../common/types.js";
 
 /**

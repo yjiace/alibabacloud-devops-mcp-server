@@ -1,13 +1,10 @@
 import { z } from "zod";
 import {yunxiaoRequest, buildUrl, handleRepositoryIdEncoding} from "../../common/utils.js";
 import { 
-  CompareSchema,
-  GetCompareSchema,
-  GetCompareOptions
+  CompareSchema
 } from "../../common/types.js";
 
 
-// Function implementations
 export async function getCompareFunc(
   organizationId: string,
   repositoryId: string,
@@ -20,8 +17,7 @@ export async function getCompareFunc(
   const encodedRepoId = handleRepositoryIdEncoding(repositoryId);
 
   const baseUrl = `/oapi/v1/codeup/organizations/${organizationId}/repositories/${encodedRepoId}/compares`;
-  
-  // Build query parameters
+
   const queryParams: Record<string, string | undefined> = {
     from,
     to
@@ -39,7 +35,6 @@ export async function getCompareFunc(
     queryParams.straight = straight;
   }
 
-  // Use buildUrl function to construct URL with query parameters
   const url = buildUrl(baseUrl, queryParams);
 
   const response = await yunxiaoRequest(url, {

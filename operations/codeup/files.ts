@@ -4,17 +4,7 @@ import {
   FileContentSchema, 
   CreateFileResponseSchema, 
   DeleteFileResponseSchema,
-  FileInfoSchema,
-  GetFileBlobsSchema,
-  GetFileBlobsOptions,
-  CreateFileSchema,
-  CreateFileOptions,
-  UpdateFileSchema,
-  UpdateFileOptions,
-  DeleteFileSchema,
-  DeleteFileOptions,
-  ListFilesSchema,
-  ListFilesOptions
+  FileInfoSchema
 } from "../../common/types.js";
 
 // Common helper function to handle repositoryId and filePath encoding

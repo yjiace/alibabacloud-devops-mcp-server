@@ -4,7 +4,6 @@ import {
   SprintInfoSchema
 } from "../../common/types.js";
 
-// Function implementations
 export async function getSprintFunc(
   organizationId: string,
   projectId: string,
@@ -28,10 +27,8 @@ export async function listSprintsFunc(
 ): Promise<z.infer<typeof SprintInfoSchema>[]> {
   const baseUrl = `/oapi/v1/projex/organizations/${organizationId}/projects/${id}/sprints`;
 
-  // Build query parameters
   const queryParams: Record<string, string | number | undefined> = {};
 
-  // Add optional parameters
   if (status !== undefined) {
     queryParams.status = status;
   }
@@ -44,18 +41,15 @@ export async function listSprintsFunc(
     queryParams.perPage = perPage;
   }
 
-  // Use buildUrl function to construct URL with query parameters
   const url = buildUrl(baseUrl, queryParams);
 
   const response = await yunxiaoRequest(url, {
     method: "GET",
   });
 
-  // Ensure response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
-  // Parse each sprint object
   return response.map(sprint => SprintInfoSchema.parse(sprint));
 } 

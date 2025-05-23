@@ -11,11 +11,7 @@
 import { z } from "zod";
 import {yunxiaoRequest, buildUrl, handleRepositoryIdEncoding} from "../../common/utils.js";
 import { 
-  RepositorySchema, 
-  GetRepositorySchema,
-  GetRepositoryOptions,
-  ListRepositoriesSchema,
-  ListRepositoriesOptions
+  RepositorySchema
 } from "../../common/types.js";
 
 
@@ -59,8 +55,7 @@ export async function listRepositoriesFunc(
   archived?: boolean
 ): Promise<z.infer<typeof RepositorySchema>[]> {
   const baseUrl = `/oapi/v1/codeup/organizations/${organizationId}/repositories`;
-  
-  // Build query parameters
+
   const queryParams: Record<string, string | number | undefined> = {};
   
   if (page !== undefined) {
@@ -87,18 +82,15 @@ export async function listRepositoriesFunc(
     queryParams.archived = String(archived); // Convert boolean to string
   }
 
-  // Use buildUrl function to construct URL with query parameters
   const url = buildUrl(baseUrl, queryParams);
 
   const response = await yunxiaoRequest(url, {
     method: "GET",
   });
 
-  // Ensure the response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
-  // Parse each repository object
   return response.map(repo => RepositorySchema.parse(repo));
 } 

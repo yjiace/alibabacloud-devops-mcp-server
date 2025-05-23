@@ -1,14 +1,6 @@
 import { z } from "zod";
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {
-  CreateBranchSchema,
-  CreateBranchOptions,
-  GetBranchSchema,
-  GetBranchOptions,
-  DeleteBranchSchema,
-  DeleteBranchOptions,
-  ListBranchesSchema,
-  ListBranchesOptions,
   CodeupBranchSchema
 } from "../../common/types.js";
 
@@ -181,14 +173,12 @@ export async function listBranchesFunc(
     queryParams.search = search;
   }
 
-  // Use buildUrl function to construct URL with query parameters
   const url = buildUrl(baseUrl, queryParams);
 
   const response = await yunxiaoRequest(url, {
     method: "GET",
   });
 
-  // Ensure the response is an array
   if (!Array.isArray(response)) {
     return [];
   }

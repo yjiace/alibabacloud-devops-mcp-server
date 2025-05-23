@@ -2,15 +2,7 @@ import { z } from "zod";
 import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding, floatToIntString } from "../../common/utils.js";
 import { 
   ChangeRequestSchema, 
-  PatchSetSchema,
-  GetChangeRequestSchema,
-  GetChangeRequestOptions,
-  ListChangeRequestsSchema,
-  ListChangeRequestsOptions,
-  ListChangeRequestPatchSetsSchema,
-  ListChangeRequestPatchSetsOptions,
-  CreateChangeRequestSchema,
-  CreateChangeRequestOptions
+  PatchSetSchema
 } from "../../common/types.js";
 
 // 通过API获取仓库的数字ID

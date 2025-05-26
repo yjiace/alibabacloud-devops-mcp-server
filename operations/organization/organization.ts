@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { yunxiaoRequest } from "../../common/utils.js";
-import { CurrentOrganizationInfoSchema, UserOrganizationsInfoSchema } from "../../common/types.js";
+import { CurrentOrganizationInfoSchema, UserOrganizationsInfoSchema, CurrentUserSchema } from "../../common/types.js";
 
-// Function implementations
 export async function getCurrentOrganizationInfoFunc(
 ): Promise<z.infer<typeof CurrentOrganizationInfoSchema>> {
   const url = "/oapi/v1/platform/user";
@@ -11,7 +10,6 @@ export async function getCurrentOrganizationInfoFunc(
     method: "GET",
   });
 
-  // Type assertion to ensure TypeScript understands the response structure
   const responseData = response as { 
     lastOrganization?: string;
     id?: string; 
@@ -35,10 +33,20 @@ export async function getUserOrganizationsFunc(
     method: "GET",
   });
 
-  // Ensure response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
   return UserOrganizationsInfoSchema.parse(response);
+}
+
+
+export async function getCurrentUserFunc(): Promise<z.infer<typeof CurrentUserSchema>> {
+  const url = "/oapi/v1/platform/user";
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  return CurrentUserSchema.parse(response);
 } 

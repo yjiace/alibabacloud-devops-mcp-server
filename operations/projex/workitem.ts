@@ -6,7 +6,6 @@ import {
   ConditionsSchema
 } from "../../common/types.js";
 
-// Function implementations
 export async function getWorkItemFunc(
   organizationId: string,
   workItemId: string

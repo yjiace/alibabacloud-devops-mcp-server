@@ -181,6 +181,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "Get the list of organizations the current user belongs to",
                 inputSchema: zodToJsonSchema(z.object({})),
             },
+            {
+                name: "get_current_user",
+                description: "Get information about the current user based on the token. In the absence of an explicitly specified user ID, this result will take precedence.",
+                inputSchema: zodToJsonSchema(z.object({})),
+            },
 
             // Project Operations
             {
@@ -608,6 +613,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const userOrgs = await organization.getUserOrganizationsFunc();
                 return {
                     content: [{ type: "text", text: JSON.stringify(userOrgs, null, 2) }],
+                };
+            }
+
+            case "get_current_user": {
+                const currentUserInfo = await organization.getCurrentUserFunc();
+                return {
+                    content: [{ type: "text", text: JSON.stringify(currentUserInfo, null, 2) }],
                 };
             }
 

@@ -21,6 +21,20 @@ export const UserInfoSchema = z.object({
   name: z.string().nullable().optional().describe("User name"),
 });
 
+// Current user information schema
+export const CurrentUserSchema = z.object({
+  id: z.string().nullable().optional().describe("User ID"),
+  name: z.string().optional().describe("Display name"),
+  email: z.string().optional().describe("Email address"),
+  username: z.string().optional().describe("Login account name"),
+  lastOrganization: z.string().optional().describe("Last login organization ID"),
+  staffId: z.string().optional().describe("Staff ID"),
+  nickName: z.string().optional().describe("Nickname"),
+  sysDeptIds: z.array(z.string()).optional().describe("Department IDs"),
+  createdAt: z.string().optional().describe("Creation time"),
+  deletedAt: z.string().optional().describe("Deletion time")
+});
+
 // Custom field related types
 export const FieldItemSchema = z.object({
   displayValue: z.string().nullable().optional().describe("Display value"),

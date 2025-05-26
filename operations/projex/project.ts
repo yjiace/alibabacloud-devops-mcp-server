@@ -15,7 +15,11 @@ import {
   ConditionsSchema
 } from "../../common/types.js";
 
-// Function implementations
+/**
+ * 获取项目详情
+ * @param organizationId
+ * @param id
+ */
 export async function getProjectFunc(
   organizationId: string,
   id: string
@@ -29,6 +33,25 @@ export async function getProjectFunc(
   return ProjectInfoSchema.parse(response);
 }
 
+/**
+ * 搜索项目
+ * @param organizationId
+ * @param name
+ * @param status
+ * @param createdAfter
+ * @param createdBefore
+ * @param creator
+ * @param adminUserId
+ * @param logicalStatus
+ * @param advancedConditions
+ * @param extraConditions
+ * @param orderBy
+ * @param page
+ * @param perPage
+ * @param sort
+ * @param scenarioFilter
+ * @param userId
+ */
 export async function searchProjectsFunc(
   organizationId: string,
   name?: string,
@@ -49,15 +72,12 @@ export async function searchProjectsFunc(
 ): Promise<z.infer<typeof ProjectInfoSchema>[]> {
   const url = `/oapi/v1/projex/organizations/${organizationId}/projects:search`;
 
-  // Prepare payload
   const payload: Record<string, any> = {};
 
-  // Handle scenarioFilter if provided
   if (scenarioFilter && userId) {
     extraConditions = buildExtraConditions(scenarioFilter, userId);
   }
 
-  // Process condition parameters
   const conditions = buildProjectConditions({
     name,
     status,
@@ -73,7 +93,6 @@ export async function searchProjectsFunc(
     payload.conditions = conditions;
   }
 
-  // Add other optional parameters
   if (extraConditions) {
     payload.extraConditions = extraConditions;
   }
@@ -99,16 +118,17 @@ export async function searchProjectsFunc(
     body: payload,
   });
 
-  // Ensure response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
-  // Parse each project object
   return response.map(project => ProjectInfoSchema.parse(project));
 }
 
-// Build project search conditions
+/**
+ * 构建项目过滤条件(源API所需参数conditions是一个固定的JSON结构)
+ * @param args
+ */
 function buildProjectConditions(args: {
   name?: string;
   status?: string;
@@ -119,15 +139,12 @@ function buildProjectConditions(args: {
   logicalStatus?: string;
   advancedConditions?: string;
 }): string | undefined {
-  // If advanced conditions are provided directly, use them preferentially
   if (args.advancedConditions) {
     return args.advancedConditions;
   }
 
-  // Build condition group
   const filterConditions: z.infer<typeof FilterConditionSchema>[] = [];
 
-  // Process name
   if (args.name) {
     filterConditions.push({
       className: "string",
@@ -139,7 +156,6 @@ function buildProjectConditions(args: {
     });
   }
 
-  // Process status
   if (args.status) {
     const statusValues = args.status.split(",");
     const values = statusValues.map(v => v.trim());
@@ -154,7 +170,6 @@ function buildProjectConditions(args: {
     });
   }
 
-  // Process creation time range
   if (args.createdAfter) {
     const createdBefore = args.createdBefore ? `${args.createdBefore} 23:59:59` : null;
 
@@ -168,7 +183,6 @@ function buildProjectConditions(args: {
     });
   }
 
-  // Process creator
   if (args.creator) {
     const creatorValues = args.creator.split(",");
     const values = creatorValues.map(v => v.trim());
@@ -183,7 +197,6 @@ function buildProjectConditions(args: {
     });
   }
 
-  // Process administrator
   if (args.adminUserId) {
     const adminValues = args.adminUserId.split(",");
     const values = adminValues.map(v => v.trim());
@@ -198,7 +211,6 @@ function buildProjectConditions(args: {
     });
   }
 
-  // Process logical status
   if (args.logicalStatus) {
     filterConditions.push({
       className: "string",
@@ -210,22 +222,19 @@ function buildProjectConditions(args: {
     });
   }
 
-  // If there are no conditions, return undefined
   if (filterConditions.length === 0) {
     return undefined;
   }
 
-  // Build complete condition object
   const conditions: z.infer<typeof ConditionsSchema> = {
     conditionGroups: [filterConditions],
   };
 
-  // Serialize to JSON
   return JSON.stringify(conditions);
 }
 
 /**
- * Helper function to build extraConditions for common project filter scenarios
+ * 项目额外过滤条件
  * @param scenario The filter scenario: "manage" (projects I manage), "participate" (projects I participate in), "favorite" (projects I favorited)
  * @param userId The user ID to filter by
  * @returns JSON string for extraConditions parameter

@@ -703,7 +703,7 @@ export const SearchWorkitemsSchema = z.object({
   // Advanced parameters
   advancedConditions: z.string().nullable().optional().describe("Advanced filter conditions, JSON format"),
   orderBy: z.string().optional().default("gmtCreate").describe("Sort field, default is gmtCreate. Possible values: gmtCreate, subject, status, priority, assignedTo"),
-  includeDetails: z.boolean().optional().describe("Whether to automatically supplement missing description and other detailed information. If the description of a work item is null, it will automatically call the getWorkitem API to get details. It's recommended to use it only when the result quantity is small (≤100), to avoid too many API calls affecting performance. Default is false")
+  includeDetails: z.boolean().optional().describe("Set to true when you need work item descriptions/detailed content. This automatically fetches missing descriptions instead of requiring separate get_work_item calls. RECOMMENDED: Use includeDetails=true when user asks for 'detailed content', 'descriptions', or 'full information' of work items. This is more efficient than calling get_work_item multiple times. Default is false")
 });
 
 // Codeup branches related Schema definitions

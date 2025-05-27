@@ -55,7 +55,6 @@ export async function searchWorkitemsFunc(
         finalCreator = creator;
       }
     } catch (error) {
-      console.warn("获取当前用户信息失败，将使用原始值:", error);
       finalAssignedTo = assignedTo;
       finalCreator = creator;
     }
@@ -99,10 +98,9 @@ export async function searchWorkitemsFunc(
 
   // 如果需要补充详细信息，使用分批并发方式获取
   if (includeDetails) {
-    // 找出description为null的工作项，同时确保id是有效的字符串
     const itemsNeedingDetails = workItems.filter(item => 
-      typeof item.id === 'string' && item.id.length > 0 && 
-      (item.description === null || item.description === undefined)
+      item.id.length > 0 &&
+      (item.description === null || item.description === undefined || item.description === "")
     );
 
     if (itemsNeedingDetails.length > 0) {
@@ -111,7 +109,7 @@ export async function searchWorkitemsFunc(
 
       // 更新workItems中的description
       return workItems.map(item => {
-        if (typeof item.id === 'string' && descriptionMap.has(item.id)) {
+        if (descriptionMap.has(item.id)) {
           return {
             ...item,
             description: descriptionMap.get(item.id) || item.description
@@ -136,10 +134,6 @@ async function batchGetWorkItemDetails(
   
   // 限制处理数量
   const limitedItems = workItems.slice(0, maxItems);
-  
-  if (workItems.length > maxItems) {
-    console.log(`工作项数量较多，只处理前 ${maxItems} 个`);
-  }
 
   // 分批处理
   for (let i = 0; i < limitedItems.length; i += batchSize) {
@@ -167,7 +161,6 @@ async function batchGetWorkItemDetails(
             success: true 
           };
         } catch (error) {
-          console.warn(`获取工作项 ${itemId} 详情失败:`, error);
           return { 
             id: itemId, 
             description: null,

@@ -709,10 +709,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     args.status ?? undefined,
                     args.createdAfter ?? undefined,
                     args.createdBefore ?? undefined,
+                    args.updatedAfter ?? undefined,
+                    args.updatedBefore ?? undefined,
                     args.creator ?? undefined,
                     args.assignedTo ?? undefined,
                     args.advancedConditions ?? undefined,
-                    args.orderBy
+                    args.orderBy ?? "gmtCreate",
+                    args.includeDetails ?? false
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(workItems, null, 2) }],

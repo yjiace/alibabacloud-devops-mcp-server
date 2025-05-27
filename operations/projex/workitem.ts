@@ -5,6 +5,7 @@ import {
   FilterConditionSchema,
   ConditionsSchema
 } from "../../common/types.js";
+import { getCurrentUserFunc } from "../organization/organization.js";
 
 export async function getWorkItemFunc(
   organizationId: string,
@@ -27,27 +28,54 @@ export async function searchWorkitemsFunc(
   status?: string,
   createdAfter?: string,
   createdBefore?: string,
+  updatedAfter?: string,
+  updatedBefore?: string,
   creator?: string,
   assignedTo?: string,
   advancedConditions?: string,
-  orderBy: string = "gmtCreate" // Possible values: gmtCreate, subject, status, priority, assignedTo
+  orderBy: string = "gmtCreate",
+  includeDetails: boolean = false // 新增参数：是否自动补充缺失的description等详细信息
 ): Promise<z.infer<typeof WorkItemSchema>[]> {
+  // 处理assignedTo为"self"的情况，自动获取当前用户ID
+  let finalAssignedTo = assignedTo;
+  let finalCreator = creator;
+  
+  if (assignedTo === "self" || creator === "self") {
+    try {
+      const currentUser = await getCurrentUserFunc();
+      if (currentUser.id) {
+        if (assignedTo === "self") {
+          finalAssignedTo = currentUser.id;
+        }
+        if (creator === "self") {
+          finalCreator = currentUser.id;
+        }
+      } else {
+        finalAssignedTo = assignedTo;
+        finalCreator = creator;
+      }
+    } catch (error) {
+      finalAssignedTo = assignedTo;
+      finalCreator = creator;
+    }
+  }
+
   const url = `/oapi/v1/projex/organizations/${organizationId}/workitems:search`;
 
-  // Prepare payload
   const payload: Record<string, any> = {
     category: category,
     spaceId: spaceId,
   };
 
-  // Process condition parameters
   const conditions = buildWorkitemConditions({
     subject,
     status,
     createdAfter,
     createdBefore,
-    creator,
-    assignedTo,
+    updatedAfter,
+    updatedBefore,
+    creator: finalCreator,
+    assignedTo: finalAssignedTo,
     advancedConditions
   });
   
@@ -55,7 +83,6 @@ export async function searchWorkitemsFunc(
     payload.conditions = conditions;
   }
 
-  // Add orderBy parameter
   payload.orderBy = orderBy;
 
   const response = await yunxiaoRequest(url, {
@@ -63,34 +90,116 @@ export async function searchWorkitemsFunc(
     body: payload,
   });
 
-  // Ensure response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
-  // Parse each work item object
-  return response.map(workitem => WorkItemSchema.parse(workitem));
+  const workItems = response.map(workitem => WorkItemSchema.parse(workitem));
+
+  // 如果需要补充详细信息，使用分批并发方式获取
+  if (includeDetails) {
+    const itemsNeedingDetails = workItems.filter(item => 
+      item.id.length > 0 &&
+      (item.description === null || item.description === undefined || item.description === "")
+    );
+
+    if (itemsNeedingDetails.length > 0) {
+      // 分批并发获取详情
+      const descriptionMap = await batchGetWorkItemDetails(organizationId, itemsNeedingDetails);
+
+      // 更新workItems中的description
+      return workItems.map(item => {
+        if (descriptionMap.has(item.id)) {
+          return {
+            ...item,
+            description: descriptionMap.get(item.id) || item.description
+          };
+        }
+        return item;
+      });
+    }
+  }
+
+  return workItems;
 }
 
-// Build work item search conditions
+// 分批并发获取工作项详情
+async function batchGetWorkItemDetails(
+  organizationId: string, 
+  workItems: z.infer<typeof WorkItemSchema>[],
+  batchSize: number = 10,  // 每批处理10个
+  maxItems: number = 100   // 最多处理100个
+): Promise<Map<string, string | null>> {
+  const descriptionMap = new Map<string, string | null>();
+  
+  // 限制处理数量
+  const limitedItems = workItems.slice(0, maxItems);
+
+  // 分批处理
+  for (let i = 0; i < limitedItems.length; i += batchSize) {
+    const batch = limitedItems.slice(i, i + batchSize);
+    
+    // 批次内并发执行
+    const batchResults = await Promise.allSettled(
+      batch.map(async (item) => {
+        // 再次检查item.id是否为有效字符串
+        if (typeof item.id !== 'string' || item.id.length === 0) {
+          return { 
+            id: item.id || 'unknown', 
+            description: null,
+            success: false 
+          };
+        }
+        
+        const itemId: string = item.id;
+        
+        try {
+          const detailedItem = await getWorkItemFunc(organizationId, itemId);
+          return { 
+            id: itemId, 
+            description: detailedItem.description,
+            success: true 
+          };
+        } catch (error) {
+          return { 
+            id: itemId, 
+            description: null,
+            success: false 
+          };
+        }
+      })
+    );
+
+    // 处理批次结果
+    batchResults.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        // 确保description类型正确，将undefined转换为null
+        const description = result.value.description === undefined ? null : result.value.description;
+        descriptionMap.set(result.value.id, description);
+      }
+    });
+  }
+  return descriptionMap;
+}
+
 function buildWorkitemConditions(args: {
   subject?: string;
   status?: string;
   createdAfter?: string;
   createdBefore?: string;
+  updatedAfter?: string;
+  updatedBefore?: string;
   creator?: string;
   assignedTo?: string;
   advancedConditions?: string;
 }): string | undefined {
-  // If advanced conditions are provided directly, use them preferentially
+
   if (args.advancedConditions) {
     return args.advancedConditions;
   }
 
-  // Build condition group
   const filterConditions: z.infer<typeof FilterConditionSchema>[] = [];
 
-  // Process title
   if (args.subject) {
     filterConditions.push({
       className: "string",
@@ -102,7 +211,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process status
   if (args.status) {
     const statusValues = args.status.split(",");
     const values = statusValues.map(v => v.trim());
@@ -117,12 +225,11 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process creation time range
   if (args.createdAfter) {
     const createdBefore = args.createdBefore ? `${args.createdBefore} 23:59:59` : null;
 
     filterConditions.push({
-      className: "date",
+      className: "dateTime",
       fieldIdentifier: "gmtCreate",
       format: "input",
       operator: "BETWEEN",
@@ -131,7 +238,19 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process creator
+  if (args.updatedAfter) {
+    const updatedBefore = args.updatedBefore ? `${args.updatedBefore} 23:59:59` : null;
+
+    filterConditions.push({
+      className: "dateTime",
+      fieldIdentifier: "gmtModified",
+      format: "input",
+      operator: "BETWEEN",
+      toValue: updatedBefore,
+      value: [`${args.updatedAfter} 00:00:00`],
+    })
+  }
+
   if (args.creator) {
     const creatorValues = args.creator.split(",");
     const values = creatorValues.map(v => v.trim());
@@ -146,7 +265,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process assignee
   if (args.assignedTo) {
     const assignedToValues = args.assignedTo.split(",");
     const values = assignedToValues.map(v => v.trim());
@@ -161,16 +279,13 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // If there are no conditions, return undefined
   if (filterConditions.length === 0) {
     return undefined;
   }
 
-  // Build complete condition object
   const conditions: z.infer<typeof ConditionsSchema> = {
     conditionGroups: [filterConditions],
   };
 
-  // Serialize to JSON
   return JSON.stringify(conditions);
 } 

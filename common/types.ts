@@ -154,21 +154,21 @@ export const VersionSchema = z.object({
 });
 
 export const WorkItemSchema = z.object({
-  id: z.string().nullable().optional().describe("Work item ID"),
+  id: z.string().describe("Work item ID"),
   subject: z.string().nullable().optional().describe("Title"),
   description: z.string().nullable().optional().describe("Description"),
   gmtCreate: z.number().int().nullable().optional().describe("Creation time"),
   gmtModified: z.number().int().nullable().optional().describe("Last modification time"),
   workitemType: WorkItemTypeSchema.nullable().optional().describe("Work item type"),
   status: StatusSchema.nullable().optional().describe("Status"),
-  formatType: z.string().nullable().optional().describe("Format type"),
+  formatType: z.string().nullable().optional().describe("Description format. Supported values: RICHTEXT (rich text format), MARKDOWN (markdown format)"),
   categoryId: z.string().nullable().optional().describe("Category ID"),
-  logicalStatus: z.string().nullable().optional().describe("Logical status"),
-  parentId: z.string().nullable().optional().describe("Parent ID"),
+  logicalStatus: z.string().nullable().optional().describe("Logical status, e.g., normal, archived"),
+  parentId: z.string().nullable().optional().describe("Parent Work item ID"),
   serialNumber: z.string().nullable().optional().describe("Serial number"),
   statusStageId: z.string().nullable().optional().describe("Status stage ID"),
   updateStatusAt: z.number().int().nullable().optional().describe("Status update time"),
-  idPath: z.string().nullable().optional().describe("ID path"),
+  idPath: z.string().nullable().optional().describe("Work item ID path"),
   
   assignedTo: UserInfoSchema.nullable().optional().describe("Assignee"),
   creator: UserInfoSchema.nullable().optional().describe("Creator"),
@@ -695,12 +695,15 @@ export const SearchWorkitemsSchema = z.object({
   status: z.string().nullable().optional().describe("Status ID, multiple separated by commas. Status names and their IDs: Pending Confirmation (28), Pending Processing (100005), Reopened (30), Deferred Fix (34), Confirmed (32), Selected (625489), In Analysis (154395), Analysis Complete (165115), In Progress (100010), In Design (156603), Design Complete (307012), In Development (142838), Development Complete (100011), In Testing (100012)"),
   createdAfter: z.string().nullable().optional().describe("Created not earlier than, format: YYYY-MM-DD"),
   createdBefore: z.string().nullable().optional().describe("Created not later than, format: YYYY-MM-DD"),
+  updatedAfter: z.string().nullable().optional().describe("Updated not earlier than, format: YYYY-MM-DD"),
+  updatedBefore: z.string().nullable().optional().describe("Updated not later than, format: YYYY-MM-DD"),
   creator: z.string().nullable().optional().describe("Creator ID, multiple separated by commas"),
   assignedTo: z.string().nullable().optional().describe("Assignee ID, multiple separated by commas"),
 
   // Advanced parameters
   advancedConditions: z.string().nullable().optional().describe("Advanced filter conditions, JSON format"),
   orderBy: z.string().optional().default("gmtCreate").describe("Sort field, default is gmtCreate. Possible values: gmtCreate, subject, status, priority, assignedTo"),
+  includeDetails: z.boolean().optional().describe("Whether to automatically supplement missing description and other detailed information. If the description of a work item is null, it will automatically call the getWorkitem API to get details. It's recommended to use it only when the result quantity is small (≤100), to avoid too many API calls affecting performance. Default is false")
 });
 
 // Codeup branches related Schema definitions
@@ -872,31 +875,6 @@ export const ListChangeRequestCommentsSchema = z.object({
   resolved: z.boolean().optional().default(false).describe("Whether marked as resolved"),
   filePath: z.string().nullable().optional().describe("Filter by file path (for inline comments)"),
 });
-
-// Export types for Codeup operations
-export type CreateBranchOptions = z.infer<typeof CreateBranchSchema>;
-export type GetBranchOptions = z.infer<typeof GetBranchSchema>;
-export type DeleteBranchOptions = z.infer<typeof DeleteBranchSchema>;
-export type ListBranchesOptions = z.infer<typeof ListBranchesSchema>;
-
-export type GetRepositoryOptions = z.infer<typeof GetRepositorySchema>;
-export type ListRepositoriesOptions = z.infer<typeof ListRepositoriesSchema>;
-
-export type GetFileBlobsOptions = z.infer<typeof GetFileBlobsSchema>;
-export type CreateFileOptions = z.infer<typeof CreateFileSchema>;
-export type UpdateFileOptions = z.infer<typeof UpdateFileSchema>;
-export type DeleteFileOptions = z.infer<typeof DeleteFileSchema>;
-export type ListFilesOptions = z.infer<typeof ListFilesSchema>;
-
-export type GetCompareOptions = z.infer<typeof GetCompareSchema>;
-
-export type GetChangeRequestOptions = z.infer<typeof GetChangeRequestSchema>;
-export type ListChangeRequestsOptions = z.infer<typeof ListChangeRequestsSchema>;
-export type CreateChangeRequestOptions = z.infer<typeof CreateChangeRequestSchema>;
-export type ListChangeRequestPatchSetsOptions = z.infer<typeof ListChangeRequestPatchSetsSchema>;
-
-export type CreateChangeRequestCommentOptions = z.infer<typeof CreateChangeRequestCommentSchema>;
-export type ListChangeRequestCommentsOptions = z.infer<typeof ListChangeRequestCommentsSchema>;
 
 // 制品仓库相关的Schema定义
 export const PackageRepositorySchema = z.object({

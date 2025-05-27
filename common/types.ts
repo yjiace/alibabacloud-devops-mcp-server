@@ -170,8 +170,8 @@ export const WorkItemSchema = z.object({
   updateStatusAt: z.number().int().nullable().optional().describe("Status update time"),
   idPath: z.string().nullable().optional().describe("Work item ID path"),
   
-  assignedTo: UserInfoSchema.nullable().optional().describe("Assignee"),
-  creator: UserInfoSchema.nullable().optional().describe("Creator"),
+  assignedTo: UserInfoSchema.nullable().optional().describe("Assignee user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
+  creator: UserInfoSchema.nullable().optional().describe("Creator user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
   modifier: UserInfoSchema.nullable().optional().describe("Modifier"),
   verifier: UserInfoSchema.nullable().optional().describe("Verifier"),
   space: SpaceSchema.nullable().optional().describe("Space"),
@@ -697,8 +697,8 @@ export const SearchWorkitemsSchema = z.object({
   createdBefore: z.string().nullable().optional().describe("Created not later than, format: YYYY-MM-DD"),
   updatedAfter: z.string().nullable().optional().describe("Updated not earlier than, format: YYYY-MM-DD"),
   updatedBefore: z.string().nullable().optional().describe("Updated not later than, format: YYYY-MM-DD"),
-  creator: z.string().nullable().optional().describe("Creator ID, multiple separated by commas"),
-  assignedTo: z.string().nullable().optional().describe("Assignee ID, multiple separated by commas"),
+  creator: z.string().nullable().optional().describe("Creator user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
+  assignedTo: z.string().nullable().optional().describe("Assignee user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
 
   // Advanced parameters
   advancedConditions: z.string().nullable().optional().describe("Advanced filter conditions, JSON format"),

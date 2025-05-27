@@ -5,6 +5,7 @@ import {
   FilterConditionSchema,
   ConditionsSchema
 } from "../../common/types.js";
+import { getCurrentUserFunc } from "../organization/organization.js";
 
 export async function getWorkItemFunc(
   organizationId: string,
@@ -32,18 +33,41 @@ export async function searchWorkitemsFunc(
   creator?: string,
   assignedTo?: string,
   advancedConditions?: string,
-  orderBy: string = "gmtCreate", // Possible values: gmtCreate, subject, status, priority, assignedTo
+  orderBy: string = "gmtCreate",
   includeDetails: boolean = false // 新增参数：是否自动补充缺失的description等详细信息
 ): Promise<z.infer<typeof WorkItemSchema>[]> {
+  // 处理assignedTo为"self"的情况，自动获取当前用户ID
+  let finalAssignedTo = assignedTo;
+  let finalCreator = creator;
+  
+  if (assignedTo === "self" || creator === "self") {
+    try {
+      const currentUser = await getCurrentUserFunc();
+      if (currentUser.id) {
+        if (assignedTo === "self") {
+          finalAssignedTo = currentUser.id;
+        }
+        if (creator === "self") {
+          finalCreator = currentUser.id;
+        }
+      } else {
+        finalAssignedTo = assignedTo;
+        finalCreator = creator;
+      }
+    } catch (error) {
+      console.warn("获取当前用户信息失败，将使用原始值:", error);
+      finalAssignedTo = assignedTo;
+      finalCreator = creator;
+    }
+  }
+
   const url = `/oapi/v1/projex/organizations/${organizationId}/workitems:search`;
 
-  // Prepare payload
   const payload: Record<string, any> = {
     category: category,
     spaceId: spaceId,
   };
 
-  // Process condition parameters
   const conditions = buildWorkitemConditions({
     subject,
     status,
@@ -51,8 +75,8 @@ export async function searchWorkitemsFunc(
     createdBefore,
     updatedAfter,
     updatedBefore,
-    creator,
-    assignedTo,
+    creator: finalCreator,
+    assignedTo: finalAssignedTo,
     advancedConditions
   });
   
@@ -60,7 +84,6 @@ export async function searchWorkitemsFunc(
     payload.conditions = conditions;
   }
 
-  // Add orderBy parameter
   payload.orderBy = orderBy;
 
   const response = await yunxiaoRequest(url, {
@@ -68,12 +91,10 @@ export async function searchWorkitemsFunc(
     body: payload,
   });
 
-  // Ensure response is an array
   if (!Array.isArray(response)) {
     return [];
   }
 
-  // Parse each work item object first
   const workItems = response.map(workitem => WorkItemSchema.parse(workitem));
 
   // 如果需要补充详细信息，使用分批并发方式获取
@@ -168,7 +189,6 @@ async function batchGetWorkItemDetails(
   return descriptionMap;
 }
 
-// Build work item search conditions
 function buildWorkitemConditions(args: {
   subject?: string;
   status?: string;
@@ -180,15 +200,13 @@ function buildWorkitemConditions(args: {
   assignedTo?: string;
   advancedConditions?: string;
 }): string | undefined {
-  // If advanced conditions are provided directly, use them preferentially
+
   if (args.advancedConditions) {
     return args.advancedConditions;
   }
 
-  // Build condition group
   const filterConditions: z.infer<typeof FilterConditionSchema>[] = [];
 
-  // Process title
   if (args.subject) {
     filterConditions.push({
       className: "string",
@@ -200,7 +218,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process status
   if (args.status) {
     const statusValues = args.status.split(",");
     const values = statusValues.map(v => v.trim());
@@ -215,7 +232,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process creation time range
   if (args.createdAfter) {
     const createdBefore = args.createdBefore ? `${args.createdBefore} 23:59:59` : null;
 
@@ -229,7 +245,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  //process updated time range
   if (args.updatedAfter) {
     const updatedBefore = args.updatedBefore ? `${args.updatedBefore} 23:59:59` : null;
 
@@ -243,7 +258,6 @@ function buildWorkitemConditions(args: {
     })
   }
 
-  // Process creator
   if (args.creator) {
     const creatorValues = args.creator.split(",");
     const values = creatorValues.map(v => v.trim());
@@ -258,7 +272,6 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // Process assignee
   if (args.assignedTo) {
     const assignedToValues = args.assignedTo.split(",");
     const values = assignedToValues.map(v => v.trim());
@@ -273,16 +286,13 @@ function buildWorkitemConditions(args: {
     });
   }
 
-  // If there are no conditions, return undefined
   if (filterConditions.length === 0) {
     return undefined;
   }
 
-  // Build complete condition object
   const conditions: z.infer<typeof ConditionsSchema> = {
     conditionGroups: [filterConditions],
   };
 
-  // Serialize to JSON
   return JSON.stringify(conditions);
 } 

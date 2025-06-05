@@ -54,6 +54,8 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 
 - `get_pipeline`: Get pipeline details
 - `list_pipelines`: Get pipeline list
+- `create_pipeline`: 🚀 Intelligently create pipeline from natural language description - Automatically generates YAML configuration and creates pipeline
+- `smart_list_pipelines`: Smart pipeline search with natural language time references
 - `create_pipeline_run`: Create a pipeline run instance
 - `get_latest_pipeline_run`: Get the latest pipeline run instance
 - `get_pipeline_run`: Get pipeline run details
@@ -62,6 +64,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_pipeline_job_historys`: Get the execution history of a pipeline task
 - `execute_pipeline_job_run`: Manually run a pipeline task
 - `get_pipeline_job_run_log`: Get the execution logs of a pipeline job
+- `list_service_connections`: List service connections in organization
 
 ### Packages Management Tools
 

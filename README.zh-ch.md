@@ -48,18 +48,20 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_work_item`: 获取工作项详情
 - `search_workitems`: 搜索工作项
 
-### 流水线工具
-
-- `get_pipeline`: 获取流水线详情
-- `list_pipelines`: 获取流水线列表
-- `create_pipeline_run`: 运行流水线
-- `get_latest_pipeline_run`: 获取最近一次流水线运行信息
-- `get_pipeline_run`: 获取流水线运行实例
-- `list_pipeline_runs`: 获取流水线运行实例列表
-- `list_pipeline_jobs_by_category`: 按任务分类获取流水线执行的任务
-- `list_pipeline_job_historys`: 获取流水线任务的执行历史
-- `execute_pipeline_job_run`: 手动运行流水线任务
-- `get_pipeline_job_run_log`: 查询流水线任务运行日志
+###  流水线工具
+- `get_pipeline` - 获取流水线详情
+- `list_pipelines` - 获取流水线列表
+- `create_pipeline` - 创建流水线
+- `smart_list_pipelines` - 智能查询流水线（支持自然语言时间）
+- `create_pipeline_run` - 运行流水线
+- `get_latest_pipeline_run` - 获取最新运行信息
+- `get_pipeline_run` - 获取运行详情
+- `list_pipeline_runs` - 获取运行历史
+- `list_pipeline_jobs_by_category` - 获取流水线任务
+- `list_pipeline_job_historys` - 获取任务历史
+- `execute_pipeline_job_run` - 手动运行任务
+- `get_pipeline_job_run_log` - 获取任务日志
+- `list_service_connections` - 获取服务连接列表
 
 ### 制品仓库工具
 
@@ -74,6 +76,14 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 * 阿里云云效个人访问令牌，[点击前往](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token?spm=a2c4g.11186623.help-menu-150040.d_5_0_1.5dc72af2GnT64i)，授予组织管理、项目协作、代码管理下所有api的读写权限。
   
   ![个人令牌授权页面](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.png)
+
+### 在 Smithery.ai 中使用云效 MCP 服务
+
+云效 MCP 服务已部署到 Smithery.ai 中，可以按照下列命令安装使用 [Smithery](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server):
+
+```bash
+npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
+```
 
 ### 通过 MCP市场 安装云效 MCP 服务
 通义灵码内置的MCP市场中已经提供了云效的MCP服务，在通义灵码中进入MCP市场并且找到「云效DevOps」，直接安装即可。

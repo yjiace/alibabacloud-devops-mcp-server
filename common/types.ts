@@ -477,6 +477,60 @@ export const GetPipelineSchema = z.object({
   pipelineId: z.string().describe("Pipeline ID"),
 });
 
+// 创建流水线的参数Schema
+export const CreatePipelineSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  name: z.string().max(60).describe("Pipeline name, maximum 60 characters"),
+  content: z.string().describe("Pipeline YAML description, refer to YAML pipeline documentation for writing. This should be a complete YAML configuration including sources, stages, jobs, and steps."),
+});
+
+// 智能创建流水线的参数Schema
+export const CreatePipelineFromDescriptionSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  description: z.string().describe("Natural language description of the pipeline you want to create. Include information about programming language, build tools, deployment targets, repository URL, branch, service name, etc. Examples: '创建一个Java Maven项目的构建流水线，部署到主机', '为Node.js项目创建CI/CD流水线，使用npm构建，部署到Kubernetes'"),
+  name: z.string().max(60).optional().describe("Optional pipeline name. If not provided, will be auto-generated based on the description"),
+  
+  // 代码源相关参数，用于覆盖从描述中推断的值
+  repoUrl: z.string().optional().describe("Repository URL, if not provided in description"),
+  branch: z.string().optional().describe("Branch name, if not provided in description"),
+  serviceConnectionId: z.string().optional().describe("Service connection ID for repository access"),
+
+  
+  // 版本相关参数
+  jdkVersion: z.string().optional().describe("JDK version for Java projects (1.6, 1.7, 1.8, 11, 17, 21). Default: 1.8"),
+  mavenVersion: z.string().optional().describe("Maven version for Java projects (3.6.1, 3.6.3, 3.8.4, 3.9.3). Default: 3.6.3"),
+  nodeVersion: z.string().optional().describe("Node.js version for Node projects (16.8, 18.12, 20). Default: 18.12"),
+  pythonVersion: z.string().optional().describe("Python version for Python projects (3.9, 3.12). Default: 3.12"),
+  goVersion: z.string().optional().describe("Go version for Go projects (1.19.x, 1.20.x, 1.21.x). Default: 1.21.x"),
+  kubectlVersion: z.string().optional().describe("Kubectl version for Kubernetes apply (1.25.16, 1.26.12, 1.27.9). Default: 1.27.9"),
+  
+  // 构建物上传相关参数
+  uploadType: z.enum(['flowPublic', 'packages']).optional().describe("Artifact upload type. flowPublic: Yunxiao public storage space, packages: Organization private generic package repository. Default: packages"),
+  artifactName: z.string().optional().describe("Custom artifact name. Default: 'Artifacts_${PIPELINE_ID}'"),
+  artifactVersion: z.string().optional().describe("Artifact version number, required when uploadType is packages. Default: '1.0'"),
+  packagesServiceConnection: z.string().optional().describe("Packages service connection ID, required when uploadType is packages"),
+  packagesRepoId: z.string().optional().describe("Packages generic repository ID, required when uploadType is packages. Default: 'flow_generic_repo'"),
+  includePathInArtifact: z.boolean().optional().describe("Whether to include full path in artifact. Default: false"),
+  
+  // 主机部署相关参数
+  machineGroupId: z.string().optional().describe("Machine group ID for VM deployment"),
+  executeUser: z.string().optional().describe("User for executing deployment scripts (root, admin). Default: root"),
+  artifactDownloadPath: z.string().optional().describe("Path to download artifacts on target machine for VM deployment. Default: /home/admin/app/package.tgz"),
+  pauseStrategy: z.enum(['firstBatchPause', 'noPause', 'eachBatchPause']).optional().describe("Pause strategy for VM deployment. firstBatchPause: The first batch is paused. noPause: No pause. eachBatchPause: Pause each batch. Default: firstBatchPause"),
+  batchNumber: z.number().int().optional().describe("Number of batches for VM deployment. Default: 2"),
+
+  // Kubernetes部署相关参数
+  kubernetesClusterId: z.string().optional().describe("Kubernetes cluster ID for K8s deployment"),
+  namespace: z.string().optional().describe("Kubernetes namespace for K8s deployment"),
+  dockerImage: z.string().optional().describe("Docker image name for container deployment"),
+  yamlPath: z.string().optional().describe("Path to Kubernetes YAML file for K8s deployment"),
+  
+  // 自定义构建和部署命令
+  buildCommand: z.string().optional().describe("Custom build command to override default"),
+  testCommand: z.string().optional().describe("Custom test command to override default"),
+  deployCommand: z.string().optional().describe("Custom deploy command to override default"),
+});
+
 // 获取流水线列表的参数Schema
 export const ListPipelinesSchema = z.object({
   organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
@@ -643,6 +697,8 @@ export const ListPipelineRunsSchema = z.object({
 export type PipelineDetail = z.infer<typeof PipelineDetailSchema>;
 export type PipelineListItem = z.infer<typeof PipelineListItemSchema>;
 export type ListPipelinesOptions = z.infer<typeof ListPipelinesSchema>;
+export type CreatePipelineOptions = z.infer<typeof CreatePipelineSchema>;
+export type CreatePipelineFromDescriptionOptions = z.infer<typeof CreatePipelineFromDescriptionSchema>;
 export type CreatePipelineRunOptions = z.infer<typeof CreatePipelineRunSchema>;
 export type PipelineRun = z.infer<typeof PipelineRunSchema>;
 export type PipelineRunListItem = z.infer<typeof PipelineRunListItemSchema>;
@@ -1008,5 +1064,87 @@ export const PipelineJobRunLogSchema = z.object({
 
 // 添加类型导出
 export type PipelineJobRunLog = z.infer<typeof PipelineJobRunLogSchema>;
+
+// 服务连接相关的Schema定义
+export const ServiceConnectionSchema = z.object({
+  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  id: z.number().int().nullable().optional().describe("服务连接ID"),
+  name: z.string().nullable().optional().describe("服务连接名称"),
+  ownerAccountId: z.union([z.string(), z.number().int()]).nullable().optional().describe("拥有者阿里云账号ID"),
+  type: z.string().nullable().optional().describe("服务连接类型"),
+  uuid: z.string().nullable().optional().describe("UUID"),
+});
+
+export const ListServiceConnectionsSchema = z.object({
+  organizationId: z.string().describe("组织ID，可在组织管理后台的基本信息页面获取"),
+  serviceConnectionType: z.enum([
+    "aliyun_code", 
+    "codeup", 
+    "gitee", 
+    "github", 
+    "ack", 
+    "docker_register_aliyun", 
+    "ecs", 
+    "edas", 
+    "emas", 
+    "fc", 
+    "kubernetes", 
+    "oss", 
+    "packages", 
+    "ros", 
+    "sae"
+  ]).describe("服务连接类型: aliyun_code-阿里云代码, codeup-Codeup, gitee-码云, github-Github, ack-容器服务Kubernetes（ACK）, docker_register_aliyun-容器镜像服务（ACR）, ecs-ECS主机, edas-企业级分布式应用（EDAS）, emas-移动研发平台（EMAS）, fc-阿里云函数计算（FC）, kubernetes-自建k8s集群, oss-对象存储（OSS）, packages-制品仓库, ros-资源编排服务（ROS）, sae-Serverless应用引擎（SAE）"),
+});
+
+// 添加类型导出
+export type ServiceConnection = z.infer<typeof ServiceConnectionSchema>;
+
+// 主机组相关的Schema定义
+export const HostInfoSchema = z.object({
+  aliyunRegion: z.string().nullable().optional().describe("阿里云区域"),
+  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  creatorAccountId: z.string().nullable().optional().describe("创建者阿里云账号"),
+  instanceName: z.string().nullable().optional().describe("主机名"),
+  ip: z.string().nullable().optional().describe("机器IP"),
+  machineSn: z.string().nullable().optional().describe("机器SN"),
+  modiferAccountId: z.string().nullable().optional().describe("修改者阿里云账号"),
+  objectType: z.string().nullable().optional().describe("对象类型，固定为MachineInfo"),
+  updateTime: z.number().int().nullable().optional().describe("更新时间"),
+});
+
+export const HostGroupSchema = z.object({
+  aliyunRegion: z.string().nullable().optional().describe("阿里云区域"),
+  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  creatorAccountId: z.string().nullable().optional().describe("创建人"),
+  description: z.string().nullable().optional().describe("主机组描述"),
+  ecsLabelKey: z.string().nullable().optional().describe("ECS标签Key"),
+  ecsLabelValue: z.string().nullable().optional().describe("ECS标签Value"),
+  ecsType: z.string().nullable().optional().describe("ECS类型，暂只支持ECS_ALIYUN"),
+  hostInfos: z.array(HostInfoSchema).nullable().optional().describe("主机信息列表"),
+  hostNum: z.number().int().nullable().optional().describe("主机数"),
+  id: z.number().int().nullable().optional().describe("主机组ID"),
+  modiferAccountId: z.string().nullable().optional().describe("更新人"),
+  name: z.string().nullable().optional().describe("主机组名称"),
+  serviceConnectionId: z.number().int().nullable().optional().describe("服务连接ID"),
+  type: z.string().nullable().optional().describe("主机组类型"),
+  updateTime: z.number().int().nullable().optional().describe("更新时间"),
+});
+
+export const ListHostGroupsSchema = z.object({
+  organizationId: z.string().describe("组织ID，可在组织管理后台的基本信息页面获取"),
+  ids: z.string().optional().describe("主机组ID，多个逗号分割"),
+  name: z.string().optional().describe("主机组名称"),
+  createStartTime: z.number().int().optional().describe("主机组创建开始时间"),
+  createEndTime: z.number().int().optional().describe("主机组创建结束时间"),
+  creatorAccountIds: z.string().optional().describe("创建阿里云账号ID，多个逗号分割"),
+  perPage: z.number().int().min(1).max(30).default(10).optional().describe("每页数据条数，默认10，最大支持30"),
+  page: z.number().int().min(1).default(1).optional().describe("当前页，默认1"),
+  pageSort: z.string().optional().describe("排序条件ID"),
+  pageOrder: z.enum(["DESC", "ASC"]).default("DESC").optional().describe("排序顺序 DESC 降序 ASC 升序"),
+});
+
+// 添加类型导出
+export type HostInfo = z.infer<typeof HostInfoSchema>;
+export type HostGroup = z.infer<typeof HostGroupSchema>;
 
 

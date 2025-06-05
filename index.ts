@@ -19,6 +19,8 @@ import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
 import * as pipelineJob from './operations/flow/pipelineJob.js'
+import * as serviceConnection from './operations/flow/serviceConnection.js'
+import * as hostGroup from './operations/flow/hostGroup.js'
 import * as packageRepositories from './operations/packages/repositories.js'
 import * as artifacts from './operations/packages/artifacts.js'
 import {
@@ -240,6 +242,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(types.ListPipelinesSchema),
             },
             {
+                name: "create_pipeline",
+                description: "[Pipeline Management] Create a new pipeline in an organization with YAML configuration",
+                inputSchema: zodToJsonSchema(types.CreatePipelineSchema),
+            },
+            {
+                name: "create_pipeline_from_description",
+                description: "[Pipeline Management] 🚀 Intelligently create a pipeline from natural language description. Automatically selects appropriate template and generates YAML configuration based on user's description of programming language, build tools, deployment targets, etc. Examples: '创建Java Maven构建流水线部署到主机', '为Node.js项目创建CI/CD流水线部署到Kubernetes'",
+                inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
+            },
+            {
                 name: "smart_list_pipelines",
                 description: "[Pipeline Management] Intelligently search pipelines with natural language time references (e.g., 'today', 'this week')",
                 inputSchema: zodToJsonSchema(
@@ -311,6 +323,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "get_artifact",
                 description: "[Packages Management] Get information about a single artifact in a package repository",
                 inputSchema: zodToJsonSchema(types.GetArtifactSchema),
+            },
+
+            // Service Connection Operations
+            {
+                name: "list_service_connections",
+                description: "[Service Connection Management] List service connections in an organization with filtering options",
+                inputSchema: zodToJsonSchema(types.ListServiceConnectionsSchema),
+            },
+
+            // Host Group Operations
+            {
+                name: "list_host_groups",
+                description: "[Host Group Management] List host groups in an organization with filtering options",
+                inputSchema: zodToJsonSchema(types.ListHostGroupsSchema),
             }
         ],
     };
@@ -754,6 +780,67 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
+            case "create_pipeline": {
+                const args = types.CreatePipelineSchema.parse(request.params.arguments);
+                const pipelineId = await pipeline.createPipelineFunc(
+                    args.organizationId,
+                    args.name,
+                    args.content
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(pipelineId, null, 2) }],
+                };
+            }
+
+            case "create_pipeline_from_description": {
+                const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
+                const result = await pipeline.createPipelineFromDescriptionFunc(
+                    args.organizationId,
+                    args.description,
+                    {
+                        name: args.name,
+                        repoUrl: args.repoUrl,
+                        branch: args.branch,
+                        serviceConnectionId: args.serviceConnectionId,
+                        
+                        // 版本相关参数
+                        jdkVersion: args.jdkVersion,
+                        mavenVersion: args.mavenVersion,
+                        nodeVersion: args.nodeVersion,
+                        pythonVersion: args.pythonVersion,
+                        goVersion: args.goVersion,
+                        kubectlVersion: args.kubectlVersion,
+                        
+                        // 构建物上传相关参数
+                        uploadType: args.uploadType,
+                        artifactName: args.artifactName,
+                        artifactVersion: args.artifactVersion,
+                        packagesServiceConnection:  args.packagesServiceConnection,
+                        packagesRepoId: args.packagesRepoId,
+                        includePathInArtifact: args.includePathInArtifact,
+                        
+                        // 部署相关参数
+                        executeUser: args.executeUser,
+                        artifactDownloadPath: args.artifactDownloadPath,
+                        machineGroupId: args.machineGroupId,
+                        pauseStrategy: args.pauseStrategy,
+                        batchNumber: args.batchNumber,
+                        kubernetesClusterId: args.kubernetesClusterId,
+                        yamlPath: args.yamlPath,
+                        namespace: args.namespace,
+                        dockerImage: args.dockerImage,
+                        
+                        // 自定义命令
+                        buildCommand: args.buildCommand,
+                        testCommand: args.testCommand,
+                        deployCommand: args.deployCommand,
+                    }
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+                };
+            }
+
             case "smart_list_pipelines": {
                 // Parse arguments using the schema defined in the tool registration
                 const args = z.object({
@@ -944,6 +1031,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
+            // Service Connection Operations
+            case "list_service_connections": {
+                const args = types.ListServiceConnectionsSchema.parse(request.params.arguments);
+                const serviceConnections = await serviceConnection.listServiceConnectionsFunc(
+                    args.organizationId,
+                    args.serviceConnectionType
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(serviceConnections, null, 2) }],
+                };
+            }
+
+            // Host Group Operations
+            case "list_host_groups": {
+                const args = types.ListHostGroupsSchema.parse(request.params.arguments);
+                const hostGroups = await hostGroup.listHostGroupsFunc(
+                    args.organizationId,
+                    {
+                        ids: args.ids,
+                        name: args.name,
+                        createStartTime: args.createStartTime,
+                        createEndTime: args.createEndTime,
+                        creatorAccountIds: args.creatorAccountIds,
+                        perPage: args.perPage,
+                        page: args.page,
+                        pageSort: args.pageSort,
+                        pageOrder: args.pageOrder
+                    }
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(hostGroups, null, 2) }],
+                };
+            }
+
             default:
                 throw new Error(`Unknown tool: ${request.params.name}`);
         }
@@ -958,7 +1079,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 });
 
-// config();
+config();
 
 async function runServer() {
     const transport = new StdioServerTransport();

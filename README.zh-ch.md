@@ -51,7 +51,6 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 ###  流水线工具
 - `get_pipeline` - 获取流水线详情
 - `list_pipelines` - 获取流水线列表
-- `create_pipeline` - 创建流水线
 - `smart_list_pipelines` - 智能查询流水线（支持自然语言时间）
 - `create_pipeline_run` - 运行流水线
 - `get_latest_pipeline_run` - 获取最新运行信息
@@ -62,6 +61,8 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `execute_pipeline_job_run` - 手动运行任务
 - `get_pipeline_job_run_log` - 获取任务日志
 - `list_service_connections` - 获取服务连接列表
+- `generate_pipeline_yaml`:   生成流水线 YAML
+- `create_pipeline_from_description`: 根据自然语言描述生成流水线 YAML 并创建流水线
 
 ### 制品仓库工具
 

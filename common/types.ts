@@ -490,6 +490,11 @@ export const CreatePipelineFromDescriptionSchema = z.object({
   description: z.string().describe("Natural language description of the pipeline you want to create. Include information about programming language, build tools, deployment targets, repository URL, branch, service name, etc. Examples: '创建一个Java Maven项目的构建流水线，部署到主机', '为Node.js项目创建CI/CD流水线，使用npm构建，部署到Kubernetes'"),
   name: z.string().max(60).optional().describe("Optional pipeline name. If not provided, will be auto-generated based on the description"),
   
+  // 技术栈参数 - 由大模型解析用户描述后提供
+  buildLanguage: z.enum(['java', 'nodejs', 'python', 'go', 'dotnet']).optional().describe("Programming language extracted from user description"),
+  buildTool: z.enum(['maven', 'gradle', 'npm', 'yarn', 'pip', 'go', 'dotnet']).optional().describe("Build tool extracted from user description"),
+  deployTarget: z.enum(['vm', 'k8s', 'none']).optional().describe("Deployment target extracted from user description. vm: Virtual Machine/Host deployment, k8s: Kubernetes deployment, none: Build only without deployment"),
+  
   // 代码源相关参数，用于覆盖从描述中推断的值
   repoUrl: z.string().optional().describe("Repository URL, if not provided in description"),
   branch: z.string().optional().describe("Branch name, if not provided in description"),

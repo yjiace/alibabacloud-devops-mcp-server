@@ -424,74 +424,202 @@ export async function createPipelineFunc(
 }
 
 /**
- * 基于自然语言描述智能创建流水线
- * @param organizationId 组织ID
- * @param description 自然语言描述流水线需求
- * @param options 可选的额外配置
- * @returns 创建结果，包含流水线ID、生成的YAML
+ * 基于结构化参数生成流水线YAML（不创建流水线）
+ * @param options 结构化的流水线配置选项
+ * @returns 生成的YAML字符串
  */
-export async function createPipelineFromDescriptionFunc(
+export async function generatePipelineYamlFunc(
+  options: {
+    // 技术栈信息（必须明确指定）
+    buildLanguage: 'java' | 'nodejs' | 'python' | 'go' | 'dotnet';
+    buildTool: 'maven' | 'gradle' | 'npm' | 'yarn' | 'pip' | 'go' | 'dotnet';
+    deployTarget?: 'vm' | 'k8s' | 'none';
+    
+    // 代码仓库配置
+    repoUrl?: string;
+    branch?: string;
+    serviceName?: string;
+    serviceConnectionId?: string;
+    
+    // 技术版本配置
+    jdkVersion?: string;        // Java版本，如 "1.8", "11", "17"
+    mavenVersion?: string;      // Maven版本，如 "3.6.3"
+    nodeVersion?: string;       // Node.js版本，如 "18.12", "20.x"
+    pythonVersion?: string;     // Python版本，如 "3.7", "3.12"
+    goVersion?: string;         // Go版本，如 "1.21"
+    
+    // 构建配置
+    buildCommand?: string;      // 自定义构建命令
+    testCommand?: string;       // 自定义测试命令
+    
+    // 制品上传配置
+    uploadType?: 'packages' | 'flowPublic';
+    packagesServiceConnection?: string;
+    artifactName?: string;
+    artifactVersion?: string;
+    packagesRepoId?: string;
+    includePathInArtifact?: boolean;
+    
+    // VM部署配置（当deployTarget为'vm'时）
+    machineGroupId?: string;
+    executeUser?: string;
+    artifactDownloadPath?: string;
+    deployCommand?: string;
+    pauseStrategy?: 'firstBatchPause' | 'noPause' | 'eachBatchPause';
+    batchNumber?: number;
+    
+    // Kubernetes部署配置（当deployTarget为'k8s'时）
+    kubernetesClusterId?: string;
+    kubectlVersion?: string;
+    namespace?: string;
+    yamlPath?: string;
+    dockerImage?: string;
+  }
+): Promise<string> {
+  // 准备变量，确保版本号有双引号
+  const variables: TemplateVariables = {
+    // 基础配置
+    ...(options.repoUrl && { repoUrl: options.repoUrl }),
+    ...(options.branch && { branch: options.branch }),
+    ...(options.serviceName && { serviceName: options.serviceName }),
+    ...(options.serviceConnectionId && { serviceConnectionId: options.serviceConnectionId }),
+    ...(options.packagesServiceConnection && { packagesServiceConnection: options.packagesServiceConnection }),
+    ...(options.machineGroupId && { machineGroupId: options.machineGroupId }),
+    ...(options.namespace && { namespace: options.namespace }),
+    ...(options.dockerImage && { dockerImage: options.dockerImage }),
+    
+    // 版本相关（确保双引号）
+    ...(options.jdkVersion && { jdkVersion: `"${options.jdkVersion}"` }),
+    ...(options.mavenVersion && { mavenVersion: `"${options.mavenVersion}"` }),
+    ...(options.nodeVersion && { nodeVersion: `"${options.nodeVersion}"` }),
+    ...(options.pythonVersion && { pythonVersion: `"${options.pythonVersion}"` }),
+    ...(options.goVersion && { goVersion: `"${options.goVersion}"` }),
+    ...(options.kubectlVersion && { kubectlVersion: `"${options.kubectlVersion}"` }),
+    
+    // 构建物上传相关
+    ...(options.uploadType && { uploadType: options.uploadType }),
+    ...(options.artifactName && { artifactName: options.artifactName }),
+    ...(options.artifactVersion && { artifactVersion: options.artifactVersion }),
+    ...(options.packagesRepoId && { packagesRepoId: options.packagesRepoId }),
+    ...(options.includePathInArtifact !== undefined && { includePathInArtifact: options.includePathInArtifact }),
+    
+    // 部署相关
+    ...(options.executeUser && { executeUser: options.executeUser }),
+    ...(options.artifactDownloadPath && { artifactDownloadPath: options.artifactDownloadPath }),
+    ...(options.kubernetesClusterId && { kubernetesClusterId: options.kubernetesClusterId }),
+    ...(options.yamlPath && { yamlPath: options.yamlPath }),
+    
+    // 命令
+    ...(options.buildCommand && { buildCommand: options.buildCommand }),
+    ...(options.testCommand && { testCommand: options.testCommand }),
+    ...(options.deployCommand && { deployCommand: options.deployCommand }),
+  };
+  
+  // 转换为模块化流水线选项
+  const deployTargets = options.deployTarget ? [options.deployTarget] : [];
+  
+  // 使用模块化架构生成YAML
+  return generateModularPipeline({
+    keywords: [options.buildLanguage, options.buildTool],
+    buildLanguages: [options.buildLanguage],
+    buildTools: [options.buildTool],
+    deployTargets: deployTargets,
+    uploadType: options.uploadType || 'packages',
+    variables: variables
+  });
+}
+
+/**
+ * 基于结构化参数创建流水线
+ * @param organizationId 组织ID
+ * @param options 结构化的流水线配置选项
+ * @returns 创建结果，包含流水线ID和生成的YAML
+ */
+export async function createPipelineWithOptionsFunc(
   organizationId: string,
-  description: string,
-  options?: Partial<Omit<CreatePipelineFromDescriptionOptions, 'organizationId' | 'description'>>
+  options: {
+    // 基础信息
+    name: string;
+    
+    // 技术栈信息（必须明确指定）
+    buildLanguage: 'java' | 'nodejs' | 'python' | 'go' | 'dotnet';
+    buildTool: 'maven' | 'gradle' | 'npm' | 'yarn' | 'pip' | 'go' | 'dotnet';
+    deployTarget?: 'vm' | 'k8s' | 'none';
+    
+    // 代码仓库配置（大模型应该从IDE上下文中获取）
+    repoUrl?: string;
+    branch?: string;
+    serviceName?: string;
+    serviceConnectionId?: string;
+    
+    // 技术版本配置
+    jdkVersion?: string;        // Java版本，如 "1.8", "11", "17"
+    mavenVersion?: string;      // Maven版本，如 "3.6.3"
+    nodeVersion?: string;       // Node.js版本，如 "18.12", "20.x"
+    pythonVersion?: string;     // Python版本，如 "3.7", "3.12"
+    goVersion?: string;         // Go版本，如 "1.21"
+    
+    // 构建配置
+    buildCommand?: string;      // 自定义构建命令
+    testCommand?: string;       // 自定义测试命令
+    
+    // 制品上传配置
+    uploadType?: 'packages' | 'flowPublic';
+    packagesServiceConnection?: string;
+    artifactName?: string;
+    artifactVersion?: string;
+    packagesRepoId?: string;
+    includePathInArtifact?: boolean;
+    
+    // VM部署配置（当deployTarget为'vm'时）
+    machineGroupId?: string;
+    executeUser?: string;
+    artifactDownloadPath?: string;
+    deployCommand?: string;
+    pauseStrategy?: 'firstBatchPause' | 'noPause' | 'eachBatchPause';
+    batchNumber?: number;
+    
+    // Kubernetes部署配置（当deployTarget为'k8s'时）
+    kubernetesClusterId?: string;
+    kubectlVersion?: string;
+    namespace?: string;
+    yamlPath?: string;
+    dockerImage?: string;
+  }
 ): Promise<{
   pipelineId: number;
   generatedYaml: string;
+  usedTemplate: string;
 }> {
-  // 解析用户描述
-  const parsedInfo = parseUserDescription(description);
-  
-  // 获取当前代码库上下文信息（如果用户没有明确指定的话）
-  let repoContext: { repoUrl?: string; branch?: string; serviceName?: string; } | null = null;
-  
-  // 检查用户是否已经在描述中或参数中提供了代码库信息
-  const hasRepoInfo = parsedInfo.variables.repoUrl || options?.repoUrl;
-  const hasServiceName = parsedInfo.variables.serviceName || options?.name;
-  const hasBranch = parsedInfo.variables.branch || options?.branch;
-  
-  // 如果用户没有提供代码库基础信息，尝试自动获取
-  if (!hasRepoInfo) {
-    try {
-      repoContext = await getCurrentRepositoryContext(organizationId);
-    } catch (error) {
-      console.error('无法获取当前代码库上下文，使用默认值:', error);
-    }
-  }
-  
   // 获取默认服务连接ID（如果用户没有明确指定）
   let defaultServiceConnectionId: string | null = null;
-  const hasServiceConnectionId = parsedInfo.variables.serviceConnectionId || options?.serviceConnectionId;
+  const hasServiceConnectionId = options.serviceConnectionId;
   if (!hasServiceConnectionId) {
     defaultServiceConnectionId = await getDefaultServiceConnectionId(organizationId);
   }
   
   // 获取默认Packages服务连接ID（如果用户没有明确指定且需要packages上传）
   let defaultPackagesServiceConnectionId: string | null = null;
-  const hasPackagesServiceConnectionId = options?.packagesServiceConnection;
-  const needsPackagesUpload = !options?.uploadType || options?.uploadType === 'packages';
+  const hasPackagesServiceConnectionId = options.packagesServiceConnection;
+  const needsPackagesUpload = !options.uploadType || options.uploadType === 'packages';
   if (!hasPackagesServiceConnectionId && needsPackagesUpload) {
     defaultPackagesServiceConnectionId = await getDefaultPackagesServiceConnectionId(organizationId);
   }
   
-  // 获取默认主机组ID（如果用户没有明确指定且模板包含VM部署）
+  // 获取默认主机组ID（如果用户没有明确指定且需要VM部署）
   let defaultMachineGroupId: string | null = null;
-  const hasMachineGroupId = parsedInfo.variables.machineGroupId || options?.machineGroupId;
-  const needsVMDeploy = parsedInfo.deployTargets.some(target => 
-    ['vm', 'host', '主机'].includes(target.toLowerCase())
-  );
+  const hasMachineGroupId = options.machineGroupId;
+  const needsVMDeploy = options.deployTarget === 'vm';
   if (!hasMachineGroupId && needsVMDeploy) {
     defaultMachineGroupId = await getDefaultHostGroupId(organizationId);
   }
   
   // 准备模块化流水线生成的变量
   const finalVariables: TemplateVariables = {
-    // 使用解析出的变量作为基础
-    ...parsedInfo.variables,
-    
-    // 使用代码库上下文作为智能默认值（只在用户未明确指定时使用）
-    ...(repoContext && !hasRepoInfo && { repoUrl: repoContext.repoUrl }),
-    ...(repoContext && !hasBranch && { branch: repoContext.branch }),
-    ...(repoContext && !hasServiceName && { serviceName: repoContext.serviceName }),
+    // 基础配置（直接使用用户提供的值）
+    ...(options.repoUrl && { repoUrl: options.repoUrl }),
+    ...(options.branch && { branch: options.branch }),
+    ...(options.serviceName && { serviceName: options.serviceName }),
     
     // 使用获取到的默认服务连接ID
     ...(defaultServiceConnectionId && !hasServiceConnectionId && { serviceConnectionId: defaultServiceConnectionId }),
@@ -502,126 +630,65 @@ export async function createPipelineFromDescriptionFunc(
     // 使用获取到的默认主机组ID
     ...(defaultMachineGroupId && !hasMachineGroupId && { machineGroupId: defaultMachineGroupId }),
     
-    // 基础配置覆盖（用户明确指定的值优先级最高）
-    ...(options?.repoUrl && { repoUrl: options.repoUrl }),
-    ...(options?.branch && { branch: options.branch }),
-    ...(options?.serviceConnectionId && { serviceConnectionId: options.serviceConnectionId }),
-    ...(options?.packagesServiceConnection && { packagesServiceConnection: options.packagesServiceConnection }),
-    ...(options?.machineGroupId && { machineGroupId: options.machineGroupId }),
-    ...(options?.namespace && { namespace: options.namespace }),
-    ...(options?.dockerImage && { dockerImage: options.dockerImage }),
+    // 用户明确指定的值优先级最高
+    ...(options.serviceConnectionId && { serviceConnectionId: options.serviceConnectionId }),
+    ...(options.packagesServiceConnection && { packagesServiceConnection: options.packagesServiceConnection }),
+    ...(options.machineGroupId && { machineGroupId: options.machineGroupId }),
+    ...(options.namespace && { namespace: options.namespace }),
+    ...(options.dockerImage && { dockerImage: options.dockerImage }),
     
-    // 版本相关覆盖
-    ...(options?.jdkVersion && { jdkVersion: options.jdkVersion }),
-    ...(options?.mavenVersion && { mavenVersion: options.mavenVersion }),
-    ...(options?.nodeVersion && { nodeVersion: options.nodeVersion }),
-    ...(options?.pythonVersion && { pythonVersion: options.pythonVersion }),
-    ...(options?.goVersion && { goVersion: options.goVersion }),
+    // 版本相关（确保双引号）
+    ...(options.jdkVersion && { jdkVersion: `"${options.jdkVersion}"` }),
+    ...(options.mavenVersion && { mavenVersion: `"${options.mavenVersion}"` }),
+    ...(options.nodeVersion && { nodeVersion: `"${options.nodeVersion}"` }),
+    ...(options.pythonVersion && { pythonVersion: `"${options.pythonVersion}"` }),
+    ...(options.goVersion && { goVersion: `"${options.goVersion}"` }),
+    ...(options.kubectlVersion && { kubectlVersion: `"${options.kubectlVersion}"` }),
     
-    // 构建物上传相关覆盖
-    ...(options?.uploadType && { uploadType: options.uploadType }),
-    ...(options?.artifactName && { artifactName: options.artifactName }),
-    ...(options?.artifactVersion && { artifactVersion: options.artifactVersion }),
-    ...(options?.packagesRepoId && { packagesRepoId: options.packagesRepoId }),
-    ...(options?.includePathInArtifact !== undefined && { includePathInArtifact: options.includePathInArtifact }),
+    // 构建物上传相关
+    ...(options.uploadType && { uploadType: options.uploadType }),
+    ...(options.artifactName && { artifactName: options.artifactName }),
+    ...(options.artifactVersion && { artifactVersion: options.artifactVersion }),
+    ...(options.packagesRepoId && { packagesRepoId: options.packagesRepoId }),
+    ...(options.includePathInArtifact !== undefined && { includePathInArtifact: options.includePathInArtifact }),
     
-    // 部署相关覆盖
-    ...(options?.executeUser && { executeUser: options.executeUser }),
-    ...(options?.artifactDownloadPath && { artifactDownloadPath: options.artifactDownloadPath }),
+    // 部署相关
+    ...(options.executeUser && { executeUser: options.executeUser }),
+    ...(options.artifactDownloadPath && { artifactDownloadPath: options.artifactDownloadPath }),
+    ...(options.kubernetesClusterId && { kubernetesClusterId: options.kubernetesClusterId }),
+    ...(options.yamlPath && { yamlPath: options.yamlPath }),
     
-    // 命令覆盖
-    ...(options?.buildCommand && { buildCommand: options.buildCommand }),
-    ...(options?.testCommand && { testCommand: options.testCommand }),
-    ...(options?.deployCommand && { deployCommand: options.deployCommand }),
+    // 命令
+    ...(options.buildCommand && { buildCommand: options.buildCommand }),
+    ...(options.testCommand && { testCommand: options.testCommand }),
+    ...(options.deployCommand && { deployCommand: options.deployCommand }),
   };
-  
-  // 如果没有明确的serviceName但有repoUrl，从repoUrl解析serviceName
-  if (!finalVariables.serviceName && finalVariables.repoUrl) {
-    let match;
-    // 处理git@格式：git@codeup.aliyun.com:org/repo.git
-    if (finalVariables.repoUrl.includes('@') && finalVariables.repoUrl.includes(':')) {
-      match = finalVariables.repoUrl.match(/:([^\/]+)\/([^\/]+?)(?:\.git)?$/);
-      if (match) {
-        finalVariables.serviceName = match[2]; // 返回repo名称
-      }
-    } 
-    // 处理https格式：https://codeup.aliyun.com/org/repo.git
-    else {
-      match = finalVariables.repoUrl.match(/\/([^\/]+)(?:\.git)?$/);
-      if (match) {
-        finalVariables.serviceName = match[1].replace('.git', '');
-      }
-    }
-  }
   
   console.log('🔍 [DEBUG] finalVariables:', JSON.stringify(finalVariables, null, 2));
   
-  // 生成流水线名称
-  const pipelineName = options?.name || generatePipelineName(parsedInfo);
+  // 转换为模块化流水线选项
+  const deployTargets = options.deployTarget ? [options.deployTarget] : [];
   
   // 使用模块化架构生成YAML
   const generatedYaml = generateModularPipeline({
-    keywords: parsedInfo.detectedKeywords,
-    buildLanguages: parsedInfo.programmingLanguages,
-    buildTools: parsedInfo.buildTools,
-    deployTargets: parsedInfo.deployTargets,
-    uploadType: options?.uploadType || 'packages',
+    keywords: [options.buildLanguage, options.buildTool],
+    buildLanguages: [options.buildLanguage],
+    buildTools: [options.buildTool],
+    deployTargets: deployTargets,
+    uploadType: options.uploadType || 'packages',
     variables: finalVariables
   });
+  
   console.log('生成的YAML:', generatedYaml);
+  
   // 创建流水线
-  const pipelineId = await createPipelineFunc(organizationId, pipelineName, generatedYaml);
+  const pipelineId = await createPipelineFunc(organizationId, options.name, generatedYaml);
   
   return {
     pipelineId,
-    generatedYaml
+    generatedYaml,
+    usedTemplate: '模块化流水线'
   };
-}
-
-/**
- * 获取用户当前的默认代码库信息（仅用于代码源配置）
- * @param organizationId 组织ID
- * @returns 默认代码库信息
- */
-async function getCurrentRepositoryContext(organizationId: string): Promise<{
-  repoUrl?: string;
-  branch?: string;
-  serviceName?: string;
-} | null> {
-  try {
-    // 获取用户最近的代码库列表（按最新活动排序，取第一个）
-    const repositories = await listRepositoriesFunc(
-      organizationId,
-      1, // page
-      1, // perPage - 只取第一个
-      'last_activity_at', // orderBy - 按最新活动排序
-      'desc' // sort - 降序，最新的在前面
-    );
-    
-    if (repositories && repositories.length > 0) {
-      const repo = repositories[0];
-      
-      // 确保repoUrl有.git后缀
-      let repoUrl = repo.webUrl;
-      if (repoUrl && !repoUrl.endsWith('.git')) {
-        repoUrl = `${repoUrl}.git`;
-      }
-      
-      // 使用repo.name作为serviceName，这个值应该就是仓库名称
-      const serviceName = repo.name || 'my-app';
-      
-      return {
-        repoUrl: repoUrl || `https://codeup.aliyun.com/${organizationId}/${serviceName}.git`,
-        branch: 'master', // 默认分支，实际应该从repo信息中获取
-        serviceName: serviceName
-      };
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('获取当前代码库上下文失败:', error);
-    return null;
-  }
 }
 
 /**

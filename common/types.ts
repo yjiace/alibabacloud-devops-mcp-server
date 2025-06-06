@@ -1151,7 +1151,6 @@ export const ListHostGroupsSchema = z.object({
 });
 
 // 添加类型导出
-export type HostInfo = z.infer<typeof HostInfoSchema>;
 export type HostGroup = z.infer<typeof HostGroupSchema>;
 
 

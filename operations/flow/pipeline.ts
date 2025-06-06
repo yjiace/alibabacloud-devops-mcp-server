@@ -5,8 +5,6 @@ import {
   ListPipelinesOptions,
   PipelineListItemSchema,
   PipelineListItem,
-  CreatePipelineOptions,
-  CreatePipelineFromDescriptionOptions,
   CreatePipelineRunOptions,
   PipelineRunSchema,
   PipelineRun,
@@ -14,13 +12,9 @@ import {
   PipelineRunListItem,
   ListPipelineRunsOptions
 } from "../../common/types.js";
-import { parseUserDescription, generatePipelineName } from "../../common/nlpProcessor.js";
 import { TemplateVariables } from "../../common/pipelineTemplates.js";
 import { generateModularPipeline } from "../../common/modularTemplates.js";
-import { getCurrentOrganizationInfoFunc } from "../organization/organization.js";
-import { listRepositoriesFunc } from "../codeup/repositories.js";
 import { listServiceConnectionsFunc } from "./serviceConnection.js";
-import { listHostGroupsFunc } from "./hostGroup.js";
 
 /**
  * 获取流水线详情
@@ -476,12 +470,23 @@ export async function generatePipelineYamlFunc(
     dockerImage?: string;
   }
 ): Promise<string> {
+  // 自动从repoUrl解析serviceName（如果用户没有明确指定）
+  let derivedServiceName = options.serviceName;
+  if (!derivedServiceName && options.repoUrl) {
+    // 从Git URL中提取项目名称
+    // 支持格式: git@codeup.aliyun.com:org/repo.git 或 https://codeup.aliyun.com/org/repo.git
+    const repoUrlMatch = options.repoUrl.match(/[\/:]([^\/]+)\.git$/);
+    if (repoUrlMatch) {
+      derivedServiceName = repoUrlMatch[1];
+    }
+  }
+  
   // 准备变量，确保版本号有双引号
   const variables: TemplateVariables = {
     // 基础配置
     ...(options.repoUrl && { repoUrl: options.repoUrl }),
     ...(options.branch && { branch: options.branch }),
-    ...(options.serviceName && { serviceName: options.serviceName }),
+    ...(derivedServiceName && { serviceName: derivedServiceName }),
     ...(options.serviceConnectionId && { serviceConnectionId: options.serviceConnectionId }),
     ...(options.packagesServiceConnection && { packagesServiceConnection: options.packagesServiceConnection }),
     ...(options.machineGroupId && { machineGroupId: options.machineGroupId }),
@@ -589,7 +594,6 @@ export async function createPipelineWithOptionsFunc(
 ): Promise<{
   pipelineId: number;
   generatedYaml: string;
-  usedTemplate: string;
 }> {
   // 获取默认服务连接ID（如果用户没有明确指定）
   let defaultServiceConnectionId: string | null = null;
@@ -614,12 +618,23 @@ export async function createPipelineWithOptionsFunc(
     defaultMachineGroupId = await getDefaultHostGroupId(organizationId);
   }
   
+  // 自动从repoUrl解析serviceName（如果用户没有明确指定）
+  let derivedServiceName = options.serviceName;
+  if (!derivedServiceName && options.repoUrl) {
+    // 从Git URL中提取项目名称
+    // 支持格式: git@codeup.aliyun.com:org/repo.git 或 https://codeup.aliyun.com/org/repo.git
+    const repoUrlMatch = options.repoUrl.match(/[\/:]([^\/]+)\.git$/);
+    if (repoUrlMatch) {
+      derivedServiceName = repoUrlMatch[1];
+    }
+  }
+  
   // 准备模块化流水线生成的变量
   const finalVariables: TemplateVariables = {
     // 基础配置（直接使用用户提供的值）
     ...(options.repoUrl && { repoUrl: options.repoUrl }),
     ...(options.branch && { branch: options.branch }),
-    ...(options.serviceName && { serviceName: options.serviceName }),
+    ...(derivedServiceName && { serviceName: derivedServiceName }),
     
     // 使用获取到的默认服务连接ID
     ...(defaultServiceConnectionId && !hasServiceConnectionId && { serviceConnectionId: defaultServiceConnectionId }),
@@ -664,8 +679,6 @@ export async function createPipelineWithOptionsFunc(
     ...(options.deployCommand && { deployCommand: options.deployCommand }),
   };
   
-  console.log('🔍 [DEBUG] finalVariables:', JSON.stringify(finalVariables, null, 2));
-  
   // 转换为模块化流水线选项
   const deployTargets = options.deployTarget ? [options.deployTarget] : [];
   
@@ -679,16 +692,35 @@ export async function createPipelineWithOptionsFunc(
     variables: finalVariables
   });
   
-  console.log('生成的YAML:', generatedYaml);
-  
   // 创建流水线
-  const pipelineId = await createPipelineFunc(organizationId, options.name, generatedYaml);
-  
-  return {
-    pipelineId,
-    generatedYaml,
-    usedTemplate: '模块化流水线'
-  };
+  try {
+    const pipelineId = await createPipelineFunc(organizationId, options.name, generatedYaml);
+    
+    return {
+      pipelineId,
+      generatedYaml
+    };
+  } catch (error) {
+    // 如果是YAML校验失败或其他流水线创建错误，将详细信息透出给用户
+    console.error('Create pipeline failed:', error);
+    
+    // 构造包含生成YAML的错误信息，方便用户排查
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const enhancedError = new Error(
+      `Create pipeline failed: ${errorMessage}\n\n` +
+      `YAML content:\n${generatedYaml}\n\n` +
+      `Suggestions:\n` +
+      `1. Check whether the YAML format is correct.\n` +
+      `2. Verify whether the serviceConnectionID、machineGroupID、kubernetesClusterID and other parameters are existed and valid.`
+    );
+    
+    // 保持原始错误的堆栈信息
+    if (error instanceof Error && error.stack) {
+      enhancedError.stack = error.stack;
+    }
+    
+    throw enhancedError;
+  }
 }
 
 /**
@@ -701,7 +733,6 @@ async function getDefaultServiceConnectionId(organizationId: string): Promise<st
     // 获取Codeup类型的服务连接（代码源最常用）
     const serviceConnections = await listServiceConnectionsFunc(organizationId, 'codeup');
     if (serviceConnections && serviceConnections.length > 0) {
-      // 优先使用UUID，如果没有UUID则使用ID转字符串
       return serviceConnections[0].uuid || null;
     }
     return null;
@@ -721,7 +752,6 @@ async function getDefaultPackagesServiceConnectionId(organizationId: string): Pr
     // 获取packages类型的服务连接
     const serviceConnections = await listServiceConnectionsFunc(organizationId, 'packages');
     if (serviceConnections && serviceConnections.length > 0) {
-      // 优先使用UUID，如果没有UUID则使用ID转字符串
       return serviceConnections[0].uuid || null;
     }
     return null;

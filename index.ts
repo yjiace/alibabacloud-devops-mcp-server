@@ -20,14 +20,11 @@ import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
 import * as pipelineJob from './operations/flow/pipelineJob.js'
 import * as serviceConnection from './operations/flow/serviceConnection.js'
-import * as hostGroup from './operations/flow/hostGroup.js'
 import * as packageRepositories from './operations/packages/repositories.js'
 import * as artifacts from './operations/packages/artifacts.js'
 import {
     isYunxiaoError,
-    YunxiaoAuthenticationError, YunxiaoConflictError,
-    YunxiaoError, YunxiaoPermissionError, YunxiaoRateLimitError,
-    YunxiaoResourceNotFoundError,
+    YunxiaoError,
     YunxiaoValidationError
 } from "./common/errors.js";
 import { VERSION } from "./common/version.js";
@@ -47,117 +44,49 @@ const server = new Server(
     }
 );
 
-/**
- * 验证技术栈组合的合理性
- * @param buildLanguage 构建语言
- * @param buildTool 构建工具
- * @returns 验证结果
- */
-function validateTechStackCombination(buildLanguage: string, buildTool: string): {
-    valid: boolean;
-    message: string;
-    suggestion: string;
-} {
-    const validCombinations: Record<string, string[]> = {
-        'java': ['maven', 'gradle'],
-        'nodejs': ['npm', 'yarn'],
-        'python': ['pip'],
-        'go': ['go'],
-        'dotnet': ['dotnet']
-    };
-
-    if (!validCombinations[buildLanguage]) {
-        return {
-            valid: false,
-            message: `不支持的构建语言: ${buildLanguage}`,
-            suggestion: `支持的构建语言: ${Object.keys(validCombinations).join(', ')}`
-        };
-    }
-
-    if (!validCombinations[buildLanguage].includes(buildTool)) {
-        return {
-            valid: false,
-            message: `${buildLanguage} 语言不支持 ${buildTool} 构建工具`,
-            suggestion: `${buildLanguage} 支持的构建工具: ${validCombinations[buildLanguage].join(', ')}`
-        };
-    }
-
-    return {
-        valid: true,
-        message: '',
-        suggestion: ''
-    };
-}
-
 function formatYunxiaoError(error: YunxiaoError): string {
     let message = `Yunxiao API Error: ${error.message}`;
 
     if (error instanceof YunxiaoValidationError) {
-        message = `参数验证失败: ${error.message}`;
+        message = `Parameter validation failed: ${error.message}`;
         if (error.response) {
-            message += `\n详细信息: ${JSON.stringify(error.response, null, 2)}`;
+            message += `\n errorMessage: ${JSON.stringify(error.response, null, 2)}`;
         }
         // 添加常见参数错误的提示
         if (error.message.includes('name')) {
-            message += `\n💡 建议: 请检查流水线名称是否符合要求（不能为空，不能包含特殊字符）`;
+            message += `\n Suggestion: Please check whether the pipeline name meets the requirements.`;
         }
         if (error.message.includes('content') || error.message.includes('yaml')) {
-            message += `\n💡 建议: 请检查生成的YAML格式是否正确，可能是技术栈参数配置有误`;
-        }
-    } else if (error instanceof YunxiaoResourceNotFoundError) {
-        message = `资源未找到: ${error.message}`;
-        // 针对常见的资源未找到错误提供建议
-        if (error.message.includes('organization')) {
-            message += `\n💡 建议: 请检查组织ID是否正确，或使用 get_current_organization_info 获取当前组织信息`;
-        }
-        if (error.message.includes('repository')) {
-            message += `\n💡 建议: 请检查仓库URL是否正确，或使用 list_repositories 查看可用仓库`;
-        }
-        if (error.message.includes('service') || error.message.includes('connection')) {
-            message += `\n💡 建议: 请检查服务连接配置，或使用 list_service_connections 查看可用连接`;
-        }
-    } else if (error instanceof YunxiaoAuthenticationError) {
-        message = `身份验证失败: ${error.message}`;
-        message += `\n💡 建议: 请检查YUNXIAO_ACCESS_TOKEN环境变量是否设置正确`;
-    } else if (error instanceof YunxiaoPermissionError) {
-        message = `权限不足: ${error.message}`;
-        message += `\n💡 建议: 请确认您有创建流水线的权限，或联系管理员分配相应权限`;
-    } else if (error instanceof YunxiaoRateLimitError) {
-        message = `请求频率超限: ${error.message}\n重置时间: ${error.resetAt.toISOString()}`;
-        message += `\n💡 建议: 请稍后重试，避免频繁调用API`;
-    } else if (error instanceof YunxiaoConflictError) {
-        message = `资源冲突: ${error.message}`;
-        if (error.message.includes('name') || error.message.includes('pipeline')) {
-            message += `\n💡 建议: 流水线名称可能已存在，请尝试使用不同的名称`;
+            message += `\n Suggestion: Please check whether the generated YAML format is correct.`;
         }
     } else {
         // 处理通用的Yunxiao错误
-        message = `Yunxiao API错误 (${error.status}): ${error.message}`;
+        message = `Yunxiao API error (${error.status}): ${error.message}`;
         if (error.response) {
             const response = error.response as any;
             if (response.errorCode) {
-                message += `\n错误代码: ${response.errorCode}`;
+                message += `\n errorCode: ${response.errorCode}`;
             }
             if (response.errorMessage && response.errorMessage !== error.message) {
-                message += `\n详细错误: ${response.errorMessage}`;
+                message += `\n errorMessage: ${response.errorMessage}`;
             }
             if (response.data && typeof response.data === 'object') {
-                message += `\n响应数据: ${JSON.stringify(response.data, null, 2)}`;
+                message += `\n data: ${JSON.stringify(response.data, null, 2)}`;
             }
         }
         
         // 根据状态码提供通用建议
         switch (error.status) {
             case 400:
-                message += `\n💡 建议: 请检查请求参数是否正确，特别是必需参数是否都已提供`;
+                message += `\n Suggestion: Please check whether the request parameters are correct, especially whether all required parameters have been provided.`;
                 break;
             case 500:
-                message += `\n💡 建议: 服务器内部错误，请稍后重试或联系技术支持`;
+                message += `\n Suggestion: Internal server error. Please try again later or contact technical support.`;
                 break;
             case 502:
             case 503:
             case 504:
-                message += `\n💡 建议: 服务暂时不可用，请稍后重试`;
+                message += `\n Suggestion: The service is temporarily unavailable. Please try again later.`;
                 break;
         }
     }
@@ -351,7 +280,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     "- For QUICK pipeline creation: Use IDE detection (git config, file reading)\n" +
                     "- For PRECISE parameter selection: Consider list_repositories, list_service_connections when needed\n" +
                     "- Balance efficiency vs. accuracy based on user intent\n\n" +
-                    "**⚡ Built-in capabilities:** Handles default service connections internally",
+                    "**⚡ Built-in capabilities:** Handles default service connections internally, auto-extracts project name from repo URL",
                 inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
             {
@@ -360,6 +289,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     "**🔧 Built-in Capabilities:**\n" +
                     "- ✅ Automatically retrieves default service connection IDs when not specified\n" +
                     "- ✅ Handles repository and service connection logic internally\n" +
+                    "- ✅ Auto-extracts project name from repository URL (git@host:org/repo.git → repo)\n" +
                     "- ✅ Supports both IDE detection and explicit parameter specification\n\n" +
                     "**📖 Flexible Workflow Options:**\n" +
                     "1. 🎯 PARSE user description for explicit parameters\n" +
@@ -374,6 +304,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     "**🔍 IDE Detection Rules (efficient for most cases):**\n" +
                     "- 📂 Repository: `git config --get remote.origin.url` → repoUrl\n" +
                     "- 🌿 Branch: `git branch --show-current` → branch\n" +
+                    "- 🏷️ Service Name: Auto-extracted from repoUrl (git@host:org/repo.git → repo)\n" +
                     "- ☕ Java Maven: pom.xml exists → buildLanguage='java', buildTool='maven'\n" +
                     "- 🏗️ Java Gradle: build.gradle exists → buildLanguage='java', buildTool='gradle'\n" +
                     "- 🟢 Node npm: package.json + package-lock.json → buildLanguage='nodejs', buildTool='npm'\n" +
@@ -390,10 +321,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     "- '部署到主机/VM/虚拟机' → deployTarget='vm'\n" +
                     "- '部署到Kubernetes/K8s' → deployTarget='k8s'\n" +
                     "- '只构建/构建制品' → deployTarget='none'\n\n" +
+                    "**🔗 Service Connection Strategy (3 scenarios):**\n" +
+                    "1. **User specifies ID explicitly** (e.g., '使用服务连接ID abc123')\n" +
+                    "   → ✅ Pass serviceConnectionId=abc123 directly, NO list_service_connections call needed\n" +
+                    "2. **User doesn't specify any ID** (most common case)\n" +
+                    "   → ✅ Pass serviceConnectionId=null, tool will auto-retrieve default ID internally\n" +
+                    "3. **User wants to choose from available options** (e.g., '显示可用的服务连接让我选择')\n" +
+                    "   → 🔍 Call list_service_connections first, then let user choose, then create pipeline\n\n" +
                     "**🤔 When to Use Other Tools:**\n" +
                     "- User asks to \"select from available repositories\" → use list_repositories first\n" +
-                    "- User needs specific service connection → use list_service_connections first\n" +
-                    "- User wants to see options before deciding → gather info first, then create\n\n" +
+                    "- User wants to \"choose from service connections\" → use list_service_connections first\n" +
+                    "- User wants to see options before deciding → gather info first, then create\n" +
+                    "- For quick creation with current repo → directly use IDE detection\n\n" +
                     "**✅ Required:** organizationId, name, buildLanguage, buildTool",
                 inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
@@ -476,13 +415,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "list_service_connections",
                 description: "[Service Connection Management] List service connections in an organization with filtering options",
                 inputSchema: zodToJsonSchema(types.ListServiceConnectionsSchema),
-            },
-
-            // Host Group Operations
-            {
-                name: "list_host_groups",
-                description: "[Host Group Management] List host groups in an organization with filtering options",
-                inputSchema: zodToJsonSchema(types.ListHostGroupsSchema),
             }
         ],
     };
@@ -932,10 +864,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     
                     // 检查必需的参数
                     if (!args.buildLanguage) {
-                        throw new Error("构建语言参数缺失。请指定以下之一: java, nodejs, python, go, dotnet\n💡 提示: 大模型应该从用户描述中提取技术栈信息，或从IDE环境中检测（如读取pom.xml、package.json等项目文件）");
+                        throw new Error("The build language parameter is missing.");
                     }
                     if (!args.buildTool) {
-                        throw new Error("构建工具参数缺失。请指定以下之一: maven, gradle, npm, yarn, pip, go, dotnet\n💡 提示: 构建工具应该与构建语言匹配（如Java+Maven、Node.js+npm等）");
+                        throw new Error("The build tool parameter is missing.");
                     }
                     
                     const yamlContent = await pipeline.generatePipelineYamlFunc({
@@ -988,16 +920,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         content: [{ type: "text", text: yamlContent }],
                     };
                 } catch (error) {
-                    if (error instanceof Error && error.message.includes("构建语言参数缺失")) {
+                    if (error instanceof Error && error.message.includes("build language parameter is missing")) {
                         throw error; // 重新抛出我们自定义的错误
                     }
-                    if (error instanceof Error && error.message.includes("构建工具参数缺失")) {
+                    if (error instanceof Error && error.message.includes("build tool parameter is missing")) {
                         throw error; // 重新抛出我们自定义的错误
                     }
                     
                     // 处理YAML生成过程中的错误
                     if (error instanceof Error) {
-                        throw new Error(`YAML生成失败: ${error.message}\n💡 建议: 请检查技术栈参数是否匹配（如Java项目应使用maven/gradle，Node.js项目应使用npm/yarn）`);
+                        throw new Error(`YAML generation failed: ${error.message}`);
                     }
                     throw error;
                 }
@@ -1009,19 +941,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     
                     // 检查必需的参数
                     if (!args.name) {
-                        throw new Error("流水线名称不能为空\n💡 建议: 请提供一个描述性的流水线名称，如'Maven构建流水线'或'Node.js部署流水线'");
+                        throw new Error("The Pipeline name cannot be empty.");
                     }
                     if (!args.buildLanguage) {
-                        throw new Error("构建语言参数缺失。请指定以下之一: java, nodejs, python, go, dotnet\n💡 提示: 大模型应该从用户描述中提取技术栈信息，或从IDE环境中检测（如读取pom.xml、package.json等项目文件）");
+                        throw new Error("The build language parameter is missing.");
                     }
                     if (!args.buildTool) {
-                        throw new Error("构建工具参数缺失。请指定以下之一: maven, gradle, npm, yarn, pip, go, dotnet\n💡 提示: 构建工具应该与构建语言匹配（如Java+Maven、Node.js+npm等）");
-                    }
-
-                    // 验证技术栈组合的合理性
-                    const techStackValidation = validateTechStackCombination(args.buildLanguage, args.buildTool);
-                    if (!techStackValidation.valid) {
-                        throw new Error(`技术栈组合不匹配: ${techStackValidation.message}\n💡 建议: ${techStackValidation.suggestion}`);
+                        throw new Error("The build tool parameter is missing.");
                     }
                     
                     const result = await pipeline.createPipelineWithOptionsFunc(
@@ -1074,22 +1000,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
                     };
                 } catch (error) {
-                    if (error instanceof Error && error.message.includes("流水线名称不能为空")) {
-                        throw error; // 重新抛出我们自定义的错误
+                    if (error instanceof Error && error.message.includes("Pipeline name cannot be empty")) {
+                        throw error;
                     }
-                    if (error instanceof Error && error.message.includes("构建语言参数缺失")) {
-                        throw error; // 重新抛出我们自定义的错误
+                    if (error instanceof Error && error.message.includes("build language parameter is missing")) {
+                        throw error;
                     }
-                    if (error instanceof Error && error.message.includes("构建工具参数缺失")) {
-                        throw error; // 重新抛出我们自定义的错误
-                    }
-                    if (error instanceof Error && error.message.includes("技术栈组合不匹配")) {
-                        throw error; // 重新抛出我们自定义的错误
+                    if (error instanceof Error && error.message.includes("build language tool is missing")) {
+                        throw error;
                     }
                     
                     // 处理流水线创建过程中的其他错误
                     if (error instanceof Error) {
-                        throw new Error(`流水线创建失败: ${error.message}\n💡 建议: 请检查组织ID、仓库配置和技术栈参数是否正确`);
+                        throw new Error(`Create pipeline failed: ${error.message}\n Suggestion: Please check whether the organization ID, repository configuration, or other parameters are correct, and if generated YAML to check whether YAML content is invalid.`);
                     }
                     throw error;
                 }
@@ -1294,28 +1217,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(serviceConnections, null, 2) }],
-                };
-            }
-
-            // Host Group Operations
-            case "list_host_groups": {
-                const args = types.ListHostGroupsSchema.parse(request.params.arguments);
-                const hostGroups = await hostGroup.listHostGroupsFunc(
-                    args.organizationId,
-                    {
-                        ids: args.ids,
-                        name: args.name,
-                        createStartTime: args.createStartTime,
-                        createEndTime: args.createEndTime,
-                        creatorAccountIds: args.creatorAccountIds,
-                        perPage: args.perPage,
-                        page: args.page,
-                        pageSort: args.pageSort,
-                        pageOrder: args.pageOrder
-                    }
-                );
-                return {
-                    content: [{ type: "text", text: JSON.stringify(hostGroups, null, 2) }],
                 };
             }
 

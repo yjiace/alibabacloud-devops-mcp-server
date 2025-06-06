@@ -243,65 +243,52 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             {
                 name: "generate_pipeline_yaml",
-                description: "[Pipeline Management] Generate pipeline YAML configuration without creating a pipeline. Useful for previewing the generated YAML or for manual pipeline creation. The LLM should provide structured parameters including buildLanguage, buildTool, repository info, versions, etc.",
-                inputSchema: zodToJsonSchema(
-                    z.object({
-                        buildLanguage: z.enum(['java', 'nodejs', 'python', 'go', 'dotnet']).describe("Programming language of the project"),
-                        buildTool: z.enum(['maven', 'gradle', 'npm', 'yarn', 'pip', 'go', 'dotnet']).describe("Build tool to use"),
-                        deployTarget: z.enum(['vm', 'k8s', 'none']).optional().describe("Deployment target"),
-                        
-                        // Repository configuration
-                        repoUrl: z.string().optional().describe("Repository URL (should be detected from git config)"),
-                        branch: z.string().optional().describe("Git branch (should be detected from git branch --show-current)"),
-                        serviceName: z.string().optional().describe("Service name (can be derived from repository name)"),
-                        serviceConnectionId: z.string().optional().describe("Service connection UUID for code source"),
-                        
-                        // Version configuration
-                        jdkVersion: z.string().optional().describe("JDK version for Java projects (e.g., '1.8', '11', '17')"),
-                        mavenVersion: z.string().optional().describe("Maven version (e.g., '3.6.3')"),
-                        nodeVersion: z.string().optional().describe("Node.js version (e.g., '18.12', '20.x')"),
-                        pythonVersion: z.string().optional().describe("Python version (e.g., '3.7', '3.12')"),
-                        goVersion: z.string().optional().describe("Go version (e.g., '1.21')"),
-                        
-                        // Build configuration
-                        buildCommand: z.string().optional().describe("Custom build command"),
-                        testCommand: z.string().optional().describe("Custom test command"),
-                        
-                        // Artifact upload configuration
-                        uploadType: z.enum(['packages', 'flowPublic']).optional().describe("Artifact upload type"),
-                        packagesServiceConnection: z.string().optional().describe("Packages service connection UUID"),
-                        artifactName: z.string().optional().describe("Artifact name"),
-                        artifactVersion: z.string().optional().describe("Artifact version"),
-                        packagesRepoId: z.string().optional().describe("Packages repository ID"),
-                        includePathInArtifact: z.boolean().optional().describe("Include path in artifact"),
-                        
-                        // VM deployment configuration
-                        machineGroupId: z.string().optional().describe("Machine group UUID for VM deployment"),
-                        executeUser: z.string().optional().describe("Execution user for VM deployment"),
-                        artifactDownloadPath: z.string().optional().describe("Artifact download path on VM"),
-                        deployCommand: z.string().optional().describe("Deployment command for VM"),
-                        pauseStrategy: z.enum(['firstBatchPause', 'noPause', 'eachBatchPause']).optional().describe("Pause strategy for VM deployment"),
-                        batchNumber: z.number().optional().describe("Batch number for VM deployment"),
-                        
-                        // Kubernetes deployment configuration
-                        kubernetesClusterId: z.string().optional().describe("Kubernetes cluster ID"),
-                        kubectlVersion: z.string().optional().describe("kubectl version"),
-                        namespace: z.string().optional().describe("Kubernetes namespace"),
-                        yamlPath: z.string().optional().describe("Kubernetes YAML file path"),
-                        dockerImage: z.string().optional().describe("Docker image for Kubernetes deployment"),
-                    })
-                ),
+                description: "[Pipeline Management] Generate only the YAML configuration for a pipeline without creating it.\n\n" +
+                    "**Use this when user wants to:**\n" +
+                    "- Preview YAML before creating pipeline\n" +
+                    "- Generate YAML for manual deployment\n" +
+                    "- Debug pipeline configuration\n\n" +
+                    "**LLM WORKFLOW:**\n" +
+                    "1. 📖 FIRST: Extract parameters from user's description\n" +
+                    "2. 🔍 THEN: Auto-detect missing information from IDE context\n\n" +
+                    "**PARAMETER PRIORITY:**\n" +
+                    "1. 🏆 USER PROVIDED (highest priority)\n" +
+                    "2. 🔍 AUTO-DETECT (only for missing parameters)\n\n" +
+                    "**Follow same detection rules as create_pipeline_from_description**\n" +
+                    "Returns the YAML configuration string that can be used to create a pipeline.",
+                inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
             {
                 name: "create_pipeline_from_description",
-                description: "[Pipeline Management] Create a pipeline based on structured parameters extracted by the LLM from user descriptions and IDE context. The LLM should:\n" +
-                    "1. Parse user's natural language description to extract: buildLanguage, buildTool, deployTarget, versions, etc.\n" +
-                    "2. Automatically detect project context from IDE: repository URL (git config), current branch (git branch), project name\n" +
-                    "3. Infer buildLanguage from project files (pom.xml→java, package.json→nodejs, requirements.txt→python, etc.)\n" +
-                    "4. Set default buildTool based on buildLanguage (java→maven, nodejs→npm, python→pip, etc.)\n" +
-                    "5. Extract version requirements from project files (pom.xml, package.json, etc.)\n" +
-                    "\n" +
-                    "This tool focuses on YAML generation and pipeline creation, not on parsing descriptions or detecting project context.",
+                description: "[Pipeline Management] Create a pipeline using structured parameters that the LLM extracts from user descriptions and IDE context.\n\n" +
+                    "**LLM WORKFLOW:**\n" +
+                    "1. 📖 FIRST: Extract parameters from user's description\n" +
+                    "2. 🔍 THEN: Auto-detect missing information from IDE context\n\n" +
+                    "**PARAMETER EXTRACTION PRIORITY:**\n" +
+                    "1. 🏆 USER PROVIDED (highest priority) - Use parameters explicitly mentioned by user\n" +
+                    "2. 🔍 AUTO-DETECT (fallback) - Only detect missing parameters from IDE/project files\n\n" +
+                    "**AUTO-DETECTION RULES (only when NOT provided by user):**\n" +
+                    "- 📂 Project Context: `git config --get remote.origin.url` → repoUrl\n" +
+                    "- 🌿 Git Branch: `git branch --show-current` → branch\n" +
+                    "- 📝 Service Name: from repo URL or directory → serviceName\n" +
+                    "- ☕ Java: pom.xml → buildLanguage='java', buildTool='maven'\n" +
+                    "- 🏗️ Java Gradle: build.gradle → buildLanguage='java', buildTool='gradle'\n" +
+                    "- 🟢 Node.js: package.json → buildLanguage='nodejs', buildTool='npm'\n" +
+                    "- 🧶 Yarn: yarn.lock → buildLanguage='nodejs', buildTool='yarn'\n" +
+                    "- 🐍 Python: requirements.txt → buildLanguage='python', buildTool='pip'\n" +
+                    "- 🐹 Go: go.mod → buildLanguage='go', buildTool='go'\n" +
+                    "- 💙 .NET: *.csproj → buildLanguage='dotnet', buildTool='dotnet'\n\n" +
+                    "**VERSION EXTRACTION (only when user doesn't specify):**\n" +
+                    "- ☕ JDK: pom.xml <maven.compiler.source> → jdkVersion\n" +
+                    "- 🟢 Node: package.json engines.node → nodeVersion\n" +
+                    "- 🐍 Python: .python-version, pyproject.toml → pythonVersion\n" +
+                    "- 🐹 Go: go.mod go directive → goVersion\n\n" +
+                    "**DEPLOYMENT TARGET PARSING:**\n" +
+                    "- '部署到主机/VM/虚拟机' → deployTarget='vm'\n" +
+                    "- '部署到Kubernetes/K8s' → deployTarget='k8s'\n" +
+                    "- '只构建/构建和制品上传' → deployTarget='none'\n\n" +
+                    "**REQUIRED:** organizationId, name, buildLanguage, buildTool\n" +
+                    "**EXAMPLE:** User says 'Create a Java pipeline to deploy to VM' → LLM provides buildLanguage='java', deployTarget='vm', then auto-detects missing repo info.",
                 inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
             {
@@ -834,42 +821,62 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "generate_pipeline_yaml": {
-                // Parse arguments using the schema defined in the tool registration
-                const args = z.object({
-                    buildLanguage: z.enum(['java', 'nodejs', 'python', 'go', 'dotnet']),
-                    buildTool: z.enum(['maven', 'gradle', 'npm', 'yarn', 'pip', 'go', 'dotnet']),
-                    deployTarget: z.enum(['vm', 'k8s', 'none']).optional(),
-                    repoUrl: z.string().optional(),
-                    branch: z.string().optional(),
-                    serviceName: z.string().optional(),
-                    serviceConnectionId: z.string().optional(),
-                    jdkVersion: z.string().optional(),
-                    mavenVersion: z.string().optional(),
-                    nodeVersion: z.string().optional(),
-                    pythonVersion: z.string().optional(),
-                    goVersion: z.string().optional(),
-                    buildCommand: z.string().optional(),
-                    testCommand: z.string().optional(),
-                    uploadType: z.enum(['packages', 'flowPublic']).optional(),
-                    packagesServiceConnection: z.string().optional(),
-                    artifactName: z.string().optional(),
-                    artifactVersion: z.string().optional(),
-                    packagesRepoId: z.string().optional(),
-                    includePathInArtifact: z.boolean().optional(),
-                    machineGroupId: z.string().optional(),
-                    executeUser: z.string().optional(),
-                    artifactDownloadPath: z.string().optional(),
-                    deployCommand: z.string().optional(),
-                    pauseStrategy: z.enum(['firstBatchPause', 'noPause', 'eachBatchPause']).optional(),
-                    batchNumber: z.number().optional(),
-                    kubernetesClusterId: z.string().optional(),
-                    kubectlVersion: z.string().optional(),
-                    namespace: z.string().optional(),
-                    yamlPath: z.string().optional(),
-                    dockerImage: z.string().optional(),
-                }).parse(request.params.arguments);
+                const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
                 
-                const yamlContent = await pipeline.generatePipelineYamlFunc(args);
+                // 检查必需的参数
+                if (!args.buildLanguage) {
+                    throw new Error("Build language is required. Please specify one of: java, nodejs, python, go, dotnet");
+                }
+                if (!args.buildTool) {
+                    throw new Error("Build tool is required. Please specify one of: maven, gradle, npm, yarn, pip, go, dotnet");
+                }
+                
+                const yamlContent = await pipeline.generatePipelineYamlFunc({
+                    buildLanguage: args.buildLanguage,
+                    buildTool: args.buildTool,
+                    deployTarget: args.deployTarget,
+                    
+                    // Repository configuration  
+                    repoUrl: args.repoUrl,
+                    branch: args.branch,
+                    serviceName: args.serviceName,
+                    serviceConnectionId: args.serviceConnectionId,
+                    
+                    // Version configuration
+                    jdkVersion: args.jdkVersion,
+                    mavenVersion: args.mavenVersion,
+                    nodeVersion: args.nodeVersion,
+                    pythonVersion: args.pythonVersion,
+                    goVersion: args.goVersion,
+                    
+                    // Build configuration
+                    buildCommand: args.buildCommand,
+                    testCommand: args.testCommand,
+                    
+                    // Artifact upload configuration
+                    uploadType: args.uploadType,
+                    packagesServiceConnection: args.packagesServiceConnection,
+                    artifactName: args.artifactName,
+                    artifactVersion: args.artifactVersion,
+                    packagesRepoId: args.packagesRepoId,
+                    includePathInArtifact: args.includePathInArtifact,
+                    
+                    // VM deployment configuration
+                    machineGroupId: args.machineGroupId,
+                    executeUser: args.executeUser,
+                    artifactDownloadPath: args.artifactDownloadPath,
+                    deployCommand: args.deployCommand,
+                    pauseStrategy: args.pauseStrategy,
+                    batchNumber: args.batchNumber,
+                    
+                    // Kubernetes deployment configuration
+                    kubernetesClusterId: args.kubernetesClusterId,
+                    kubectlVersion: args.kubectlVersion,
+                    namespace: args.namespace,
+                    yamlPath: args.yamlPath,
+                    dockerImage: args.dockerImage,
+                });
+                
                 return {
                     content: [{ type: "text", text: yamlContent }],
                 };

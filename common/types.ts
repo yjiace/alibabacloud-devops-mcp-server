@@ -484,57 +484,59 @@ export const CreatePipelineSchema = z.object({
   content: z.string().describe("Pipeline YAML description, refer to YAML pipeline documentation for writing. This should be a complete YAML configuration including sources, stages, jobs, and steps."),
 });
 
-// 智能创建流水线的参数Schema
-export const CreatePipelineFromDescriptionSchema = z.object({
+// 基于结构化参数创建流水线的Schema
+export const CreatePipelineWithStructuredOptionsSchema = z.object({
   organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
-  description: z.string().describe("Natural language description of the pipeline you want to create. Include information about programming language, build tools, deployment targets, repository URL, branch, service name, etc. Examples: '创建一个Java Maven项目的构建流水线，部署到主机', '为Node.js项目创建CI/CD流水线，使用npm构建，部署到Kubernetes'"),
-  name: z.string().max(60).optional().describe("Optional pipeline name. If not provided, will be auto-generated based on the description"),
+  name: z.string().max(60).describe("Pipeline name (required). LLM should generate a meaningful name based on user's request"),
   
-  // 技术栈参数 - 由大模型解析用户描述后提供
-  buildLanguage: z.enum(['java', 'nodejs', 'python', 'go', 'dotnet']).optional().describe("Programming language extracted from user description"),
-  buildTool: z.enum(['maven', 'gradle', 'npm', 'yarn', 'pip', 'go', 'dotnet']).optional().describe("Build tool extracted from user description"),
-  deployTarget: z.enum(['vm', 'k8s', 'none']).optional().describe("Deployment target extracted from user description. vm: Virtual Machine/Host deployment, k8s: Kubernetes deployment, none: Build only without deployment"),
+  // 技术栈参数（必需，由大模型从IDE上下文和用户描述中提取）
+  buildLanguage: z.enum(['java', 'nodejs', 'python', 'go', 'dotnet']).describe("Programming language (REQUIRED). LLM should detect from project files: pom.xml→java, package.json→nodejs, requirements.txt→python, go.mod→go, *.csproj→dotnet"),
+  buildTool: z.enum(['maven', 'gradle', 'npm', 'yarn', 'pip', 'go', 'dotnet']).describe("Build tool (REQUIRED). LLM should infer from buildLanguage and project files: java+pom.xml→maven, java+build.gradle→gradle, nodejs+package-lock.json→npm, nodejs+yarn.lock→yarn, python→pip, go→go, dotnet→dotnet"),
+  deployTarget: z.enum(['vm', 'k8s', 'none']).optional().describe("Deployment target from user description. vm: Virtual Machine/Host deployment, k8s: Kubernetes deployment, none: Build only without deployment. Default: none"),
   
-  // 代码源相关参数，用于覆盖从描述中推断的值
-  repoUrl: z.string().optional().describe("Repository URL, if not provided in description"),
-  branch: z.string().optional().describe("Branch name, if not provided in description"),
-  serviceConnectionId: z.string().optional().describe("Service connection ID for repository access"),
+  // 代码源相关参数（由大模型从IDE上下文中获取）
+  repoUrl: z.string().optional().describe("Repository URL (LLM should get from 'git config --get remote.origin.url')"),
+  branch: z.string().optional().describe("Git branch (LLM should get from 'git branch --show-current')"),
+  serviceName: z.string().optional().describe("Service name (LLM can derive from repository name or project directory name)"),
+  serviceConnectionId: z.string().optional().describe("Service connection UUID for repository access"),
 
+  // 版本相关参数（大模型应该从项目文件中提取）
+  jdkVersion: z.string().optional().describe("JDK version for Java projects (LLM should read from pom.xml or gradle.properties). Options: 1.6, 1.7, 1.8, 11, 17, 21. Default: 1.8"),
+  mavenVersion: z.string().optional().describe("Maven version for Java projects. Options: 3.6.1, 3.6.3, 3.8.4, 3.9.3. Default: 3.6.3"),
+  nodeVersion: z.string().optional().describe("Node.js version for Node projects (LLM should read from package.json engines.node or .nvmrc). Options: 16.8, 18.12, 20. Default: 18.12"),
+  pythonVersion: z.string().optional().describe("Python version for Python projects (LLM should read from .python-version or pyproject.toml). Options: 3.9, 3.12. Default: 3.12"),
+  goVersion: z.string().optional().describe("Go version for Go projects (LLM should read from go.mod). Options: 1.19.x, 1.20.x, 1.21.x. Default: 1.21.x"),
+  kubectlVersion: z.string().optional().describe("Kubectl version for Kubernetes apply. Options: 1.25.16, 1.26.12, 1.27.9. Default: 1.27.9"),
   
-  // 版本相关参数
-  jdkVersion: z.string().optional().describe("JDK version for Java projects (1.6, 1.7, 1.8, 11, 17, 21). Default: 1.8"),
-  mavenVersion: z.string().optional().describe("Maven version for Java projects (3.6.1, 3.6.3, 3.8.4, 3.9.3). Default: 3.6.3"),
-  nodeVersion: z.string().optional().describe("Node.js version for Node projects (16.8, 18.12, 20). Default: 18.12"),
-  pythonVersion: z.string().optional().describe("Python version for Python projects (3.9, 3.12). Default: 3.12"),
-  goVersion: z.string().optional().describe("Go version for Go projects (1.19.x, 1.20.x, 1.21.x). Default: 1.21.x"),
-  kubectlVersion: z.string().optional().describe("Kubectl version for Kubernetes apply (1.25.16, 1.26.12, 1.27.9). Default: 1.27.9"),
+  // 构建配置
+  buildCommand: z.string().optional().describe("Custom build command to override default"),
+  testCommand: z.string().optional().describe("Custom test command to override default"),
   
   // 构建物上传相关参数
   uploadType: z.enum(['flowPublic', 'packages']).optional().describe("Artifact upload type. flowPublic: Yunxiao public storage space, packages: Organization private generic package repository. Default: packages"),
   artifactName: z.string().optional().describe("Custom artifact name. Default: 'Artifacts_${PIPELINE_ID}'"),
   artifactVersion: z.string().optional().describe("Artifact version number, required when uploadType is packages. Default: '1.0'"),
-  packagesServiceConnection: z.string().optional().describe("Packages service connection ID, required when uploadType is packages"),
+  packagesServiceConnection: z.string().optional().describe("Packages service connection UUID, required when uploadType is packages"),
   packagesRepoId: z.string().optional().describe("Packages generic repository ID, required when uploadType is packages. Default: 'flow_generic_repo'"),
   includePathInArtifact: z.boolean().optional().describe("Whether to include full path in artifact. Default: false"),
   
-  // 主机部署相关参数
-  machineGroupId: z.string().optional().describe("Machine group ID for VM deployment"),
+  // VM部署相关参数（当deployTarget为'vm'时）
+  machineGroupId: z.string().optional().describe("Machine group UUID for VM deployment (required when deployTarget=vm)"),
   executeUser: z.string().optional().describe("User for executing deployment scripts (root, admin). Default: root"),
   artifactDownloadPath: z.string().optional().describe("Path to download artifacts on target machine for VM deployment. Default: /home/admin/app/package.tgz"),
+  deployCommand: z.string().optional().describe("Custom deploy command for VM deployment"),
   pauseStrategy: z.enum(['firstBatchPause', 'noPause', 'eachBatchPause']).optional().describe("Pause strategy for VM deployment. firstBatchPause: The first batch is paused. noPause: No pause. eachBatchPause: Pause each batch. Default: firstBatchPause"),
   batchNumber: z.number().int().optional().describe("Number of batches for VM deployment. Default: 2"),
 
-  // Kubernetes部署相关参数
-  kubernetesClusterId: z.string().optional().describe("Kubernetes cluster ID for K8s deployment"),
+  // Kubernetes部署相关参数（当deployTarget为'k8s'时）
+  kubernetesClusterId: z.string().optional().describe("Kubernetes cluster ID for K8s deployment (required when deployTarget=k8s)"),
   namespace: z.string().optional().describe("Kubernetes namespace for K8s deployment"),
   dockerImage: z.string().optional().describe("Docker image name for container deployment"),
   yamlPath: z.string().optional().describe("Path to Kubernetes YAML file for K8s deployment"),
-  
-  // 自定义构建和部署命令
-  buildCommand: z.string().optional().describe("Custom build command to override default"),
-  testCommand: z.string().optional().describe("Custom test command to override default"),
-  deployCommand: z.string().optional().describe("Custom deploy command to override default"),
 });
+
+// 兼容性：保留原有的schema名称，但指向新的schema
+export const CreatePipelineFromDescriptionSchema = CreatePipelineWithStructuredOptionsSchema;
 
 // 获取流水线列表的参数Schema
 export const ListPipelinesSchema = z.object({

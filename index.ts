@@ -47,24 +47,119 @@ const server = new Server(
     }
 );
 
+/**
+ * 验证技术栈组合的合理性
+ * @param buildLanguage 构建语言
+ * @param buildTool 构建工具
+ * @returns 验证结果
+ */
+function validateTechStackCombination(buildLanguage: string, buildTool: string): {
+    valid: boolean;
+    message: string;
+    suggestion: string;
+} {
+    const validCombinations: Record<string, string[]> = {
+        'java': ['maven', 'gradle'],
+        'nodejs': ['npm', 'yarn'],
+        'python': ['pip'],
+        'go': ['go'],
+        'dotnet': ['dotnet']
+    };
+
+    if (!validCombinations[buildLanguage]) {
+        return {
+            valid: false,
+            message: `不支持的构建语言: ${buildLanguage}`,
+            suggestion: `支持的构建语言: ${Object.keys(validCombinations).join(', ')}`
+        };
+    }
+
+    if (!validCombinations[buildLanguage].includes(buildTool)) {
+        return {
+            valid: false,
+            message: `${buildLanguage} 语言不支持 ${buildTool} 构建工具`,
+            suggestion: `${buildLanguage} 支持的构建工具: ${validCombinations[buildLanguage].join(', ')}`
+        };
+    }
+
+    return {
+        valid: true,
+        message: '',
+        suggestion: ''
+    };
+}
+
 function formatYunxiaoError(error: YunxiaoError): string {
     let message = `Yunxiao API Error: ${error.message}`;
 
     if (error instanceof YunxiaoValidationError) {
-        message = `Validation Error: ${error.message}`;
+        message = `参数验证失败: ${error.message}`;
         if (error.response) {
-            message += `\nDetails: ${JSON.stringify(error.response)}`;
+            message += `\n详细信息: ${JSON.stringify(error.response, null, 2)}`;
+        }
+        // 添加常见参数错误的提示
+        if (error.message.includes('name')) {
+            message += `\n💡 建议: 请检查流水线名称是否符合要求（不能为空，不能包含特殊字符）`;
+        }
+        if (error.message.includes('content') || error.message.includes('yaml')) {
+            message += `\n💡 建议: 请检查生成的YAML格式是否正确，可能是技术栈参数配置有误`;
         }
     } else if (error instanceof YunxiaoResourceNotFoundError) {
-        message = `Not Found: ${error.message}`;
+        message = `资源未找到: ${error.message}`;
+        // 针对常见的资源未找到错误提供建议
+        if (error.message.includes('organization')) {
+            message += `\n💡 建议: 请检查组织ID是否正确，或使用 get_current_organization_info 获取当前组织信息`;
+        }
+        if (error.message.includes('repository')) {
+            message += `\n💡 建议: 请检查仓库URL是否正确，或使用 list_repositories 查看可用仓库`;
+        }
+        if (error.message.includes('service') || error.message.includes('connection')) {
+            message += `\n💡 建议: 请检查服务连接配置，或使用 list_service_connections 查看可用连接`;
+        }
     } else if (error instanceof YunxiaoAuthenticationError) {
-        message = `Authentication Failed: ${error.message}`;
+        message = `身份验证失败: ${error.message}`;
+        message += `\n💡 建议: 请检查YUNXIAO_ACCESS_TOKEN环境变量是否设置正确`;
     } else if (error instanceof YunxiaoPermissionError) {
-        message = `Permission Denied: ${error.message}`;
+        message = `权限不足: ${error.message}`;
+        message += `\n💡 建议: 请确认您有创建流水线的权限，或联系管理员分配相应权限`;
     } else if (error instanceof YunxiaoRateLimitError) {
-        message = `Rate Limit Exceeded: ${error.message}\nResets at: ${error.resetAt.toISOString()}`;
+        message = `请求频率超限: ${error.message}\n重置时间: ${error.resetAt.toISOString()}`;
+        message += `\n💡 建议: 请稍后重试，避免频繁调用API`;
     } else if (error instanceof YunxiaoConflictError) {
-        message = `Conflict: ${error.message}`;
+        message = `资源冲突: ${error.message}`;
+        if (error.message.includes('name') || error.message.includes('pipeline')) {
+            message += `\n💡 建议: 流水线名称可能已存在，请尝试使用不同的名称`;
+        }
+    } else {
+        // 处理通用的Yunxiao错误
+        message = `Yunxiao API错误 (${error.status}): ${error.message}`;
+        if (error.response) {
+            const response = error.response as any;
+            if (response.errorCode) {
+                message += `\n错误代码: ${response.errorCode}`;
+            }
+            if (response.errorMessage && response.errorMessage !== error.message) {
+                message += `\n详细错误: ${response.errorMessage}`;
+            }
+            if (response.data && typeof response.data === 'object') {
+                message += `\n响应数据: ${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+        
+        // 根据状态码提供通用建议
+        switch (error.status) {
+            case 400:
+                message += `\n💡 建议: 请检查请求参数是否正确，特别是必需参数是否都已提供`;
+                break;
+            case 500:
+                message += `\n💡 建议: 服务器内部错误，请稍后重试或联系技术支持`;
+                break;
+            case 502:
+            case 503:
+            case 504:
+                message += `\n💡 建议: 服务暂时不可用，请稍后重试`;
+                break;
+        }
     }
 
     return message;
@@ -244,51 +339,62 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: "generate_pipeline_yaml",
                 description: "[Pipeline Management] Generate only the YAML configuration for a pipeline without creating it.\n\n" +
-                    "**Use this when user wants to:**\n" +
+                    "**📋 Use Cases:**\n" +
                     "- Preview YAML before creating pipeline\n" +
                     "- Generate YAML for manual deployment\n" +
                     "- Debug pipeline configuration\n\n" +
-                    "**LLM WORKFLOW:**\n" +
-                    "1. 📖 FIRST: Extract parameters from user's description\n" +
-                    "2. 🔍 THEN: Auto-detect missing information from IDE context\n\n" +
-                    "**PARAMETER PRIORITY:**\n" +
-                    "1. 🏆 USER PROVIDED (highest priority)\n" +
-                    "2. 🔍 AUTO-DETECT (only for missing parameters)\n\n" +
-                    "**Follow same detection rules as create_pipeline_from_description**\n" +
-                    "Returns the YAML configuration string that can be used to create a pipeline.",
+                    "**📖 Recommended Workflow:**\n" +
+                    "1. 🎯 Parse user description for explicit parameters\n" +
+                    "2. 🔍 If missing context, prefer IDE detection (terminal + file reading) over API calls\n" +
+                    "3. 🚀 Call this tool with collected parameters\n\n" +
+                    "**💡 Parameter Collection Strategy:**\n" +
+                    "- For QUICK pipeline creation: Use IDE detection (git config, file reading)\n" +
+                    "- For PRECISE parameter selection: Consider list_repositories, list_service_connections when needed\n" +
+                    "- Balance efficiency vs. accuracy based on user intent\n\n" +
+                    "**⚡ Built-in capabilities:** Handles default service connections internally",
                 inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
             {
                 name: "create_pipeline_from_description",
-                description: "[Pipeline Management] Create a pipeline using structured parameters that the LLM extracts from user descriptions and IDE context.\n\n" +
-                    "**LLM WORKFLOW:**\n" +
-                    "1. 📖 FIRST: Extract parameters from user's description\n" +
-                    "2. 🔍 THEN: Auto-detect missing information from IDE context\n\n" +
-                    "**PARAMETER EXTRACTION PRIORITY:**\n" +
-                    "1. 🏆 USER PROVIDED (highest priority) - Use parameters explicitly mentioned by user\n" +
-                    "2. 🔍 AUTO-DETECT (fallback) - Only detect missing parameters from IDE/project files\n\n" +
-                    "**AUTO-DETECTION RULES (only when NOT provided by user):**\n" +
-                    "- 📂 Project Context: `git config --get remote.origin.url` → repoUrl\n" +
-                    "- 🌿 Git Branch: `git branch --show-current` → branch\n" +
-                    "- 📝 Service Name: from repo URL or directory → serviceName\n" +
-                    "- ☕ Java: pom.xml → buildLanguage='java', buildTool='maven'\n" +
-                    "- 🏗️ Java Gradle: build.gradle → buildLanguage='java', buildTool='gradle'\n" +
-                    "- 🟢 Node.js: package.json → buildLanguage='nodejs', buildTool='npm'\n" +
-                    "- 🧶 Yarn: yarn.lock → buildLanguage='nodejs', buildTool='yarn'\n" +
+                description: "[Pipeline Management] Create a pipeline using structured parameters extracted from user descriptions and environment context.\n\n" +
+                    "**🔧 Built-in Capabilities:**\n" +
+                    "- ✅ Automatically retrieves default service connection IDs when not specified\n" +
+                    "- ✅ Handles repository and service connection logic internally\n" +
+                    "- ✅ Supports both IDE detection and explicit parameter specification\n\n" +
+                    "**📖 Flexible Workflow Options:**\n" +
+                    "1. 🎯 PARSE user description for explicit parameters\n" +
+                    "2. 🔍 GATHER missing info using appropriate method:\n" +
+                    "   - QUICK: IDE detection (git config, file reading) - recommended for most cases\n" +
+                    "   - PRECISE: API calls (list_repositories, list_service_connections) when user needs specific selection\n" +
+                    "3. 🚀 CALL this tool with collected parameters\n\n" +
+                    "**🎯 Parameter Priority:**\n" +
+                    "1. 👤 USER EXPLICIT (highest) - buildLanguage, buildTool, versions, deployTarget\n" +
+                    "2. 🔍 CONTEXT DETECTION (flexible) - repoUrl, branch, serviceName, tech stack\n" +
+                    "3. 🤖 TOOL DEFAULTS (automatic) - serviceConnectionId, organizationId\n\n" +
+                    "**🔍 IDE Detection Rules (efficient for most cases):**\n" +
+                    "- 📂 Repository: `git config --get remote.origin.url` → repoUrl\n" +
+                    "- 🌿 Branch: `git branch --show-current` → branch\n" +
+                    "- ☕ Java Maven: pom.xml exists → buildLanguage='java', buildTool='maven'\n" +
+                    "- 🏗️ Java Gradle: build.gradle exists → buildLanguage='java', buildTool='gradle'\n" +
+                    "- 🟢 Node npm: package.json + package-lock.json → buildLanguage='nodejs', buildTool='npm'\n" +
+                    "- 🧶 Node yarn: package.json + yarn.lock → buildLanguage='nodejs', buildTool='yarn'\n" +
                     "- 🐍 Python: requirements.txt → buildLanguage='python', buildTool='pip'\n" +
                     "- 🐹 Go: go.mod → buildLanguage='go', buildTool='go'\n" +
                     "- 💙 .NET: *.csproj → buildLanguage='dotnet', buildTool='dotnet'\n\n" +
-                    "**VERSION EXTRACTION (only when user doesn't specify):**\n" +
-                    "- ☕ JDK: pom.xml <maven.compiler.source> → jdkVersion\n" +
-                    "- 🟢 Node: package.json engines.node → nodeVersion\n" +
-                    "- 🐍 Python: .python-version, pyproject.toml → pythonVersion\n" +
-                    "- 🐹 Go: go.mod go directive → goVersion\n\n" +
-                    "**DEPLOYMENT TARGET PARSING:**\n" +
+                    "**📝 Version Detection (from project files):**\n" +
+                    "- ☕ JDK: Read pom.xml <maven.compiler.source> → jdkVersion\n" +
+                    "- 🟢 Node: Read package.json engines.node → nodeVersion\n" +
+                    "- 🐍 Python: Read .python-version, pyproject.toml → pythonVersion\n" +
+                    "- 🐹 Go: Read go.mod go directive → goVersion\n\n" +
+                    "**🎯 Deployment Parsing:**\n" +
                     "- '部署到主机/VM/虚拟机' → deployTarget='vm'\n" +
                     "- '部署到Kubernetes/K8s' → deployTarget='k8s'\n" +
-                    "- '只构建/构建和制品上传' → deployTarget='none'\n\n" +
-                    "**REQUIRED:** organizationId, name, buildLanguage, buildTool\n" +
-                    "**EXAMPLE:** User says 'Create a Java pipeline to deploy to VM' → LLM provides buildLanguage='java', deployTarget='vm', then auto-detects missing repo info.",
+                    "- '只构建/构建制品' → deployTarget='none'\n\n" +
+                    "**🤔 When to Use Other Tools:**\n" +
+                    "- User asks to \"select from available repositories\" → use list_repositories first\n" +
+                    "- User needs specific service connection → use list_service_connections first\n" +
+                    "- User wants to see options before deciding → gather info first, then create\n\n" +
+                    "**✅ Required:** organizationId, name, buildLanguage, buildTool",
                 inputSchema: zodToJsonSchema(types.CreatePipelineFromDescriptionSchema),
             },
             {
@@ -821,130 +927,172 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             case "generate_pipeline_yaml": {
-                const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
-                
-                // 检查必需的参数
-                if (!args.buildLanguage) {
-                    throw new Error("Build language is required. Please specify one of: java, nodejs, python, go, dotnet");
-                }
-                if (!args.buildTool) {
-                    throw new Error("Build tool is required. Please specify one of: maven, gradle, npm, yarn, pip, go, dotnet");
-                }
-                
-                const yamlContent = await pipeline.generatePipelineYamlFunc({
-                    buildLanguage: args.buildLanguage,
-                    buildTool: args.buildTool,
-                    deployTarget: args.deployTarget,
+                try {
+                    const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
                     
-                    // Repository configuration  
-                    repoUrl: args.repoUrl,
-                    branch: args.branch,
-                    serviceName: args.serviceName,
-                    serviceConnectionId: args.serviceConnectionId,
+                    // 检查必需的参数
+                    if (!args.buildLanguage) {
+                        throw new Error("构建语言参数缺失。请指定以下之一: java, nodejs, python, go, dotnet\n💡 提示: 大模型应该从用户描述中提取技术栈信息，或从IDE环境中检测（如读取pom.xml、package.json等项目文件）");
+                    }
+                    if (!args.buildTool) {
+                        throw new Error("构建工具参数缺失。请指定以下之一: maven, gradle, npm, yarn, pip, go, dotnet\n💡 提示: 构建工具应该与构建语言匹配（如Java+Maven、Node.js+npm等）");
+                    }
                     
-                    // Version configuration
-                    jdkVersion: args.jdkVersion,
-                    mavenVersion: args.mavenVersion,
-                    nodeVersion: args.nodeVersion,
-                    pythonVersion: args.pythonVersion,
-                    goVersion: args.goVersion,
-                    
-                    // Build configuration
-                    buildCommand: args.buildCommand,
-                    testCommand: args.testCommand,
-                    
-                    // Artifact upload configuration
-                    uploadType: args.uploadType,
-                    packagesServiceConnection: args.packagesServiceConnection,
-                    artifactName: args.artifactName,
-                    artifactVersion: args.artifactVersion,
-                    packagesRepoId: args.packagesRepoId,
-                    includePathInArtifact: args.includePathInArtifact,
-                    
-                    // VM deployment configuration
-                    machineGroupId: args.machineGroupId,
-                    executeUser: args.executeUser,
-                    artifactDownloadPath: args.artifactDownloadPath,
-                    deployCommand: args.deployCommand,
-                    pauseStrategy: args.pauseStrategy,
-                    batchNumber: args.batchNumber,
-                    
-                    // Kubernetes deployment configuration
-                    kubernetesClusterId: args.kubernetesClusterId,
-                    kubectlVersion: args.kubectlVersion,
-                    namespace: args.namespace,
-                    yamlPath: args.yamlPath,
-                    dockerImage: args.dockerImage,
-                });
-                
-                return {
-                    content: [{ type: "text", text: yamlContent }],
-                };
-            }
-
-            case "create_pipeline_from_description": {
-                const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
-                
-                // 检查必需的参数
-                if (!args.name) {
-                    throw new Error("Pipeline name is required");
-                }
-                if (!args.buildLanguage) {
-                    throw new Error("Build language is required. Please specify one of: java, nodejs, python, go, dotnet");
-                }
-                if (!args.buildTool) {
-                    throw new Error("Build tool is required. Please specify one of: maven, npm, pip, go, dotnet");
-                }
-                
-                const result = await pipeline.createPipelineWithOptionsFunc(
-                    args.organizationId,
-                    {
-                        name: args.name,
-                        repoUrl: args.repoUrl,
-                        branch: args.branch,
-                        serviceConnectionId: args.serviceConnectionId,
-                        
-                        // 技术栈参数
+                    const yamlContent = await pipeline.generatePipelineYamlFunc({
                         buildLanguage: args.buildLanguage,
                         buildTool: args.buildTool,
                         deployTarget: args.deployTarget,
                         
-                        // 版本相关参数
+                        // Repository configuration  
+                        repoUrl: args.repoUrl,
+                        branch: args.branch,
+                        serviceName: args.serviceName,
+                        serviceConnectionId: args.serviceConnectionId,
+                        
+                        // Version configuration
                         jdkVersion: args.jdkVersion,
                         mavenVersion: args.mavenVersion,
                         nodeVersion: args.nodeVersion,
                         pythonVersion: args.pythonVersion,
                         goVersion: args.goVersion,
-                        kubectlVersion: args.kubectlVersion,
                         
-                        // 构建物上传相关参数
+                        // Build configuration
+                        buildCommand: args.buildCommand,
+                        testCommand: args.testCommand,
+                        
+                        // Artifact upload configuration
                         uploadType: args.uploadType,
+                        packagesServiceConnection: args.packagesServiceConnection,
                         artifactName: args.artifactName,
                         artifactVersion: args.artifactVersion,
-                        packagesServiceConnection:  args.packagesServiceConnection,
                         packagesRepoId: args.packagesRepoId,
                         includePathInArtifact: args.includePathInArtifact,
                         
-                        // 部署相关参数
+                        // VM deployment configuration
+                        machineGroupId: args.machineGroupId,
                         executeUser: args.executeUser,
                         artifactDownloadPath: args.artifactDownloadPath,
-                        machineGroupId: args.machineGroupId,
+                        deployCommand: args.deployCommand,
                         pauseStrategy: args.pauseStrategy,
                         batchNumber: args.batchNumber,
-                        kubernetesClusterId: args.kubernetesClusterId,
-                        yamlPath: args.yamlPath,
-                        namespace: args.namespace,
-                        dockerImage: args.dockerImage,
                         
-                        // 自定义命令
-                        buildCommand: args.buildCommand,
-                        testCommand: args.testCommand,
-                        deployCommand: args.deployCommand,
+                        // Kubernetes deployment configuration
+                        kubernetesClusterId: args.kubernetesClusterId,
+                        kubectlVersion: args.kubectlVersion,
+                        namespace: args.namespace,
+                        yamlPath: args.yamlPath,
+                        dockerImage: args.dockerImage,
+                    });
+                    
+                    return {
+                        content: [{ type: "text", text: yamlContent }],
+                    };
+                } catch (error) {
+                    if (error instanceof Error && error.message.includes("构建语言参数缺失")) {
+                        throw error; // 重新抛出我们自定义的错误
                     }
-                );
-                return {
-                    content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-                };
+                    if (error instanceof Error && error.message.includes("构建工具参数缺失")) {
+                        throw error; // 重新抛出我们自定义的错误
+                    }
+                    
+                    // 处理YAML生成过程中的错误
+                    if (error instanceof Error) {
+                        throw new Error(`YAML生成失败: ${error.message}\n💡 建议: 请检查技术栈参数是否匹配（如Java项目应使用maven/gradle，Node.js项目应使用npm/yarn）`);
+                    }
+                    throw error;
+                }
+            }
+
+            case "create_pipeline_from_description": {
+                try {
+                    const args = types.CreatePipelineFromDescriptionSchema.parse(request.params.arguments);
+                    
+                    // 检查必需的参数
+                    if (!args.name) {
+                        throw new Error("流水线名称不能为空\n💡 建议: 请提供一个描述性的流水线名称，如'Maven构建流水线'或'Node.js部署流水线'");
+                    }
+                    if (!args.buildLanguage) {
+                        throw new Error("构建语言参数缺失。请指定以下之一: java, nodejs, python, go, dotnet\n💡 提示: 大模型应该从用户描述中提取技术栈信息，或从IDE环境中检测（如读取pom.xml、package.json等项目文件）");
+                    }
+                    if (!args.buildTool) {
+                        throw new Error("构建工具参数缺失。请指定以下之一: maven, gradle, npm, yarn, pip, go, dotnet\n💡 提示: 构建工具应该与构建语言匹配（如Java+Maven、Node.js+npm等）");
+                    }
+
+                    // 验证技术栈组合的合理性
+                    const techStackValidation = validateTechStackCombination(args.buildLanguage, args.buildTool);
+                    if (!techStackValidation.valid) {
+                        throw new Error(`技术栈组合不匹配: ${techStackValidation.message}\n💡 建议: ${techStackValidation.suggestion}`);
+                    }
+                    
+                    const result = await pipeline.createPipelineWithOptionsFunc(
+                        args.organizationId,
+                        {
+                            name: args.name,
+                            repoUrl: args.repoUrl,
+                            branch: args.branch,
+                            serviceConnectionId: args.serviceConnectionId,
+                            
+                            // 技术栈参数
+                            buildLanguage: args.buildLanguage,
+                            buildTool: args.buildTool,
+                            deployTarget: args.deployTarget,
+                            
+                            // 版本相关参数
+                            jdkVersion: args.jdkVersion,
+                            mavenVersion: args.mavenVersion,
+                            nodeVersion: args.nodeVersion,
+                            pythonVersion: args.pythonVersion,
+                            goVersion: args.goVersion,
+                            kubectlVersion: args.kubectlVersion,
+                            
+                            // 构建物上传相关参数
+                            uploadType: args.uploadType,
+                            artifactName: args.artifactName,
+                            artifactVersion: args.artifactVersion,
+                            packagesServiceConnection:  args.packagesServiceConnection,
+                            packagesRepoId: args.packagesRepoId,
+                            includePathInArtifact: args.includePathInArtifact,
+                            
+                            // 部署相关参数
+                            executeUser: args.executeUser,
+                            artifactDownloadPath: args.artifactDownloadPath,
+                            machineGroupId: args.machineGroupId,
+                            pauseStrategy: args.pauseStrategy,
+                            batchNumber: args.batchNumber,
+                            kubernetesClusterId: args.kubernetesClusterId,
+                            yamlPath: args.yamlPath,
+                            namespace: args.namespace,
+                            dockerImage: args.dockerImage,
+                            
+                            // 自定义命令
+                            buildCommand: args.buildCommand,
+                            testCommand: args.testCommand,
+                            deployCommand: args.deployCommand,
+                        }
+                    );
+                    return {
+                        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+                    };
+                } catch (error) {
+                    if (error instanceof Error && error.message.includes("流水线名称不能为空")) {
+                        throw error; // 重新抛出我们自定义的错误
+                    }
+                    if (error instanceof Error && error.message.includes("构建语言参数缺失")) {
+                        throw error; // 重新抛出我们自定义的错误
+                    }
+                    if (error instanceof Error && error.message.includes("构建工具参数缺失")) {
+                        throw error; // 重新抛出我们自定义的错误
+                    }
+                    if (error instanceof Error && error.message.includes("技术栈组合不匹配")) {
+                        throw error; // 重新抛出我们自定义的错误
+                    }
+                    
+                    // 处理流水线创建过程中的其他错误
+                    if (error instanceof Error) {
+                        throw new Error(`流水线创建失败: ${error.message}\n💡 建议: 请检查组织ID、仓库配置和技术栈参数是否正确`);
+                    }
+                    throw error;
+                }
             }
 
             case "smart_list_pipelines": {

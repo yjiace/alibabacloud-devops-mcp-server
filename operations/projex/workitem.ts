@@ -1,9 +1,9 @@
-import { z } from "zod";
+import {RecordType, string, z, ZodString} from "zod";
 import { yunxiaoRequest } from "../../common/utils.js";
 import {
   WorkItemSchema,
   FilterConditionSchema,
-  ConditionsSchema
+  ConditionsSchema, ProjectInfoSchema, WorkItemType
 } from "../../common/types.js";
 import { getCurrentUserFunc } from "../organization/organization.js";
 
@@ -289,3 +289,86 @@ function buildWorkitemConditions(args: {
 
   return JSON.stringify(conditions);
 } 
+
+export async function createWorkItemFunc(
+    organizationId: string,
+    assignedTo: string,
+    spaceId: string,
+    subject: string,
+    workitemTypeId: string,
+    customFieldValues?: RecordType<string, string> | undefined,
+    description?: string | undefined,
+    labels?: string[],
+    parentId?: string | undefined,
+    participants?: string[] | undefined,
+    sprint?: string | undefined,
+    trackers?: string[] | undefined,
+    verifier?: string | undefined,
+    versions?: string[] | undefined
+): Promise<z.infer<typeof WorkItemSchema>> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitems`;
+
+  const payload: Record<string, any> = {
+    assignedTo,
+    spaceId,
+    subject,
+    workitemTypeId
+  };
+
+  if (customFieldValues) {
+    payload.customFieldValues = customFieldValues;
+  }
+
+  if (description !== undefined) {
+    payload.description = description;
+  }
+
+  if (labels && labels.length > 0) {
+    payload.labels = labels;
+  }
+
+  if (parentId !== undefined) {
+    payload.parentId = parentId;
+  }
+
+  if (participants && participants.length > 0) {
+    payload.participants = participants;
+  }
+
+  if (sprint !== undefined) {
+    payload.sprint = sprint;
+  }
+
+  if (trackers && trackers.length > 0) {
+    payload.trackers = trackers;
+  }
+
+  if (verifier !== undefined) {
+    payload.verifier = verifier;
+  }
+
+  if (versions && versions.length > 0) {
+    payload.versions = versions;
+  }
+
+  const response = await yunxiaoRequest(url, {
+    method: "POST",
+    body: payload,
+  });
+
+  return WorkItemSchema.parse(response);
+}
+
+export async function getWorkItemTypesFunc(
+  organizationId: string,
+  id: string, // 项目唯一标识
+  category: string // 工作项类型，可选值为 Req，Bug，Task 等。
+): Promise<WorkItemType[]> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/projects/${id}/workitemTypes?category=${encodeURIComponent(category)}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  return response as WorkItemType[];
+}

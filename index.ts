@@ -223,9 +223,23 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(types.GetWorkItemSchema),
             },
             {
+                name: "create_work_item",
+                description: "[Project Management] Create a work item",
+                inputSchema: zodToJsonSchema(types.CreateWorkItemSchema),
+            },
+            {
                 name: "search_workitems",
                 description: "[Project Management] Search work items with various filter conditions",
                 inputSchema: zodToJsonSchema(types.SearchWorkitemsSchema),
+            },
+            {
+                name: "get_work_item_types",
+                description: "[Project Management] Get the list of work item types for a project",
+                inputSchema: zodToJsonSchema(z.object({
+                    organizationId: z.string().describe("Organization ID"),
+                    id: z.string().describe("Project unique identifier"),
+                    category: z.string().describe("Work item type category, optional values: Req, Bug, Task, etc.")
+                })),
             },
 
             // Pipeline Operations
@@ -699,6 +713,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
+            case "create_work_item": {
+                const args = types.CreateWorkItemSchema.parse(request.params.arguments);
+                const workItemInfo = await workitem.createWorkItemFunc(args.organizationId, args.assignedTo, args.spaceId, args.subject, args.workitemTypeId, args.customFieldValues, args.description, args.labels, args.parentId, args.participants, args.sprint, args.trackers, args.verifier, args.versions);
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemInfo, null, 2) }],
+                };
+            }
+
             case "search_workitems": {
                 const args = types.SearchWorkitemsSchema.parse(request.params.arguments);
                 const workItems = await workitem.searchWorkitemsFunc(
@@ -719,6 +741,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(workItems, null, 2) }],
+                };
+            }
+
+            case "get_work_item_types": {
+                const args = z.object({
+                    organizationId: z.string().describe("organization id"),
+                    id: z.string().describe("project id or space id"),
+                    category: z.string().describe("Req、Task、Bug etc.")
+                }).parse(request.params.arguments);
+                
+                const workItemTypes = await workitem.getWorkItemTypesFunc(
+                    args.organizationId,
+                    args.id,
+                    args.category
+                );
+                
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemTypes, null, 2) }],
                 };
             }
 
@@ -958,7 +998,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 });
 
-// config();
+config();
 
 async function runServer() {
     const transport = new StdioServerTransport();

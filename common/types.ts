@@ -126,9 +126,27 @@ export const SprintSchema = z.object({
 
 // Work item related types
 export const WorkItemTypeSchema = z.object({
-  id: z.string().nullable().optional().describe("Work item type ID"),
-  name: z.string().nullable().optional().describe("Work item type name"),
+  addUser: z.object({
+    id: z.string().nullable().optional().describe("user id"),
+    name: z.string().nullable().optional().describe("名称")
+  }).nullable().optional(),
+  categoryId: z.string().nullable().optional().describe("Unique identifier of the category, e.g., Req, Task, Bug"),
+  creator: z.object({
+    id: z.string().nullable().optional().describe("User ID"),
+    name: z.string().nullable().optional().describe("Name")
+  }).nullable().optional(),
+  defaultType: z.boolean().nullable().optional().describe("Is it the default type"),
+  description: z.string().nullable().optional().describe("Type description"),
+  enable: z.boolean().nullable().optional().describe("Is it enabled"),
+  gmtAdd: z.string().nullable().optional().describe("Add time"),
+  gmtCreate: z.string().nullable().optional().describe("Creation time"),
+  id: z.string().describe("Unique identifier of the work item type"),
+  name: z.string().nullable().optional().describe("Type name"),
+  nameEn: z.string().nullable().optional().describe("English name of the type"),
+  systemDefault: z.boolean().nullable().optional().describe("Is it a system default type")
 });
+
+export type WorkItemType = z.infer<typeof WorkItemTypeSchema>;
 
 export const StatusSchema = z.object({
   displayName: z.string().nullable().optional().describe("Display name"),
@@ -683,6 +701,23 @@ export const SearchProjectsSchema = z.object({
 export const GetWorkItemSchema = z.object({
   organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
   workItemId: z.string().describe("Work item unique identifier, required parameter"),
+});
+
+export const CreateWorkItemSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  spaceId: z.string().describe("Space ID, project unique identifier"),
+  subject: z.string().describe("Work item title"),
+  workitemTypeId: z.string().describe("Work item type ID"),
+  assignedTo: z.string().describe("Assignee user ID"),
+  customFieldValues: z.record(z.string()).optional().describe("Custom field values"),
+  description: z.string().optional().describe("Work item description"),
+  labels: z.array(z.string()).optional().describe("Associated label IDs"),
+  parentId: z.string().optional().describe("Parent work item ID"),
+  participants: z.array(z.string()).optional().describe("Participant user IDs"),
+  sprint: z.string().optional().describe("Associated sprint ID"),
+  trackers: z.array(z.string()).optional().describe("CC user IDs"),
+  verifier: z.string().optional().describe("Verifier user ID"),
+  versions: z.array(z.string()).optional().describe("Associated version IDs")
 });
 
 export const SearchWorkitemsSchema = z.object({

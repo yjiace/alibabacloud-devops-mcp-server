@@ -136,6 +136,6 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
 
 ## Related Links
-- [AlibabaCloud DevOps](https://devops.aliyun.com)
+- [AlibabaCloud DevOps](https://www.aliyun.com/product/yunxiao)
 - [MCP market](https://modelscope.cn/mcp/servers/@aliyun/alibabacloud-devops-mcp-server)
 - [Example Use Cases](https://mp.weixin.qq.com/s/KQsN6dQlnNeCNATC-QD7pg)

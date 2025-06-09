@@ -54,6 +54,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 
 - `get_pipeline`: Get pipeline details
 - `list_pipelines`: Get pipeline list
+- `smart_list_pipelines`: Smart pipeline search with natural language time references
 - `create_pipeline_run`: Create a pipeline run instance
 - `get_latest_pipeline_run`: Get the latest pipeline run instance
 - `get_pipeline_run`: Get pipeline run details
@@ -62,6 +63,9 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_pipeline_job_historys`: Get the execution history of a pipeline task
 - `execute_pipeline_job_run`: Manually run a pipeline task
 - `get_pipeline_job_run_log`: Get the execution logs of a pipeline job
+- `list_service_connections`: List service connections in organization
+- `generate_pipeline_yaml`:   Automatically generates YAML configuration
+- `create_pipeline_from_description`: Automatically generates YAML configuration and creates pipeline
 
 ### Packages Management Tools
 
@@ -75,7 +79,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 * node version >= 16.0.0
 * [AlibabaCloud Devops](https://www.aliyun.com/product/yunxiao) Personal Access Token, [click here to obtain](https://help.aliyun.com/zh/yunxiao/developer-reference/obtain-personal-access-token). Grant read and write permissions to all APIs under organization management, project collaboration, code management, pipeline management, artifact repository management, application delivery and testing management.
 
-  ![The personal token authorization page](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.png)
+  ![The personal token authorization page](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.jpg)
 
 ### Installing via Smithery
 

@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const GetOrganizationDepartmentInfoSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  id: z.string().describe("Department ID"),
+});
+
+
 export const GetOrganizationDepartmentsSchema = z.object({
   organizationId: z.string().describe("Organization ID"),
   parentId: z.string().optional().describe("Parent department ID"),

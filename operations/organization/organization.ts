@@ -4,7 +4,7 @@ import {
   CurrentOrganizationInfoSchema,
   UserOrganizationsInfoSchema,
   CurrentUserSchema,
-  OrganizationDepartmentsSchema, ProjectInfoSchema
+  OrganizationDepartmentsSchema, ProjectInfoSchema, DepartmentInfoSchema
 } from "../../common/types.js";
 
 export async function getCurrentOrganizationInfoFunc(
@@ -63,6 +63,19 @@ export async function getOrganizationDepartmentsFunc(
   });
 
   return OrganizationDepartmentsSchema.parse(response);
+}
+
+export async function getOrganizationDepartmentInfoFunc(
+  organizationId: string,
+  id: string
+): Promise<z.infer<typeof DepartmentInfoSchema>> {
+  const url = `/oapi/v1/platform/organizations/${organizationId}/departments/${id}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  return DepartmentInfoSchema.parse(response);
 }
 
 export async function getCurrentUserFunc(): Promise<z.infer<typeof CurrentUserSchema>> {

@@ -216,6 +216,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "Get the list of departments in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentsSchema),
             },
+            {
+                name: "get_organization_department_info",
+                description: "Get information about a department in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentInfoSchema),
+            },
 
             // Project Operations
             {
@@ -753,6 +758,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(departments, null, 2) }],
+                };
+            }
+
+            case "get_organization_department_info": {
+                const args = types.GetOrganizationDepartmentInfoSchema.parse(request.params.arguments);
+                const departmentInfo = await organization.getOrganizationDepartmentInfoFunc(
+                    args.organizationId,
+                    args.id
+                )
+                return {
+                    content: [{ type: "text", text: JSON.stringify(departmentInfo, null, 2) }],
                 };
             }
 

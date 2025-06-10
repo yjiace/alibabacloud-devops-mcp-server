@@ -1,6 +1,11 @@
 import { z } from "zod";
-import { yunxiaoRequest } from "../../common/utils.js";
-import { CurrentOrganizationInfoSchema, UserOrganizationsInfoSchema, CurrentUserSchema } from "../../common/types.js";
+import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
+import {
+  CurrentOrganizationInfoSchema,
+  UserOrganizationsInfoSchema,
+  CurrentUserSchema,
+  OrganizationDepartmentsSchema, ProjectInfoSchema
+} from "../../common/types.js";
 
 export async function getCurrentOrganizationInfoFunc(
 ): Promise<z.infer<typeof CurrentOrganizationInfoSchema>> {
@@ -40,6 +45,25 @@ export async function getUserOrganizationsFunc(
   return UserOrganizationsInfoSchema.parse(response);
 }
 
+export async function getOrganizationDepartmentsFunc(
+    organizationId: string,
+    parentId?: string
+): Promise<z.infer<typeof OrganizationDepartmentsSchema>> {
+  const baseUrl = `/oapi/v1/platform/organizations/${organizationId}/departments`;
+
+  const params: Record<string, string | undefined> = {};
+  if (parentId) {
+    params.parentId = parentId;
+  }
+
+  const url = buildUrl(baseUrl, params);
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET"
+  });
+
+  return OrganizationDepartmentsSchema.parse(response);
+}
 
 export async function getCurrentUserFunc(): Promise<z.infer<typeof CurrentUserSchema>> {
   const url = "/oapi/v1/platform/user";

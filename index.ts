@@ -31,7 +31,6 @@ import { VERSION } from "./common/version.js";
 import {config} from "dotenv";
 import * as types from "./common/types.js";
 
-
 const server = new Server(
     {
         name: "alibabacloud-devops-mcp-server",
@@ -211,6 +210,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "get_current_user",
                 description: "Get information about the current user based on the token. In the absence of an explicitly specified user ID, this result will take precedence.",
                 inputSchema: zodToJsonSchema(z.object({})),
+            },
+            {
+                name: "get_organization_departments",
+                description: "Get the list of departments in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentsSchema),
             },
 
             // Project Operations
@@ -738,6 +742,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const currentUserInfo = await organization.getCurrentUserFunc();
                 return {
                     content: [{ type: "text", text: JSON.stringify(currentUserInfo, null, 2) }],
+                };
+            }
+
+            case "get_organization_departments": {
+                const args = types.GetOrganizationDepartmentsSchema.parse(request.params.arguments);
+                const departments = await organization.getOrganizationDepartmentsFunc(
+                    args.organizationId,
+                    args.parentId ?? undefined
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(departments, null, 2) }],
                 };
             }
 

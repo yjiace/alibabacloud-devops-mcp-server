@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const GetOrganizationDepartmentsSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  parentId: z.string().optional().describe("Parent department ID"),
+});
+
+
 // Organization related types
 export const CurrentOrganizationInfoSchema = z.object({
   lastOrganization: z.string().optional().describe("Organization ID of the most recent login, used for subsequent API calls, should be used as organizationId"),
@@ -434,6 +440,20 @@ export const DeleteFileResponseSchema = z.object({
   commitMessage: z.string().optional().describe("Commit message"),
 });
 
+// 组织部门相关类型
+export const DepartmentInfoSchema = z.object({
+  creatorId: z.string().optional().describe("创建人 ID"),
+  id: z.string().optional().describe("部门 ID"),
+  name: z.string().optional().describe("部门名称"),
+  organizationId: z.string().optional().describe("组织 ID"),
+  parentId: z.string().optional().describe("父部门 ID"),
+  hasSub: z.boolean().optional().describe("是否有子部门")
+});
+
+export const OrganizationDepartmentsSchema = z.array(DepartmentInfoSchema);
+
+export type DepartmentInfo = z.infer<typeof DepartmentInfoSchema>;
+export type OrganizationDepartments = z.infer<typeof OrganizationDepartmentsSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;

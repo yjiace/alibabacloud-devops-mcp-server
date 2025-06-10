@@ -221,6 +221,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "Get information about a department in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentInfoSchema),
             },
+            {
+                name: "get_organization_department_ancestors",
+                description: "Get the ancestors of a department in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentAncestorsSchema),
+            },
 
             // Project Operations
             {
@@ -770,6 +775,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 return {
                     content: [{ type: "text", text: JSON.stringify(departmentInfo, null, 2) }],
                 };
+            }
+
+            case "get_organization_department_ancestors": {
+                const args = types.GetOrganizationDepartmentAncestorsSchema.parse(request.params.arguments);
+                const ancestors = await organization.getOrganizationDepartmentAncestorsFunc(
+                    args.organizationId,
+                    args.id
+                );
             }
 
             // Project Operations

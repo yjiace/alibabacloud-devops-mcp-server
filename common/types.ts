@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const GetOrganizationDepartmentAncestorsSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  id: z.string().describe("Department ID"),
+});
+
 export const GetOrganizationDepartmentInfoSchema = z.object({
   organizationId: z.string().describe("Organization ID"),
   id: z.string().describe("Department ID"),
@@ -459,7 +464,6 @@ export const DepartmentInfoSchema = z.object({
 export const OrganizationDepartmentsSchema = z.array(DepartmentInfoSchema);
 
 export type DepartmentInfo = z.infer<typeof DepartmentInfoSchema>;
-export type OrganizationDepartments = z.infer<typeof OrganizationDepartmentsSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;

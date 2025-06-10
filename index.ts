@@ -14,6 +14,7 @@ import * as repositories from './operations/codeup/repositories.js';
 import * as changeRequests from './operations/codeup/changeRequests.js';
 import * as changeRequestComments from './operations/codeup/changeRequestComments.js';
 import * as organization from './operations/organization/organization.js';
+import * as members from './operations/organization/members.js';
 import * as project from './operations/projex/project.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
@@ -225,6 +226,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "get_organization_department_ancestors",
                 description: "Get the ancestors of a department in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentAncestorsSchema),
+            },
+            {
+                name: "get_organization_members",
+                description: "Get the list of members in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationMembersSchema),
             },
 
             // Project Operations
@@ -783,6 +789,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     args.organizationId,
                     args.id
                 );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(ancestors, null, 2) }],
+                };
+            }
+
+            case "get_organization_members": {
+                const args = types.GetOrganizationMembersSchema.parse(request.params.arguments);
+                const orgMembers = await members.getOrganizationMembersFunc(
+                    args.organizationId,
+                    args.page ?? 1,
+                    args.perPage ?? 100
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(orgMembers, null, 2)}]
+                }
             }
 
             // Project Operations

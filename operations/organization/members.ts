@@ -1,6 +1,4 @@
-import { oapiClient } from '../client';
-import { z } from 'zod';
-import {OrganizationMembersSchema, MemberInfoSchema, OrganizationMembers} from '../../common/types';
+import {OrganizationMembersSchema, OrganizationMembers} from '../../common/types.js';
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 
 /**

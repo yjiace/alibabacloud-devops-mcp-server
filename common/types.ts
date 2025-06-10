@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export let GetOrganizationMembersSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  page: z.number().int().optional().describe("Page number"),
+  perPage: z.number().int().optional().describe("Page size"),
+});
+
+
 export const GetOrganizationDepartmentAncestorsSchema = z.object({
   organizationId: z.string().describe("Organization ID"),
   id: z.string().describe("Department ID"),
@@ -467,6 +474,22 @@ export type DepartmentInfo = z.infer<typeof DepartmentInfoSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;
+
+// 组织成员相关类型
+export const MemberInfoSchema = z.object({
+  deptIds: z.array(z.string()).optional().describe("所属组织部门列表"),
+  id: z.string().optional().describe("成员 ID"),
+  joined: z.string().optional().describe("加入时间"),
+  name: z.string().optional().describe("成员名"),
+  organizationId: z.string().optional().describe("组织 ID"),
+  roleIds: z.array(z.string()).optional().describe("角色信息"),
+  status: z.string().optional().describe("成员状态，可选值：ENABLED,DISABLED,UNDELETED,DELETED,NORMAL_USING,UNVISITED"),
+  userId: z.string().optional().describe("用户 ID"),
+  visited: z.string().optional().describe("最后访问时间")
+});
+
+export const OrganizationMembersSchema = z.array(MemberInfoSchema);
+export type OrganizationMembers = z.infer<typeof OrganizationMembersSchema>;
 
 // 添加流水线相关的Schema
 

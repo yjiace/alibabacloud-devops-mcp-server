@@ -494,10 +494,18 @@ export type OrganizationMembers = z.infer<typeof OrganizationMembersSchema>;
 // 组织成员详细信息类型
 export const GetOrganizationMemberInfoSchema = z.object({
   organizationId: z.string().describe("组织 ID"),
-  id: z.string().describe("成员 ID"),
+  memberId: z.string().describe("成员 ID"),
 });
 
 export type GetOrganizationMemberInfo = z.infer<typeof MemberInfoSchema>;
+
+// 通过用户ID查询组织成员详细信息类型
+export const GetOrganizationMemberByUserIdInfoSchema = z.object({
+  organizationId: z.string().describe("组织 ID"),
+  userId: z.string().describe("用户 ID"),
+});
+
+export type GetOrganizationMemberByUserIdInfo = z.infer<typeof GetOrganizationMemberByUserIdInfoSchema>;
 
 // 添加流水线相关的Schema
 

@@ -2,7 +2,7 @@ import {
   OrganizationMembersSchema,
   OrganizationMembers,
   GetOrganizationMemberInfo,
-  MemberInfoSchema
+  MemberInfoSchema,
 } from '../../common/types.js';
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 
@@ -52,6 +52,29 @@ export const getOrganizationMemberInfoFunc = async (
     method: "GET",
   });
 
-  // 验证响应数据结构
+  return MemberInfoSchema.parse(response);
+};
+
+/**
+ * 通过用户ID查询组织成员详细信息
+ * @param organizationId 组织ID
+ * @param userId 用户ID
+ * @returns 组织成员详细信息
+ */
+export const getOrganizationMemberByUserIdInfoFunc = async (
+  organizationId: string,
+  userId: string
+): Promise<GetOrganizationMemberInfo> => {
+  const url = `/oapi/v1/platform/organizations/${organizationId}/members:readByUser`;
+  const params = {
+    userId: userId
+  };
+
+  const urlWithParams = buildUrl(url, params);
+
+  const response = await yunxiaoRequest(urlWithParams, {
+    method: "GET",
+  });
+
   return MemberInfoSchema.parse(response);
 };

@@ -491,6 +491,14 @@ export const MemberInfoSchema = z.object({
 export const OrganizationMembersSchema = z.array(MemberInfoSchema);
 export type OrganizationMembers = z.infer<typeof OrganizationMembersSchema>;
 
+// 组织成员详细信息类型
+export const GetOrganizationMemberInfoSchema = z.object({
+  organizationId: z.string().describe("组织 ID"),
+  id: z.string().describe("成员 ID"),
+});
+
+export type GetOrganizationMemberInfo = z.infer<typeof MemberInfoSchema>;
+
 // 添加流水线相关的Schema
 
 // 流水线配置源Schema

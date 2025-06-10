@@ -232,6 +232,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "Get the list of members in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationMembersSchema),
             },
+            {
+                name: "get_organization_member_info",
+                description: "Get information about a member in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationMemberInfoSchema),
+            },
 
             // Project Operations
             {
@@ -803,6 +808,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(orgMembers, null, 2)}]
+                }
+            }
+
+            case "get_organization_member_info": {
+                const args = types.GetOrganizationMemberInfoSchema.parse(request.params.arguments);
+                const memberInfo = await members.getOrganizationMemberInfoFunc(
+                    args.organizationId,
+                    args.id
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(memberInfo, null, 2)}]
                 }
             }
 

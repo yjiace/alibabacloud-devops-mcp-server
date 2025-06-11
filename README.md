@@ -1,3 +1,5 @@
+<p align="center">English | <a href="README.zh-cn.md">中文</a><br></p>
+
 # alibabacloud-devops-mcp-server
 [![smithery badge](https://smithery.ai/badge/@aliyun/alibabacloud-devops-mcp-server)](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server)
 

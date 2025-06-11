@@ -1173,6 +1173,24 @@ export const PipelineJobRunLogSchema = z.object({
   more: z.boolean().nullable().optional().describe("Whether there are more logs available")
 });
 
+// 搜索组织成员相关类型
+export const SearchOrganizationMembersSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  deptIds: z.array(z.string()).optional().describe("Department IDs to search for"),
+  query: z.string().optional().describe("Search query"),
+  includeChildren: z.boolean().optional().describe("Whether to include sub-departments"),
+  nextToken: z.string().optional().describe("Next token for pagination"),
+  roleIds: z.array(z.string()).optional().describe("Role IDs to search for"),
+  statuses: z.array(z.string()).optional().describe("Statuses to search for"),
+  page: z.number().int().optional().describe("Current page number, defaults to 1"),
+  perPage: z.number().int().optional().describe("Number of items per page, defaults to 100")
+});
+
+export const SearchOrganizationMembersResultSchema = z.array(MemberInfoSchema);
+
+export type SearchOrganizationMembersParams = z.infer<typeof SearchOrganizationMembersSchema>;
+export type SearchOrganizationMembersResult = z.infer<typeof SearchOrganizationMembersResultSchema>;
+
 // 添加类型导出
 export type PipelineJobRunLog = z.infer<typeof PipelineJobRunLogSchema>;
 

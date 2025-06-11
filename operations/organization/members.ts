@@ -2,9 +2,10 @@ import {
   OrganizationMembersSchema,
   OrganizationMembers,
   GetOrganizationMemberInfo,
-  MemberInfoSchema,
+  MemberInfoSchema, SearchOrganizationMembersResult, SearchOrganizationMembersResultSchema,
 } from '../../common/types.js';
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
+import {string} from "_zod@3.25.56@zod";
 
 /**
  * 查询组织成员列表
@@ -53,6 +54,62 @@ export const getOrganizationMemberInfoFunc = async (
   });
 
   return MemberInfoSchema.parse(response);
+};
+
+/**
+ * 搜索组织成员
+ * @param organizationId 组织ID
+ * @param search 搜索关键字
+ * @param page 当前页，默认1
+ * @param perPage 每页数据条数，默认100
+ * @returns 搜索到的组织成员列表
+ */
+export const searchOrganizationMembersFunc = async (
+    organizationId: string,
+    includeChildren: boolean = false,
+    page: number = 1,
+    perPage: number = 100,
+    deptIds?: string[],
+    nextToken? : string,
+    query? : string,
+    roleIds? : string[],
+    statuses?: string[],
+
+): Promise<SearchOrganizationMembersResult> => {
+  const url = `/oapi/v1/platform/organizations/${organizationId}/members:search`;
+
+  const payload: Record<string, any> = {
+    page: page,
+    perPage: perPage
+  };
+
+  if (deptIds) {
+    payload.deptIds = deptIds;
+  }
+
+  if (nextToken) {
+    payload.nextToken = nextToken;
+  }
+
+  if (query) {
+    payload.query = query;
+  }
+
+  if (roleIds) {
+    payload.roleIds = roleIds;
+  }
+
+  if (statuses) {
+    payload.statuses = statuses;
+  }
+
+  const response = await yunxiaoRequest(url, {
+    method: "POST",
+    body: payload,
+  });
+
+  // 验证响应数据结构
+  return SearchOrganizationMembersResultSchema.parse(response);
 };
 
 /**

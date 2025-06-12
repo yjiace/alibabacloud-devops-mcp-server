@@ -244,6 +244,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(types.GetOrganizationMemberByUserIdInfoSchema),
             },
 
+            {
+                name: "search_organization_members",
+                description: "[Organization Management] Search for organization members",
+                inputSchema: zodToJsonSchema(types.SearchOrganizationMembersSchema),
+            },
+
             // Project Operations
             {
                 name: "get_project",
@@ -833,6 +839,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const memberInfo = await members.getOrganizationMemberByUserIdInfoFunc(args.organizationId, args.userId);
                 return {
                     content: [{ type: "text", text: JSON.stringify(memberInfo, null, 2)}]
+                }
+            }
+
+            case "search_organization_members": {
+                const args = types.SearchOrganizationMembersSchema.parse(request.params.arguments);
+                const membersResult = await members.searchOrganizationMembersFunc(
+                    args.organizationId,
+                    args.includeChildren ?? false,
+                    args.page ?? 1,
+                    args.perPage ?? 100,
+                    args.deptIds ?? undefined,
+                    args.nextToken ?? undefined,
+                    args.query ?? undefined,
+                    args.roleIds ?? undefined,
+                    args.statuses ?? undefined,
+                )
+                return {
+                    content: [{ type: "text", text: JSON.stringify(membersResult, null, 2)}]
                 }
             }
 

@@ -1181,7 +1181,7 @@ export const SearchOrganizationMembersSchema = z.object({
   includeChildren: z.boolean().optional().describe("Whether to include sub-departments"),
   nextToken: z.string().optional().describe("Next token for pagination"),
   roleIds: z.array(z.string()).optional().describe("Role IDs to search for"),
-  statuses: z.array(z.string()).optional().describe("Statuses to search for"),
+  statuses: z.array(z.string()).optional().describe("User statuses, posibble values: ENABLED,DISABLED,UNDELETED,DELETED,NORMAL_USING,UNVISITED。ENABLED=NORMAL_USING+UNVISITED;UNDELETED=ENABLED+DISABLED"),
   page: z.number().int().optional().describe("Current page number, defaults to 1"),
   perPage: z.number().int().optional().describe("Number of items per page, defaults to 100")
 });

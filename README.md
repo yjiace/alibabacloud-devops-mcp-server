@@ -18,9 +18,20 @@ alibabacloud-devops-mcp-server provides the following capabilities for AI assist
 
 alibabacloud-devops-mcp-server integrates various tools, including:
 
-### Organization
+### Organization Management
+
 - `get_current_organization_Info`: Get current user's organization information
 - `get_user_organizations`: Get the list of organizations the current user has joined
+- `get_organization_role`: Get information about an organization role
+- `get_organization_departments`: Get the list of departments in an organization
+- `get_organization_department_info`: Get information about a department in an organization
+- `get_organization_department_ancestors`: Get the ancestors of a department in an organization
+- `get_organization_members`: Get the list of members in an organization
+- `get_organization_member_info`: Get information about a member in an organization
+- `get_organization_member_info_by_user_id`: Get information about a member in an organization by user ID
+- `search_organization_members`: Search for organization members
+- `list_organization_roles`: List organization roles
+- `get_organization_role`: Get information about an organization role
 
 ### Code Management Tools
 

@@ -16,9 +16,19 @@ alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 
 alibabacloud-devops-mcp-server集成了多种工具，包括：
 
-### 组织
+### 组织管理
 - `get_current_organization_Info`: 获取当前用户所在组织信息
 - `get_user_organizations`: 获取当前用户加入的组织列表
+- `get_organization_role`: 获取组织角色信息
+- `get_organization_departments`: 获取组织中的部门列表
+- `get_organization_department_info`: 获取组织中某个部门的信息
+- `get_organization_department_ancestors`: 获取组织中部门的上级部门
+- `get_organization_members`: 获取组织成员列表
+- `get_organization_member_info`: 获取组织成员信息
+- `get_organization_member_info_by_user_id`: 通过用户ID获取组织成员信息
+- `search_organization_members`: 搜索组织成员
+- `list_organization_roles`: 列出组织角色
+- `get_organization_role`: 获取组织角色信息
 
 ### 代码管理工具
 

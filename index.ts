@@ -14,6 +14,7 @@ import * as repositories from './operations/codeup/repositories.js';
 import * as changeRequests from './operations/codeup/changeRequests.js';
 import * as changeRequestComments from './operations/codeup/changeRequestComments.js';
 import * as organization from './operations/organization/organization.js';
+import * as members from './operations/organization/members.js';
 import * as project from './operations/projex/project.js';
 import * as workitem from './operations/projex/workitem.js';
 import * as compare from './operations/codeup/compare.js'
@@ -30,7 +31,6 @@ import {
 import { VERSION } from "./common/version.js";
 import {config} from "dotenv";
 import * as types from "./common/types.js";
-
 
 const server = new Server(
     {
@@ -211,6 +211,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "get_current_user",
                 description: "Get information about the current user based on the token. In the absence of an explicitly specified user ID, this result will take precedence.",
                 inputSchema: zodToJsonSchema(z.object({})),
+            },
+            {
+                name: "get_organization_departments",
+                description: "Get the list of departments in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentsSchema),
+            },
+            {
+                name: "get_organization_department_info",
+                description: "Get information about a department in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentInfoSchema),
+            },
+            {
+                name: "get_organization_department_ancestors",
+                description: "Get the ancestors of a department in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentAncestorsSchema),
+            },
+            {
+                name: "get_organization_members",
+                description: "Get the list of members in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationMembersSchema),
+            },
+            {
+                name: "get_organization_member_info",
+                description: "Get information about a member in an organization",
+                inputSchema: zodToJsonSchema(types.GetOrganizationMemberInfoSchema),
+            },
+
+            {
+                name: "get_organization_member_info_by_user_id",
+                description: "Get information about a member in an organization by user ID",
+                inputSchema: zodToJsonSchema(types.GetOrganizationMemberByUserIdInfoSchema),
+            },
+
+            {
+                name: "search_organization_members",
+                description: "[Organization Management] Search for organization members",
+                inputSchema: zodToJsonSchema(types.SearchOrganizationMembersSchema),
+            },
+            {
+                name: "list_organization_roles",
+                description: "[Organization Management] List organization roles",
+                inputSchema: zodToJsonSchema(types.ListOrganizationRolesSchema),
+            },
+            {
+                name: "get_organization_role",
+                description: "[Organization Management] Get information about an organization role",
+                inputSchema: zodToJsonSchema(types.GetOrganizationRoleSchema),
             },
 
             // Project Operations
@@ -739,6 +786,107 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 return {
                     content: [{ type: "text", text: JSON.stringify(currentUserInfo, null, 2) }],
                 };
+            }
+
+            case "get_organization_departments": {
+                const args = types.GetOrganizationDepartmentsSchema.parse(request.params.arguments);
+                const departments = await organization.getOrganizationDepartmentsFunc(
+                    args.organizationId,
+                    args.parentId ?? undefined
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(departments, null, 2) }],
+                };
+            }
+
+            case "get_organization_department_info": {
+                const args = types.GetOrganizationDepartmentInfoSchema.parse(request.params.arguments);
+                const departmentInfo = await organization.getOrganizationDepartmentInfoFunc(
+                    args.organizationId,
+                    args.id
+                )
+                return {
+                    content: [{ type: "text", text: JSON.stringify(departmentInfo, null, 2) }],
+                };
+            }
+
+            case "get_organization_department_ancestors": {
+                const args = types.GetOrganizationDepartmentAncestorsSchema.parse(request.params.arguments);
+                const ancestors = await organization.getOrganizationDepartmentAncestorsFunc(
+                    args.organizationId,
+                    args.id
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(ancestors, null, 2) }],
+                };
+            }
+
+            case "get_organization_members": {
+                const args = types.GetOrganizationMembersSchema.parse(request.params.arguments);
+                const orgMembers = await members.getOrganizationMembersFunc(
+                    args.organizationId,
+                    args.page ?? 1,
+                    args.perPage ?? 100
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(orgMembers, null, 2)}]
+                }
+            }
+
+            case "get_organization_member_info": {
+                const args = types.GetOrganizationMemberInfoSchema.parse(request.params.arguments);
+                const memberInfo = await members.getOrganizationMemberInfoFunc(
+                    args.organizationId,
+                    args.memberId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(memberInfo, null, 2)}]
+                }
+            }
+
+            case "get_organization_member_info_by_user_id": {
+                const args = types.GetOrganizationMemberByUserIdInfoSchema.parse(request.params.arguments);
+                const memberInfo = await members.getOrganizationMemberByUserIdInfoFunc(args.organizationId, args.userId);
+                return {
+                    content: [{ type: "text", text: JSON.stringify(memberInfo, null, 2)}]
+                }
+            }
+
+            case "search_organization_members": {
+                const args = types.SearchOrganizationMembersSchema.parse(request.params.arguments);
+                const membersResult = await members.searchOrganizationMembersFunc(
+                    args.organizationId,
+                    args.includeChildren ?? false,
+                    args.page ?? 1,
+                    args.perPage ?? 100,
+                    args.deptIds ?? undefined,
+                    args.nextToken ?? undefined,
+                    args.query ?? undefined,
+                    args.roleIds ?? undefined,
+                    args.statuses ?? undefined,
+                )
+                return {
+                    content: [{ type: "text", text: JSON.stringify(membersResult, null, 2)}]
+                }
+            }
+
+            case "list_organization_roles": {
+                const args = types.ListOrganizationRolesSchema.parse(request.params.arguments);
+                const roles = await organization.listOrganizationRolesFunc(args.organizationId);
+                return {
+                    content: [{ type: "text", text: JSON.stringify(roles, null, 2)}]
+                }
+            }
+
+            case "get_organization_role": {
+                const args = types.GetOrganizationRoleSchema.parse(request.params.arguments);
+                const role = await organization.getOrganizationRoleFunc(
+                    args.organizationId,
+                    args.roleId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(role, null, 2)}]
+                }
             }
 
             // Project Operations

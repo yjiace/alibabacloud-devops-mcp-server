@@ -1,5 +1,47 @@
 import { z } from "zod";
 
+export let GetOrganizationMembersSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  page: z.number().int().optional().describe("Page number"),
+  perPage: z.number().int().optional().describe("Page size"),
+});
+
+// Organization Role related types
+export const OrganizationRoleSchema = z.object({
+  id: z.string().describe("Role ID"),
+  name: z.string().describe("Role name"),
+  organizationId: z.string().describe("Organization ID"),
+  permissions: z.array(z.string()).describe("Role permission list")
+});
+
+export const OrganizationRole = z.array(OrganizationRoleSchema);
+export const ListOrganizationRolesSchema = z.object({
+  organizationId: z.string().describe("Organization ID")
+});
+
+export const GetOrganizationRoleSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  roleId: z.string().describe("Role ID")
+});
+
+// Organization Department related types
+export const GetOrganizationDepartmentAncestorsSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  id: z.string().describe("Department ID"),
+});
+
+export const GetOrganizationDepartmentInfoSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  id: z.string().describe("Department ID"),
+});
+
+
+export const GetOrganizationDepartmentsSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  parentId: z.string().optional().describe("Parent department ID"),
+});
+
+
 // Organization related types
 export const CurrentOrganizationInfoSchema = z.object({
   lastOrganization: z.string().optional().describe("Organization ID of the most recent login, used for subsequent API calls, should be used as organizationId"),
@@ -434,9 +476,54 @@ export const DeleteFileResponseSchema = z.object({
   commitMessage: z.string().optional().describe("Commit message"),
 });
 
+// 组织部门相关类型
+export const DepartmentInfoSchema = z.object({
+  creatorId: z.string().optional().describe("创建人 ID"),
+  id: z.string().optional().describe("部门 ID"),
+  name: z.string().optional().describe("部门名称"),
+  organizationId: z.string().optional().describe("组织 ID"),
+  parentId: z.string().optional().describe("父部门 ID"),
+  hasSub: z.boolean().optional().describe("是否有子部门")
+});
+
+export const OrganizationDepartmentsSchema = z.array(DepartmentInfoSchema);
+
+export type DepartmentInfo = z.infer<typeof DepartmentInfoSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;
+
+// 组织成员相关类型
+export const MemberInfoSchema = z.object({
+  deptIds: z.array(z.string()).optional().describe("所属组织部门列表"),
+  id: z.string().optional().describe("成员 ID"),
+  joined: z.string().optional().describe("加入时间"),
+  name: z.string().optional().describe("成员名"),
+  organizationId: z.string().optional().describe("组织 ID"),
+  roleIds: z.array(z.string()).optional().describe("角色信息"),
+  status: z.string().optional().describe("成员状态，可选值：ENABLED,DISABLED,UNDELETED,DELETED,NORMAL_USING,UNVISITED"),
+  userId: z.string().optional().describe("用户 ID"),
+  visited: z.string().optional().describe("最后访问时间")
+});
+
+export const OrganizationMembersSchema = z.array(MemberInfoSchema);
+export type OrganizationMembers = z.infer<typeof OrganizationMembersSchema>;
+
+// 组织成员详细信息类型
+export const GetOrganizationMemberInfoSchema = z.object({
+  organizationId: z.string().describe("组织 ID"),
+  memberId: z.string().describe("成员 ID"),
+});
+
+export type GetOrganizationMemberInfo = z.infer<typeof MemberInfoSchema>;
+
+// 通过用户ID查询组织成员详细信息类型
+export const GetOrganizationMemberByUserIdInfoSchema = z.object({
+  organizationId: z.string().describe("组织 ID"),
+  userId: z.string().describe("用户 ID"),
+});
+
+export type GetOrganizationMemberByUserIdInfo = z.infer<typeof GetOrganizationMemberByUserIdInfoSchema>;
 
 // 添加流水线相关的Schema
 
@@ -1103,6 +1190,24 @@ export const PipelineJobRunLogSchema = z.object({
   last: z.number().int().nullable().optional().describe("Last log line number"),
   more: z.boolean().nullable().optional().describe("Whether there are more logs available")
 });
+
+// 搜索组织成员相关类型
+export const SearchOrganizationMembersSchema = z.object({
+  organizationId: z.string().describe("Organization ID, can be found in the basic information page of the organization admin console"),
+  deptIds: z.array(z.string()).optional().describe("Department IDs to search for"),
+  query: z.string().optional().describe("Search query"),
+  includeChildren: z.boolean().optional().describe("Whether to include sub-departments"),
+  nextToken: z.string().optional().describe("Next token for pagination"),
+  roleIds: z.array(z.string()).optional().describe("Role IDs to search for"),
+  statuses: z.array(z.string()).optional().describe("User statuses, posibble values: ENABLED,DISABLED,UNDELETED,DELETED,NORMAL_USING,UNVISITED。ENABLED=NORMAL_USING+UNVISITED;UNDELETED=ENABLED+DISABLED"),
+  page: z.number().int().optional().describe("Current page number, defaults to 1"),
+  perPage: z.number().int().optional().describe("Number of items per page, defaults to 100")
+});
+
+export const SearchOrganizationMembersResultSchema = z.array(MemberInfoSchema);
+
+export type SearchOrganizationMembersParams = z.infer<typeof SearchOrganizationMembersSchema>;
+export type SearchOrganizationMembersResult = z.infer<typeof SearchOrganizationMembersResultSchema>;
 
 // 添加类型导出
 export type PipelineJobRunLog = z.infer<typeof PipelineJobRunLogSchema>;

@@ -103,6 +103,7 @@ export async function yunxiaoRequest(
 
   debug(`Request: ${options.method} ${url}`);
   debug(`Headers:`, requestHeaders);
+  debug(`Body:`, options.body);
 
   const response = await fetch(url, {
     method : options.method || "GET",

@@ -6,7 +6,25 @@ export let GetOrganizationMembersSchema = z.object({
   perPage: z.number().int().optional().describe("Page size"),
 });
 
+// Organization Role related types
+export const OrganizationRoleSchema = z.object({
+  id: z.string().describe("Role ID"),
+  name: z.string().describe("Role name"),
+  organizationId: z.string().describe("Organization ID"),
+  permissions: z.array(z.string()).describe("Role permission list")
+});
 
+export const OrganizationRole = z.array(OrganizationRoleSchema);
+export const ListOrganizationRolesSchema = z.object({
+  organizationId: z.string().describe("Organization ID")
+});
+
+export const GetOrganizationRoleSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  roleId: z.string().describe("Role ID")
+});
+
+// Organization Department related types
 export const GetOrganizationDepartmentAncestorsSchema = z.object({
   organizationId: z.string().describe("Organization ID"),
   id: z.string().describe("Department ID"),

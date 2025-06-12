@@ -249,6 +249,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "[Organization Management] Search for organization members",
                 inputSchema: zodToJsonSchema(types.SearchOrganizationMembersSchema),
             },
+            {
+                name: "list_organization_roles",
+                description: "[Organization Management] List organization roles",
+                inputSchema: zodToJsonSchema(types.ListOrganizationRolesSchema),
+            },
+            {
+                name: "get_organization_role",
+                description: "[Organization Management] Get information about an organization role",
+                inputSchema: zodToJsonSchema(types.GetOrganizationRoleSchema),
+            },
 
             // Project Operations
             {
@@ -857,6 +867,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 )
                 return {
                     content: [{ type: "text", text: JSON.stringify(membersResult, null, 2)}]
+                }
+            }
+
+            case "list_organization_roles": {
+                const args = types.ListOrganizationRolesSchema.parse(request.params.arguments);
+                const roles = await organization.listOrganizationRolesFunc(args.organizationId);
+                return {
+                    content: [{ type: "text", text: JSON.stringify(roles, null, 2)}]
+                }
+            }
+
+            case "get_organization_role": {
+                const args = types.GetOrganizationRoleSchema.parse(request.params.arguments);
+                const role = await organization.getOrganizationRoleFunc(
+                    args.organizationId,
+                    args.roleId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(role, null, 2)}]
                 }
             }
 

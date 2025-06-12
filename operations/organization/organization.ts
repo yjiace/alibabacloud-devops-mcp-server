@@ -6,6 +6,9 @@ import {
   CurrentUserSchema,
   OrganizationDepartmentsSchema,
   DepartmentInfoSchema,
+  OrganizationRoleSchema,
+  ListOrganizationRolesSchema,
+  OrganizationRole,
 } from "../../common/types.js";
 
 export async function getCurrentOrganizationInfoFunc(
@@ -88,6 +91,31 @@ export async function getOrganizationDepartmentAncestorsFunc(
   })
   return OrganizationDepartmentsSchema.parse(response);
 };
+
+export async function listOrganizationRolesFunc(
+    organizationId: string
+): Promise<z.infer<typeof OrganizationRole>> {
+    const url = `/oapi/v1/platform/organizations/${organizationId}/roles`;
+
+    const response = await yunxiaoRequest(url, {
+        method: "GET"
+    });
+
+    return OrganizationRole.parse(response);
+}
+
+export async function getOrganizationRoleFunc(
+    organizationId: string,
+    roleId: string
+): Promise<z.infer<typeof OrganizationRoleSchema>> {
+    const url = `/oapi/v1/platform/organizations/${organizationId}/roles/${roleId}`;
+
+    const response = await yunxiaoRequest(url, {
+        method: "GET"
+    });
+
+    return OrganizationRoleSchema.parse(response);
+}
 
 export async function getCurrentUserFunc(): Promise<z.infer<typeof CurrentUserSchema>> {
   const url = "/oapi/v1/platform/user";

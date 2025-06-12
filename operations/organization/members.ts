@@ -59,9 +59,14 @@ export const getOrganizationMemberInfoFunc = async (
 /**
  * 搜索组织成员
  * @param organizationId 组织ID
- * @param search 搜索关键字
+ * @param includeChildren
  * @param page 当前页，默认1
  * @param perPage 每页数据条数，默认100
+ * @param deptIds
+ * @param nextToken
+ * @param query
+ * @param roleIds
+ * @param statuses
  * @returns 搜索到的组织成员列表
  */
 export const searchOrganizationMembersFunc = async (

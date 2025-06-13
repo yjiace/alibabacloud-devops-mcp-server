@@ -352,17 +352,31 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     "- ✅ Handles repository and service connection logic internally\n" +
                     "- ✅ Auto-extracts project name from repository URL (git@host:org/repo.git → repo)\n" +
                     "- ✅ Supports both IDE detection and explicit parameter specification\n\n" +
-                    "**📖 Flexible Workflow Options:**\n" +
+                    "**📖 Recommended Workflow:**\n" +
                     "1. 🎯 PARSE user description for explicit parameters\n" +
-                    "2. 🔍 GATHER missing info using appropriate method:\n" +
-                    "   - QUICK: IDE detection (git config, file reading) - recommended for most cases\n" +
-                    "   - PRECISE: API calls (list_repositories, list_service_connections) when user needs specific selection\n" +
+                    "2. 🔍 DETECT missing info from IDE environment FIRST:\n" +
+                    "   - Run `git config --get remote.origin.url` → repoUrl\n" +
+                    "   - Run `git branch --show-current` → branch\n" +
+                    "   - Auto-extract serviceName from repoUrl\n" +
+                    "   - Check project files for tech stack:\n" +
+                    "     * pom.xml → buildLanguage='java', buildTool='maven'\n" +
+                    "     * build.gradle → buildLanguage='java', buildTool='gradle'\n" +
+                    "     * package.json + package-lock.json → buildLanguage='nodejs', buildTool='npm'\n" +
+                    "     * package.json + yarn.lock → buildLanguage='nodejs', buildTool='yarn'\n" +
+                    "     * requirements.txt → buildLanguage='python', buildTool='pip'\n" +
+                    "     * go.mod → buildLanguage='go', buildTool='go'\n" +
+                    "     * *.csproj → buildLanguage='dotnet', buildTool='dotnet'\n" +
                     "3. 🚀 CALL this tool with collected parameters\n\n" +
+                    "**⚠️ Important Guidelines:**\n" +
+                    "- DO NOT call list_repositories unless user explicitly asks to choose from available repositories\n" +
+                    "- DO NOT call list_service_connections unless user explicitly asks to choose from available connections\n" +
+                    "- ALWAYS try IDE detection first before making any API calls\n" +
+                    "- If IDE detection fails, THEN consider API calls as fallback\n\n" +
                     "**🎯 Parameter Priority:**\n" +
                     "1. 👤 USER EXPLICIT (highest) - buildLanguage, buildTool, versions, deployTarget\n" +
-                    "2. 🔍 CONTEXT DETECTION (flexible) - repoUrl, branch, serviceName, tech stack\n" +
+                    "2. 🔍 IDE DETECTION (preferred) - repoUrl, branch, serviceName, tech stack\n" +
                     "3. 🤖 TOOL DEFAULTS (automatic) - serviceConnectionId, organizationId\n\n" +
-                    "**🔍 IDE Detection Rules (efficient for most cases):**\n" +
+                    "**🔍 IDE Detection Rules (MUST TRY FIRST):**\n" +
                     "- 📂 Repository: `git config --get remote.origin.url` → repoUrl\n" +
                     "- 🌿 Branch: `git branch --show-current` → branch\n" +
                     "- 🏷️ Service Name: Auto-extracted from repoUrl (git@host:org/repo.git → repo)\n" +

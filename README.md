@@ -77,8 +77,8 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `execute_pipeline_job_run`: Manually run a pipeline task
 - `get_pipeline_job_run_log`: Get the execution logs of a pipeline job
 - `list_service_connections`: List service connections in organization
-- `generate_pipeline_yaml`:   Automatically generates YAML configuration
 - `create_pipeline_from_description`: Automatically generates YAML configuration and creates pipeline
+- `update_pipeline`: Update an existing pipeline in Yunxiao by pipelineId. Use this to update pipeline YAML, stages, jobs, etc.
 
 ### Packages Management Tools
 

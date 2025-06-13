@@ -465,6 +465,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "[Pipeline Management] Get the execution logs of a pipeline job. Retrieve the log content for a specific job in a pipeline run.",
                 inputSchema: zodToJsonSchema(types.GetPipelineJobRunLogSchema),
             },
+            {
+                name: "update_pipeline",
+                description: "[Pipeline Management] Update an existing pipeline in Yunxiao by pipelineId. Use this to update pipeline YAML, stages, jobs, etc.",
+                inputSchema: zodToJsonSchema(types.UpdatePipelineSchema),
+            },
             
             // Package Repository Operations
             {
@@ -1361,6 +1366,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(log, null, 2) }],
+                };
+            }
+
+            case "update_pipeline": {
+                const args = types.UpdatePipelineSchema.parse(request.params.arguments);
+                const result = await pipeline.updatePipelineFunc(
+                    args.organizationId,
+                    args.pipelineId,
+                    args.name,
+                    args.content
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify({ success: result }) }]
                 };
             }
 

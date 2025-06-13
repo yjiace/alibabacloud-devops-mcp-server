@@ -774,4 +774,26 @@ async function getDefaultHostGroupId(organizationId: string): Promise<string | n
   return null;
 }
 
+/**
+ * 更新流水线内容（YAML）
+ * @param organizationId
+ * @param pipelineId
+ * @param name
+ * @param content
+ */
+export async function updatePipelineFunc(
+  organizationId: string,
+  pipelineId: string,
+  name: string,
+  content: string
+): Promise<boolean> {
+  const url = `/oapi/v1/flow/organizations/${organizationId}/pipelines/${pipelineId}`;
+  const body = { name, content };
+  const response = await utils.yunxiaoRequest(url, {
+    method: "PUT",
+    body
+  });
+  return Boolean(response);
+}
+
 

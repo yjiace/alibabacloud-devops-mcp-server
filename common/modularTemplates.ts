@@ -456,7 +456,7 @@ export function findMatchingBuildTemplate(keywords: string[], languages: string[
 
 export function findMatchingUploadTemplate(uploadType: string): ArtifactUploadTemplate {
   return ARTIFACT_UPLOAD_TEMPLATES.find(template => template.type === uploadType) 
-    || FLOW_PUBLIC_UPLOAD_TEMPLATE; // 默认使用 flowPublic
+    || PACKAGES_UPLOAD_TEMPLATE; // 默认使用 packages
 }
 
 export function findMatchingDeployTemplate(keywords: string[], deployTargets: string[]): DeployComponentTemplate | null {
@@ -490,7 +490,7 @@ export function generateModularPipeline(options: ModularPipelineOptions): string
     sourceType,
     buildLanguages = [],
     buildTools = [],
-    uploadType = 'flowPublic',
+    uploadType = 'packages',
     deployTargets = [],
     keywords = [],
     variables = {}

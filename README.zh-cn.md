@@ -149,6 +149,11 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 }
 ```
 
+## 联系我们
+如有任何疑问或疑虑，请通过钉钉群联系我们：134400004101
+
+![Alibaba Cloud Devops MCP Server Group](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/1750147152464.png)
+
 ## 相关链接
 - [阿里云云效](https://www.aliyun.com/product/yunxiao)
 - [MCP 市场](https://modelscope.cn/mcp/servers/@aliyun/alibabacloud-devops-mcp-server)

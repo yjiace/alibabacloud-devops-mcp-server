@@ -62,6 +62,8 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `search_projects`: Search projects
 - `get_work_item`: Get work item details
 - `search_workitems`: Search work items
+- `get_work_item_types`: get work item types
+- `create_work_item`: create work item
 
 ### Pipeline Management Tools
 

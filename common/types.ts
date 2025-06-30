@@ -1270,6 +1270,7 @@ export const HostGroupSchema = z.object({
   hostInfos: z.array(HostInfoSchema).nullable().optional().describe("主机信息列表"),
   hostNum: z.number().int().nullable().optional().describe("主机数"),
   id: z.number().int().nullable().optional().describe("主机组ID"),
+  uuid: z.string().nullable().optional().describe("主机组UUID"),
   modiferAccountId: z.string().nullable().optional().describe("更新人"),
   name: z.string().nullable().optional().describe("主机组名称"),
   serviceConnectionId: z.number().int().nullable().optional().describe("服务连接ID"),

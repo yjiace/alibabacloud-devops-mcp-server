@@ -15,6 +15,7 @@ import {
 import { TemplateVariables } from "../../common/pipelineTemplates.js";
 import { generateModularPipeline } from "../../common/modularTemplates.js";
 import { listServiceConnectionsFunc } from "./serviceConnection.js";
+import {listHostGroupsFunc} from "./hostGroup.js";
 
 /**
  * 获取流水线详情
@@ -762,16 +763,21 @@ async function getDefaultPackagesServiceConnectionId(organizationId: string): Pr
 }
 
 /**
- * 获取默认的主机组ID（用于VM部署配置）
- * 注意：由于主机组API只返回数字ID而不是UUID，这个函数暂时不使用
- * 用户需要在描述中明确指定主机组UUID
+ * 获取默认的主机组UUID（用于VM部署配置）
  * @param organizationId 组织ID
  * @returns null（暂不自动获取）
  */
 async function getDefaultHostGroupId(organizationId: string): Promise<string | null> {
-  // 暂时不自动获取主机组，因为API只返回数字ID，无法在流水线中使用
-  // 用户需要在options中明确提供machineGroupId（UUID格式）
-  return null;
+  try {
+    const hostGroups = await listHostGroupsFunc(organizationId);
+    if (hostGroups && hostGroups.length > 0) {
+      return hostGroups[0].uuid || null;
+    }
+    return null;
+  } catch (error) {
+    console.error('获取主机组失败:', error);
+    return null;
+  }
 }
 
 /**

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
@@ -1456,10 +1457,80 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 config();
 
+// Check if we should run in SSE mode
+const useSSE = process.argv.includes('--sse') || process.env.MCP_TRANSPORT === 'sse';
+
 async function runServer() {
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error("Yunxiao MCP Server running on stdio");
+    if (useSSE) {
+        // Import express only when needed for SSE mode
+        const { default: express } = await import('express');
+        const app: any = express();
+        const port = process.env.PORT || 3000;
+        
+        // Store sessions
+        const sessions: Record<string, { transport: SSEServerTransport; server: Server }> = {};
+        
+        // SSE endpoint - handles initial connection
+        app.get('/sse', async (req: any, res: any) => {
+            console.log(`New SSE connection from ${req.ip}`);
+            
+            // Create transport with endpoint for POST messages
+            const sseTransport = new SSEServerTransport('/messages', res);
+            const sessionId = sseTransport.sessionId;
+            
+            if (sessionId) {
+                sessions[sessionId] = { transport: sseTransport, server };
+            }
+            
+            try {
+                await server.connect(sseTransport);
+                console.error(`Yunxiao MCP Server connected via SSE with session ${sessionId}`);
+            } catch (error) {
+                console.error("Failed to start SSE server:", error);
+                res.status(500).send("Server error");
+            }
+        });
+        
+        // POST endpoint - handles incoming messages
+        app.use(express.json({ limit: '10mb' })); // Add JSON body parser
+        app.post('/messages', async (req: any, res: any) => {
+            const sessionId = req.query.sessionId as string;
+            const session = sessions[sessionId];
+            
+            if (!session) {
+                res.status(404).send("Session not found");
+                return;
+            }
+            
+            try {
+                await session.transport.handlePostMessage(req, res, req.body);
+            } catch (error) {
+                console.error("Error handling POST message:", error);
+                res.status(500).send("Server error");
+            }
+        });
+        
+        // Start server
+        const serverInstance: any = app.listen(port, () => {
+            console.log(`Yunxiao MCP Server running in SSE mode on port ${port}`);
+            console.log(`Connect via SSE at http://localhost:${port}/sse`);
+            console.log(`Send messages to http://localhost:${port}/messages?sessionId=<session-id>`);
+        });
+        
+        // Handle graceful shutdown
+        process.on('SIGINT', () => {
+            console.log('Shutting down SSE server...');
+            serverInstance.close(() => {
+                console.log('Server closed.');
+                process.exit(0);
+            });
+        });
+    } else {
+        // Stdio mode (default)
+        const transport = new StdioServerTransport();
+        await server.connect(transport);
+        console.error("Yunxiao MCP Server running on stdio");
+    }
 }
 
 runServer().catch((error) => {

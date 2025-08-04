@@ -496,6 +496,38 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "list_service_connections",
                 description: "[Service Connection Management] List service connections in an organization with filtering options",
                 inputSchema: zodToJsonSchema(types.ListServiceConnectionsSchema),
+            },
+            
+            // Work Item Type Operations
+            {
+                name: "list_all_work_item_types",
+                description: "[Project Management] List all work item types in an organization",
+                inputSchema: zodToJsonSchema(types.ListAllWorkItemTypesSchema),
+            },
+            {
+                name: "list_work_item_types",
+                description: "[Project Management] List work item types in a project space",
+                inputSchema: zodToJsonSchema(types.ListWorkItemTypesSchema),
+            },
+            {
+                name: "get_work_item_type",
+                description: "[Project Management] Get details of a specific work item type",
+                inputSchema: zodToJsonSchema(types.GetWorkItemTypeSchema),
+            },
+            {
+                name: "list_work_item_relation_work_item_types",
+                description: "[Project Management] List work item types that can be related to a specific work item",
+                inputSchema: zodToJsonSchema(types.ListWorkItemRelationWorkItemTypesSchema),
+            },
+            {
+                name: "get_work_item_type_field_config",
+                description: "[Project Management] Get field configuration for a specific work item type",
+                inputSchema: zodToJsonSchema(types.GetWorkItemTypeFieldConfigSchema),
+            },
+            {
+                name: "get_work_item_workflow",
+                description: "[Project Management] Get workflow information for a specific work item type",
+                inputSchema: zodToJsonSchema(types.GetWorkItemWorkflowSchema),
             }
         ],
     };
@@ -1438,6 +1470,78 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(serviceConnections, null, 2) }],
+                };
+            }
+
+            // Work Item Type Operations
+            case "list_all_work_item_types": {
+                const args = types.ListAllWorkItemTypesSchema.parse(request.params.arguments);
+                const workItemTypes = await workitem.listAllWorkItemTypesFunc(
+                    args.organizationId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemTypes, null, 2) }],
+                };
+            }
+            
+            case "list_work_item_types": {
+                const args = types.ListWorkItemTypesSchema.parse(request.params.arguments);
+                const workItemTypes = await workitem.listWorkItemTypesFunc(
+                    args.organizationId,
+                    args.spaceIdentifier,
+                    args.category
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemTypes, null, 2) }],
+                };
+            }
+            
+            case "get_work_item_type": {
+                const args = types.GetWorkItemTypeSchema.parse(request.params.arguments);
+                const workItemType = await workitem.getWorkItemTypeFunc(
+                    args.organizationId,
+                    args.spaceIdentifier,
+                    args.id
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemType, null, 2) }],
+                };
+            }
+            
+            case "list_work_item_relation_work_item_types": {
+                const args = types.ListWorkItemRelationWorkItemTypesSchema.parse(request.params.arguments);
+                const workItemTypes = await workitem.listWorkItemRelationWorkItemTypesFunc(
+                    args.organizationId,
+                    args.spaceIdentifier,
+                    args.workItemId,
+                    args.relationType
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workItemTypes, null, 2) }],
+                };
+            }
+            
+            case "get_work_item_type_field_config": {
+                const args = types.GetWorkItemTypeFieldConfigSchema.parse(request.params.arguments);
+                const fieldConfig = await workitem.getWorkItemTypeFieldConfigFunc(
+                    args.organizationId,
+                    args.spaceIdentifier,
+                    args.workItemTypeId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(fieldConfig, null, 2) }],
+                };
+            }
+            
+            case "get_work_item_workflow": {
+                const args = types.GetWorkItemWorkflowSchema.parse(request.params.arguments);
+                const workflow = await workitem.getWorkItemWorkflowFunc(
+                    args.organizationId,
+                    args.spaceIdentifier,
+                    args.workItemTypeId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(workflow, null, 2) }],
                 };
             }
 

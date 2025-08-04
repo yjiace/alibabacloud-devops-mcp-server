@@ -3,7 +3,10 @@ import { yunxiaoRequest } from "../../common/utils.js";
 import {
   WorkItemSchema,
   FilterConditionSchema,
-  ConditionsSchema, ProjectInfoSchema, WorkItemType
+  ConditionsSchema, ProjectInfoSchema, WorkItemType,
+  WorkItemTypeDetail,
+  WorkItemTypeFieldConfig,
+  WorkItemWorkflow
 } from "../../common/types.js";
 import { getCurrentUserFunc } from "../organization/organization.js";
 
@@ -371,4 +374,184 @@ export async function getWorkItemTypesFunc(
   });
 
   return response as WorkItemType[];
+}
+
+/**
+ * 列出所有工作项类型
+ * @param organizationId 企业ID
+ * @returns 工作项类型列表
+ */
+export async function listAllWorkItemTypesFunc(
+  organizationId: string
+): Promise<WorkItemTypeDetail[]> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitemTypes`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 确保返回的是数组格式
+  if (Array.isArray(response)) {
+    return response as WorkItemTypeDetail[];
+  }
+  
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response && Array.isArray(response.result)) {
+    return response.result as WorkItemTypeDetail[];
+  }
+  
+  // 其他情况返回空数组
+  return [];
+}
+
+/**
+ * 列出工作项类型
+ * @param organizationId 企业ID
+ * @param spaceIdentifier 项目唯一标识
+ * @param category 工作项类型分类（可选）
+ * @returns 工作项类型列表
+ */
+export async function listWorkItemTypesFunc(
+  organizationId: string,
+  spaceIdentifier: string,
+  category?: string
+): Promise<WorkItemTypeDetail[]> {
+  let url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes`;
+  
+  // 如果提供了category参数，则添加到URL中
+  if (category) {
+    url += `?category=${encodeURIComponent(category)}`;
+  }
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 确保返回的是数组格式
+  if (Array.isArray(response)) {
+    return response as WorkItemTypeDetail[];
+  }
+  
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response && Array.isArray(response.result)) {
+    return response.result as WorkItemTypeDetail[];
+  }
+  
+  // 其他情况返回空数组
+  return [];
+}
+
+/**
+ * 获取工作项类型详情
+ * @param organizationId 企业ID
+ * @param spaceIdentifier 项目唯一标识
+ * @param id 工作项类型ID
+ * @returns 工作项类型详情
+ */
+export async function getWorkItemTypeFunc(
+  organizationId: string,
+  spaceIdentifier: string,
+  id: string
+): Promise<WorkItemTypeDetail> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${id}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response) {
+    return response.result as WorkItemTypeDetail;
+  }
+  
+  // 否则直接返回响应
+  return response as WorkItemTypeDetail;
+}
+
+/**
+ * 列出工作项关联的工作项类型
+ * @param organizationId 企业ID
+ * @param spaceIdentifier 项目唯一标识
+ * @param workItemId 工作项ID
+ * @param relationType 关联类型 (BLOCK, RELATE, DUPLICATE, CHILD)
+ * @returns 关联的工作项类型列表
+ */
+export async function listWorkItemRelationWorkItemTypesFunc(
+  organizationId: string,
+  spaceIdentifier: string,
+  workItemId: string,
+  relationType: "BLOCK" | "RELATE" | "DUPLICATE" | "CHILD"
+): Promise<WorkItemTypeDetail[]> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitems/${workItemId}/relationWorkItemTypes?relationType=${relationType}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 确保返回的是数组格式
+  if (Array.isArray(response)) {
+    return response as WorkItemTypeDetail[];
+  }
+  
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response && Array.isArray(response.result)) {
+    return response.result as WorkItemTypeDetail[];
+  }
+  
+  // 其他情况返回空数组
+  return [];
+}
+
+/**
+ * 获取工作项类型字段配置
+ * @param organizationId 企业ID
+ * @param spaceIdentifier 项目唯一标识
+ * @param workItemTypeId 工作项类型ID
+ * @returns 工作项类型字段配置
+ */
+export async function getWorkItemTypeFieldConfigFunc(
+  organizationId: string,
+  spaceIdentifier: string,
+  workItemTypeId: string
+): Promise<WorkItemTypeFieldConfig> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${workItemTypeId}/fieldConfig`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response) {
+    return response.result as WorkItemTypeFieldConfig;
+  }
+  
+  // 否则直接返回响应
+  return response as WorkItemTypeFieldConfig;
+}
+
+/**
+ * 获取工作项工作流
+ * @param organizationId 企业ID
+ * @param spaceIdentifier 项目唯一标识
+ * @param workItemTypeId 工作项类型ID
+ * @returns 工作项工作流信息
+ */
+export async function getWorkItemWorkflowFunc(
+  organizationId: string,
+  spaceIdentifier: string,
+  workItemTypeId: string
+): Promise<WorkItemWorkflow> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${workItemTypeId}/workflow`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response) {
+    return response.result as WorkItemWorkflow;
+  }
+  
+  // 否则直接返回响应
+  return response as WorkItemWorkflow;
 }

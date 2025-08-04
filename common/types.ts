@@ -1301,4 +1301,124 @@ export const UpdatePipelineSchema = z.object({
   name: z.string().max(60).describe("Pipeline name, max 60 chars")
 });
 
+// 添加工作项类型相关的Schema定义
+export const WorkItemTypeDetailSchema = z.object({
+  id: z.string().nullable().optional().describe("工作项类型ID"),
+  name: z.string().nullable().optional().describe("工作项类型名称"),
+  nameEn: z.string().nullable().optional().describe("工作项类型英文名称"),
+  category: z.string().nullable().optional().describe("工作项类型分类"),
+  description: z.string().nullable().optional().describe("工作项类型描述"),
+  icon: z.string().nullable().optional().describe("图标"),
+  color: z.string().nullable().optional().describe("颜色"),
+  enable: z.boolean().nullable().optional().describe("是否启用"),
+  defaultType: z.boolean().nullable().optional().describe("是否默认类型"),
+  systemDefault: z.boolean().nullable().optional().describe("是否系统默认"),
+});
+
+export const ListAllWorkItemTypesSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+});
+
+export const ListWorkItemTypesSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  spaceIdentifier: z.string().describe("项目唯一标识"),
+  category: z.string().optional().describe("工作项类型分类"),
+});
+
+export const GetWorkItemTypeSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  spaceIdentifier: z.string().describe("项目唯一标识"),
+  id: z.string().describe("工作项类型ID"),
+});
+
+export const ListWorkItemRelationWorkItemTypesSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  spaceIdentifier: z.string().describe("项目唯一标识"),
+  workItemId: z.string().describe("工作项ID"),
+  relationType: z.enum(["BLOCK", "RELATE", "DUPLICATE", "CHILD"]).describe("关联类型: BLOCK(阻塞), RELATE(关联), DUPLICATE(重复), CHILD(子项)"),
+});
+
+// 工作项类型字段配置中的选项定义
+export const FieldOptionSchema = z.object({
+  id: z.string().nullable().optional().describe("选项ID"),
+  name: z.string().nullable().optional().describe("选项名称"),
+  value: z.string().nullable().optional().describe("选项值"),
+});
+
+// 工作项类型字段配置定义
+export const WorkItemTypeFieldConfigSchema = z.object({
+  id: z.string().nullable().optional().describe("字段配置ID"),
+  workItemTypeId: z.string().nullable().optional().describe("工作项类型ID"),
+  fieldId: z.string().nullable().optional().describe("字段ID"),
+  fieldName: z.string().nullable().optional().describe("字段名称"),
+  fieldType: z.string().nullable().optional().describe("字段类型"),
+  required: z.boolean().nullable().optional().describe("是否必填"),
+  editable: z.boolean().nullable().optional().describe("是否可编辑"),
+  visible: z.boolean().nullable().optional().describe("是否可见"),
+  defaultValue: z.string().nullable().optional().describe("默认值"),
+  options: z.array(FieldOptionSchema).nullable().optional().describe("选项列表"),
+});
+
+// 工作流状态定义
+export const WorkflowStateSchema = z.object({
+  id: z.string().nullable().optional().describe("状态ID"),
+  name: z.string().nullable().optional().describe("状态名称"),
+  nameEn: z.string().nullable().optional().describe("状态英文名称"),
+  color: z.string().nullable().optional().describe("状态颜色"),
+  order: z.number().int().nullable().optional().describe("状态顺序"),
+  initialState: z.boolean().nullable().optional().describe("是否初始状态"),
+  finalState: z.boolean().nullable().optional().describe("是否最终状态"),
+});
+
+// 工作流转换条件定义
+export const TransitionConditionSchema = z.object({
+  fieldId: z.string().nullable().optional().describe("字段ID"),
+  operator: z.string().nullable().optional().describe("操作符"),
+  value: z.string().nullable().optional().describe("值"),
+});
+
+// 工作流转换定义
+export const WorkflowTransitionSchema = z.object({
+  id: z.string().nullable().optional().describe("转换ID"),
+  fromStateId: z.string().nullable().optional().describe("起始状态ID"),
+  toStateId: z.string().nullable().optional().describe("目标状态ID"),
+  name: z.string().nullable().optional().describe("转换名称"),
+  conditions: z.array(TransitionConditionSchema).nullable().optional().describe("转换条件列表"),
+});
+
+// 工作流定义
+export const WorkItemWorkflowSchema = z.object({
+  id: z.string().nullable().optional().describe("工作流ID"),
+  name: z.string().nullable().optional().describe("工作流名称"),
+  workItemTypeId: z.string().nullable().optional().describe("工作项类型ID"),
+  states: z.array(WorkflowStateSchema).nullable().optional().describe("状态列表"),
+  transitions: z.array(WorkflowTransitionSchema).nullable().optional().describe("转换列表"),
+});
+
+export const GetWorkItemTypeFieldConfigSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  spaceIdentifier: z.string().describe("项目唯一标识"),
+  workItemTypeId: z.string().describe("工作项类型ID"),
+});
+
+export const GetWorkItemWorkflowSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  spaceIdentifier: z.string().describe("项目唯一标识"),
+  workItemTypeId: z.string().describe("工作项类型ID"),
+});
+
+export type WorkItemTypeDetail = z.infer<typeof WorkItemTypeDetailSchema>;
+export type ListAllWorkItemTypesParams = z.infer<typeof ListAllWorkItemTypesSchema>;
+export type ListWorkItemTypesParams = z.infer<typeof ListWorkItemTypesSchema>;
+export type GetWorkItemTypeParams = z.infer<typeof GetWorkItemTypeSchema>;
+export type ListWorkItemRelationWorkItemTypesParams = z.infer<typeof ListWorkItemRelationWorkItemTypesSchema>;
+export type FieldOption = z.infer<typeof FieldOptionSchema>;
+export type WorkItemTypeFieldConfig = z.infer<typeof WorkItemTypeFieldConfigSchema>;
+export type GetWorkItemTypeFieldConfigParams = z.infer<typeof GetWorkItemTypeFieldConfigSchema>;
+export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
+export type TransitionCondition = z.infer<typeof TransitionConditionSchema>;
+export type WorkflowTransition = z.infer<typeof WorkflowTransitionSchema>;
+export type WorkItemWorkflow = z.infer<typeof WorkItemWorkflowSchema>;
+export type GetWorkItemWorkflowParams = z.infer<typeof GetWorkItemWorkflowSchema>;
+
 

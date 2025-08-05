@@ -6,7 +6,8 @@ import {
   ConditionsSchema, ProjectInfoSchema, WorkItemType,
   WorkItemTypeDetail,
   WorkItemTypeFieldConfig,
-  WorkItemWorkflow
+  WorkItemWorkflow,
+  ListWorkItemCommentsParams
 } from "../../common/types.js";
 import { getCurrentUserFunc } from "../organization/organization.js";
 
@@ -554,4 +555,38 @@ export async function getWorkItemWorkflowFunc(
   
   // 否则直接返回响应
   return response as WorkItemWorkflow;
+}
+
+/**
+ * 列出工作项评论
+ * @param organizationId 企业ID
+ * @param workItemId 工作项ID
+ * @param page 页码
+ * @param perPage 每页条数
+ * @returns 工作项评论列表
+ */
+export async function listWorkItemCommentsFunc(
+  organizationId: string,
+  workItemId: string,
+  page: number = 1,
+  perPage: number = 20
+): Promise<any[]> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitems/${workItemId}/comments?page=${page}&perPage=${perPage}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "GET",
+  });
+
+  // 确保返回的是数组格式
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response && Array.isArray(response.result)) {
+    return response.result;
+  }
+
+  // 其他情况返回空数组
+  return [];
 }

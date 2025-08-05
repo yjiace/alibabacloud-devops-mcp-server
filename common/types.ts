@@ -1338,6 +1338,14 @@ export const ListWorkItemRelationWorkItemTypesSchema = z.object({
   relationType: z.enum(["BLOCK", "RELATE", "DUPLICATE", "CHILD"]).describe("关联类型: BLOCK(阻塞), RELATE(关联), DUPLICATE(重复), CHILD(子项)"),
 });
 
+// 添加工作项评论相关的Schema定义
+export const ListWorkItemCommentsSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  workItemId: z.string().describe("工作项ID"),
+  page: z.number().int().optional().default(1).describe("页码"),
+  perPage: z.number().int().optional().default(20).describe("每页条数"),
+});
+
 // 工作项类型字段配置中的选项定义
 export const FieldOptionSchema = z.object({
   id: z.string().nullable().optional().describe("选项ID"),
@@ -1412,6 +1420,7 @@ export type ListAllWorkItemTypesParams = z.infer<typeof ListAllWorkItemTypesSche
 export type ListWorkItemTypesParams = z.infer<typeof ListWorkItemTypesSchema>;
 export type GetWorkItemTypeParams = z.infer<typeof GetWorkItemTypeSchema>;
 export type ListWorkItemRelationWorkItemTypesParams = z.infer<typeof ListWorkItemRelationWorkItemTypesSchema>;
+export type ListWorkItemCommentsParams = z.infer<typeof ListWorkItemCommentsSchema>;
 export type FieldOption = z.infer<typeof FieldOptionSchema>;
 export type WorkItemTypeFieldConfig = z.infer<typeof WorkItemTypeFieldConfigSchema>;
 export type GetWorkItemTypeFieldConfigParams = z.infer<typeof GetWorkItemTypeFieldConfigSchema>;

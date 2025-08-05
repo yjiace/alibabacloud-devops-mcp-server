@@ -528,6 +528,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "get_work_item_workflow",
                 description: "[Project Management] Get workflow information for a specific work item type",
                 inputSchema: zodToJsonSchema(types.GetWorkItemWorkflowSchema),
+            },
+            {
+                name: "list_work_item_comments",
+                description: "[Project Management] List comments for a specific work item",
+                inputSchema: zodToJsonSchema(types.ListWorkItemCommentsSchema),
             }
         ],
     };
@@ -1542,6 +1547,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(workflow, null, 2) }],
+                };
+            }
+            
+            case "list_work_item_comments": {
+                const args = types.ListWorkItemCommentsSchema.parse(request.params.arguments);
+                const comments = await workitem.listWorkItemCommentsFunc(
+                    args.organizationId,
+                    args.workItemId,
+                    args.page,
+                    args.perPage
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(comments, null, 2) }],
                 };
             }
 

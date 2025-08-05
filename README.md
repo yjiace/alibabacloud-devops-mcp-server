@@ -64,6 +64,13 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `search_workitems`: Search work items
 - `get_work_item_types`: get work item types
 - `create_work_item`: create work item
+- `list_all_work_item_types`: List all work item types in an organization
+- `list_work_item_types`: List work item types in a project space
+- `get_work_item_type`: Get details of a specific work item type
+- `list_work_item_relation_work_item_types`: List work item types that can be related to a specific work item
+- `get_work_item_type_field_config`: Get field configuration for a specific work item type
+- `get_work_item_workflow`: Get workflow information for a specific work item type
+- `list_work_item_comments`: List comments for a specific work item
 
 ### Pipeline Management Tools
 

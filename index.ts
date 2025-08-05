@@ -1493,7 +1493,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const args = types.ListWorkItemTypesSchema.parse(request.params.arguments);
                 const workItemTypes = await workitem.listWorkItemTypesFunc(
                     args.organizationId,
-                    args.spaceIdentifier,
+                    args.projectId,
                     args.category
                 );
                 return {
@@ -1505,7 +1505,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const args = types.GetWorkItemTypeSchema.parse(request.params.arguments);
                 const workItemType = await workitem.getWorkItemTypeFunc(
                     args.organizationId,
-                    args.spaceIdentifier,
                     args.id
                 );
                 return {
@@ -1517,8 +1516,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const args = types.ListWorkItemRelationWorkItemTypesSchema.parse(request.params.arguments);
                 const workItemTypes = await workitem.listWorkItemRelationWorkItemTypesFunc(
                     args.organizationId,
-                    args.spaceIdentifier,
-                    args.workItemId,
+                    args.workItemTypeId,
                     args.relationType
                 );
                 return {
@@ -1530,7 +1528,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const args = types.GetWorkItemTypeFieldConfigSchema.parse(request.params.arguments);
                 const fieldConfig = await workitem.getWorkItemTypeFieldConfigFunc(
                     args.organizationId,
-                    args.spaceIdentifier,
+                    args.projectId,
                     args.workItemTypeId
                 );
                 return {
@@ -1542,7 +1540,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const args = types.GetWorkItemWorkflowSchema.parse(request.params.arguments);
                 const workflow = await workitem.getWorkItemWorkflowFunc(
                     args.organizationId,
-                    args.spaceIdentifier,
+                    args.projectId,
                     args.workItemTypeId
                 );
                 return {

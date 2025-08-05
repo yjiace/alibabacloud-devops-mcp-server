@@ -1321,21 +1321,19 @@ export const ListAllWorkItemTypesSchema = z.object({
 
 export const ListWorkItemTypesSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
-  spaceIdentifier: z.string().describe("项目唯一标识"),
-  category: z.string().optional().describe("工作项类型分类"),
+  projectId: z.string().describe("项目唯一标识"),
+  category: z.string().optional().describe("工作项类型，可选值为 Req，Bug，Task 等。"),
 });
 
 export const GetWorkItemTypeSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
-  spaceIdentifier: z.string().describe("项目唯一标识"),
   id: z.string().describe("工作项类型ID"),
 });
 
 export const ListWorkItemRelationWorkItemTypesSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
-  spaceIdentifier: z.string().describe("项目唯一标识"),
-  workItemId: z.string().describe("工作项ID"),
-  relationType: z.enum(["BLOCK", "RELATE", "DUPLICATE", "CHILD"]).describe("关联类型: BLOCK(阻塞), RELATE(关联), DUPLICATE(重复), CHILD(子项)"),
+  workItemTypeId: z.string().describe("工作项类型ID"),
+  relationType: z.enum(["PARENT", "SUB", "ASSOCIATED", "DEPEND_ON", "DEPENDED_BY"]).describe("关联类型，可选值为 PARENT、SUB、ASSOCIATED，DEPEND_ON, DEPENDED_BY 分别对应父项，子项，关联项，依赖项，支撑项。"),
 });
 
 // 添加工作项评论相关的Schema定义
@@ -1405,13 +1403,13 @@ export const WorkItemWorkflowSchema = z.object({
 
 export const GetWorkItemTypeFieldConfigSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
-  spaceIdentifier: z.string().describe("项目唯一标识"),
+  projectId: z.string().describe("项目唯一标识"),
   workItemTypeId: z.string().describe("工作项类型ID"),
 });
 
 export const GetWorkItemWorkflowSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
-  spaceIdentifier: z.string().describe("项目唯一标识"),
+  projectId: z.string().describe("项目唯一标识"),
   workItemTypeId: z.string().describe("工作项类型ID"),
 });
 

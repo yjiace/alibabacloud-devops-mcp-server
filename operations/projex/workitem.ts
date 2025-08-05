@@ -1,5 +1,5 @@
 import {RecordType, string, z, ZodString} from "zod";
-import { yunxiaoRequest } from "../../common/utils.js";
+import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {
   WorkItemSchema,
   FilterConditionSchema,
@@ -417,7 +417,7 @@ export async function listWorkItemTypesFunc(
   spaceIdentifier: string,
   category?: string
 ): Promise<WorkItemTypeDetail[]> {
-  let url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes`;
+  let url = `/oapi/v1/projex/organizations/${organizationId}/projects/${spaceIdentifier}/workitemTypes`;
   
   // 如果提供了category参数，则添加到URL中
   if (category) {
@@ -451,10 +451,9 @@ export async function listWorkItemTypesFunc(
  */
 export async function getWorkItemTypeFunc(
   organizationId: string,
-  spaceIdentifier: string,
   id: string
 ): Promise<WorkItemTypeDetail> {
-  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${id}`;
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitemTypes/${id}`;
 
   const response = await yunxiaoRequest(url, {
     method: "GET",
@@ -479,13 +478,18 @@ export async function getWorkItemTypeFunc(
  */
 export async function listWorkItemRelationWorkItemTypesFunc(
   organizationId: string,
-  spaceIdentifier: string,
-  workItemId: string,
-  relationType: "BLOCK" | "RELATE" | "DUPLICATE" | "CHILD"
+  workItemTypeId: string,
+  relationType: string
 ): Promise<WorkItemTypeDetail[]> {
-  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitems/${workItemId}/relationWorkItemTypes?relationType=${relationType}`;
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitemTypes/${workItemTypeId}/relationWorkItemTypes`;
 
-  const response = await yunxiaoRequest(url, {
+  const queryParams: Record<string, string | number | undefined> = {};
+  if (relationType != null) {
+    queryParams.relationType = relationType;
+  }
+
+  let finalUrl = buildUrl(url, queryParams);
+  const response = await yunxiaoRequest(finalUrl, {
     method: "GET",
   });
 
@@ -506,16 +510,16 @@ export async function listWorkItemRelationWorkItemTypesFunc(
 /**
  * 获取工作项类型字段配置
  * @param organizationId 企业ID
- * @param spaceIdentifier 项目唯一标识
+ * @param projectId 项目唯一标识
  * @param workItemTypeId 工作项类型ID
  * @returns 工作项类型字段配置
  */
 export async function getWorkItemTypeFieldConfigFunc(
   organizationId: string,
-  spaceIdentifier: string,
+  projectId: string,
   workItemTypeId: string
 ): Promise<WorkItemTypeFieldConfig> {
-  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${workItemTypeId}/fieldConfig`;
+  const url = `/oapi/v1/projex/organizations/${organizationId}/projects/${projectId}/workitemTypes/${workItemTypeId}/fields`;
 
   const response = await yunxiaoRequest(url, {
     method: "GET",
@@ -533,16 +537,16 @@ export async function getWorkItemTypeFieldConfigFunc(
 /**
  * 获取工作项工作流
  * @param organizationId 企业ID
- * @param spaceIdentifier 项目唯一标识
+ * @param projectId 项目唯一标识
  * @param workItemTypeId 工作项类型ID
  * @returns 工作项工作流信息
  */
 export async function getWorkItemWorkflowFunc(
   organizationId: string,
-  spaceIdentifier: string,
+  projectId: string,
   workItemTypeId: string
 ): Promise<WorkItemWorkflow> {
-  const url = `/oapi/v1/projex/organizations/${organizationId}/spaces/${spaceIdentifier}/workitemTypes/${workItemTypeId}/workflow`;
+  const url = `/oapi/v1/projex/organizations/${organizationId}/projects/${projectId}/workitemTypes/${workItemTypeId}/workflows`;
 
   const response = await yunxiaoRequest(url, {
     method: "GET",

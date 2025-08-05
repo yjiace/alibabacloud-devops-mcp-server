@@ -32,6 +32,7 @@ import {
 import { VERSION } from "./common/version.js";
 import {config} from "dotenv";
 import * as types from "./common/types.js";
+import {ListFilesSchema} from "./common/types.js";
 
 const server = new Server(
     {
@@ -140,6 +141,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "delete_file",
                 description: "[Code Management] Delete a file from a Codeup repository",
                 inputSchema: zodToJsonSchema(types.DeleteFileSchema),
+            },
+            {
+                name: "list_files",
+                description: "[Code Management] List file tree from a Codeup repository",
+                inputSchema: zodToJsonSchema(types.ListFilesSchema),
             },
             {
                 name: "compare",

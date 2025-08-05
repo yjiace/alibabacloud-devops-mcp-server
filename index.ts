@@ -533,6 +533,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 name: "list_work_item_comments",
                 description: "[Project Management] List comments for a specific work item",
                 inputSchema: zodToJsonSchema(types.ListWorkItemCommentsSchema),
+            },
+            {
+                name: "create_work_item_comment",
+                description: "[Project Management] Create a comment for a specific work item",
+                inputSchema: zodToJsonSchema(types.CreateWorkItemCommentSchema),
             }
         ],
     };
@@ -1558,6 +1563,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(comments, null, 2) }],
+                };
+            }
+            
+            case "create_work_item_comment": {
+                const args = types.CreateWorkItemCommentSchema.parse(request.params.arguments);
+                const comment = await workitem.createWorkItemCommentFunc(
+                    args.organizationId,
+                    args.workItemId,
+                    args.content
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(comment, null, 2) }],
                 };
             }
 

@@ -1344,6 +1344,12 @@ export const ListWorkItemCommentsSchema = z.object({
   perPage: z.number().int().optional().default(20).describe("每页条数"),
 });
 
+export const CreateWorkItemCommentSchema = z.object({
+  organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
+  workItemId: z.string().describe("工作项ID"),
+  content: z.string().describe("评论内容"),
+});
+
 // 工作项类型字段配置中的选项定义
 export const FieldOptionSchema = z.object({
   id: z.string().nullable().optional().describe("选项ID"),
@@ -1419,6 +1425,7 @@ export type ListWorkItemTypesParams = z.infer<typeof ListWorkItemTypesSchema>;
 export type GetWorkItemTypeParams = z.infer<typeof GetWorkItemTypeSchema>;
 export type ListWorkItemRelationWorkItemTypesParams = z.infer<typeof ListWorkItemRelationWorkItemTypesSchema>;
 export type ListWorkItemCommentsParams = z.infer<typeof ListWorkItemCommentsSchema>;
+export type CreateWorkItemCommentParams = z.infer<typeof CreateWorkItemCommentSchema>;
 export type FieldOption = z.infer<typeof FieldOptionSchema>;
 export type WorkItemTypeFieldConfig = z.infer<typeof WorkItemTypeFieldConfigSchema>;
 export type GetWorkItemTypeFieldConfigParams = z.infer<typeof GetWorkItemTypeFieldConfigSchema>;

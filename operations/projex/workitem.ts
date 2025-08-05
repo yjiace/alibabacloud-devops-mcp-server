@@ -594,3 +594,35 @@ export async function listWorkItemCommentsFunc(
   // 其他情况返回空数组
   return [];
 }
+
+/**
+ * 创建工作项评论
+ * @param organizationId 企业ID
+ * @param workItemId 工作项ID
+ * @param content 评论内容
+ * @returns 创建的评论信息
+ */
+export async function createWorkItemCommentFunc(
+  organizationId: string,
+  workItemId: string,
+  content: string
+): Promise<any> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitems/${workItemId}/comments`;
+
+  const payload = {
+    content: content
+  };
+
+  const response = await yunxiaoRequest(url, {
+    method: "POST",
+    body: payload,
+  });
+
+  // 如果响应中包含result字段，则返回result中的数据
+  if (response && typeof response === 'object' && 'result' in response) {
+    return response.result;
+  }
+  
+  // 否则直接返回响应
+  return response;
+}

@@ -71,6 +71,7 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_work_item_type_field_config`: Get field configuration for a specific work item type
 - `get_work_item_workflow`: Get workflow information for a specific work item type
 - `list_work_item_comments`: List comments for a specific work item
+- `create_work_item_comment`: Create a comment for a specific work item
 
 ### Pipeline Management Tools
 

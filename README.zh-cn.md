@@ -68,6 +68,7 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_work_item_type_field_config`: 获取工作项类型的字段配置
 - `get_work_item_workflow`: 获取工作项类型的工作流信息
 - `list_work_item_comments`: 列出特定工作项的评论
+- `create_work_item_comment`: 为特定工作项创建评论
 
 ###  流水线工具
 - `get_pipeline` - 获取流水线详情

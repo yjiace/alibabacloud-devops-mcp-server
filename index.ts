@@ -214,7 +214,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(z.object({})),
             },
             {
-                name: "get_organization_departments",
+                name: "list_organization_departments",
                 description: "Get the list of departments in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentsSchema),
             },
@@ -229,8 +229,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 inputSchema: zodToJsonSchema(types.GetOrganizationDepartmentAncestorsSchema),
             },
             {
-                name: "get_organization_members",
-                description: "Get the list of members in an organization",
+                name: "list_organization_members",
+                description: "list user members in an organization",
                 inputSchema: zodToJsonSchema(types.GetOrganizationMembersSchema),
             },
             {
@@ -845,7 +845,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
-            case "get_organization_departments": {
+            case "list_organization_departments": {
                 const args = types.GetOrganizationDepartmentsSchema.parse(request.params.arguments);
                 const departments = await organization.getOrganizationDepartmentsFunc(
                     args.organizationId,
@@ -878,7 +878,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 };
             }
 
-            case "get_organization_members": {
+            case "list_organization_members": {
                 const args = types.GetOrganizationMembersSchema.parse(request.params.arguments);
                 const orgMembers = await members.getOrganizationMembersFunc(
                     args.organizationId,

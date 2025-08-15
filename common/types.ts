@@ -146,14 +146,14 @@ export const SprintInfoSchema = z.object({
   identifier: z.string().optional().describe("Sprint identifier"),
   name: z.string().optional().describe("Sprint name"),
   goal: z.string().optional().describe("Sprint goal"),
-  startDate: z.string().optional().describe("Start date"),
-  endDate: z.string().optional().describe("End date"),
+  startDate: z.number().nullable().optional().describe("Start date"),
+  endDate: z.number().nullable().optional().describe("End date"),
   status: z.string().optional().describe("Status"),
   spaceIdentifier: z.string().optional().describe("Project identifier"),
   organizationIdentifier: z.string().optional().describe("Organization identifier"),
-  gmtCreate: z.string().optional().describe("Creation time"),
-  gmtModified: z.string().optional().describe("Last modified time"),
-  capacityHours: z.number().optional().describe("Capacity hours"),
+  gmtCreate: z.number().optional().describe("Creation time"),
+  gmtModified: z.number().optional().describe("Last modified time"),
+  capacityHours: z.number().nullable().optional().describe("Capacity hours"),
   creator: UserInfoSchema.nullable().optional().describe("Creator"),
   description: z.string().optional().describe("Description"),
   locked: z.boolean().optional().describe("Whether locked"),
@@ -164,6 +164,22 @@ export const SprintInfoSchema = z.object({
 export const SprintSchema = z.object({
   id: z.string().optional().describe("Sprint ID"),
   name: z.string().optional().describe("Sprint name"),
+});
+
+// List Sprints Schema
+export const ListSprintsSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  id: z.string().describe("Project unique identifier"),
+  status: z.array(z.string()).optional().describe("Filter by status: TODO, DOING, ARCHIVED"),
+  page: z.number().int().min(1).optional().describe("Page number"),
+  perPage: z.number().int().min(1).max(100).optional().describe("Page size"),
+});
+
+// Get Sprint Schema
+export const GetSprintSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  projectId: z.string().describe("Project unique identifier"),
+  id: z.string().describe("Sprint unique identifier"),
 });
 
 // Work item related types

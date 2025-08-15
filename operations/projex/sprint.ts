@@ -21,7 +21,7 @@ export async function getSprintFunc(
 export async function listSprintsFunc(
   organizationId: string,
   id: string,
-  status?: string,
+  status?: string[],
   page?: number,
   perPage?: number
 ): Promise<z.infer<typeof SprintInfoSchema>[]> {
@@ -29,8 +29,8 @@ export async function listSprintsFunc(
 
   const queryParams: Record<string, string | number | undefined> = {};
 
-  if (status !== undefined) {
-    queryParams.status = status;
+  if (status !== undefined && status.length > 0) {
+    queryParams.status = status.join(',');
   }
 
   if (page !== undefined) {

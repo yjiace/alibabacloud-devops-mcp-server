@@ -57,6 +57,8 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 
 - `get_project`: 获取项目详情
 - `search_projects`: 搜索项目
+- `get_sprint`: 获取迭代详情
+- `list_sprints`: 获取项目中的迭代列表
 - `get_work_item`: 获取工作项详情
 - `search_workitems`: 搜索工作项
 - `get_work_item_types`: 获取工作项类型

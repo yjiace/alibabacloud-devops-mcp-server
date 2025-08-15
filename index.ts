@@ -18,6 +18,7 @@ import * as organization from './operations/organization/organization.js';
 import * as members from './operations/organization/members.js';
 import * as project from './operations/projex/project.js';
 import * as workitem from './operations/projex/workitem.js';
+import * as sprint from './operations/projex/sprint.js';
 import * as compare from './operations/codeup/compare.js'
 import * as pipeline from './operations/flow/pipeline.js'
 import * as pipelineJob from './operations/flow/pipelineJob.js'
@@ -285,16 +286,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
 
             // Sprint Operations
-            // {
-            //     name: "get_sprint",
-            //     description: "Get information about a sprint",
-            //     inputSchema: zodToJsonSchema(sprint.GetSprintSchema),
-            // },
-            // {
-            //     name: "list_sprints",
-            //     description: "List sprints in a project",
-            //     inputSchema: zodToJsonSchema(sprint.ListSprintsSchema),
-            // },
+            {
+                name: "get_sprint",
+                description: "[Project Management] Get information about a sprint",
+                inputSchema: zodToJsonSchema(types.GetSprintSchema),
+            },
+            {
+                name: "list_sprints",
+                description: "[Project Management] List sprints in a project",
+                inputSchema: zodToJsonSchema(types.ListSprintsSchema),
+            },
 
             // Work Item Operations
             {
@@ -995,31 +996,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
 
             // Sprint Operations
-            // case "get_sprint": {
-            //     const args = sprint.GetSprintSchema.parse(request.params.arguments);
-            //     const sprintInfo = await sprint.getSprintFunc(
-            //         args.organizationId,
-            //         args.projectId,
-            //         args.id
-            //     );
-            //     return {
-            //         content: [{ type: "text", text: JSON.stringify(sprintInfo, null, 2) }],
-            //     };
-            // }
+            case "get_sprint": {
+                const args = types.GetSprintSchema.parse(request.params.arguments);
+                const sprintInfo = await sprint.getSprintFunc(
+                    args.organizationId,
+                    args.projectId,
+                    args.id
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(sprintInfo, null, 2) }],
+                };
+            }
 
-            // case "list_sprints": {
-            //     const args = sprint.ListSprintsSchema.parse(request.params.arguments);
-            //     const sprints = await sprint.listSprintsFunc(
-            //         args.organizationId,
-            //         args.id,
-            //         args.status,
-            //         args.page,
-            //         args.perPage
-            //     );
-            //     return {
-            //         content: [{ type: "text", text: JSON.stringify(sprints, null, 2) }],
-            //     };
-            // }
+            case "list_sprints": {
+                const args = types.ListSprintsSchema.parse(request.params.arguments);
+                const sprints = await sprint.listSprintsFunc(
+                    args.organizationId,
+                    args.id,
+                    args.status,
+                    args.page,
+                    args.perPage
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(sprints, null, 2) }],
+                };
+            }
 
             // Work Item Operations
             case "get_work_item": {

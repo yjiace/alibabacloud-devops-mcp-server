@@ -1333,7 +1333,7 @@ export const GetWorkItemTypeSchema = z.object({
 export const ListWorkItemRelationWorkItemTypesSchema = z.object({
   organizationId: z.string().describe("企业ID，可在组织管理后台的基本信息页面获取"),
   workItemTypeId: z.string().describe("工作项类型ID"),
-  relationType: z.enum(["PARENT", "SUB", "ASSOCIATED", "DEPEND_ON", "DEPENDED_BY"]).describe("关联类型，可选值为 PARENT、SUB、ASSOCIATED，DEPEND_ON, DEPENDED_BY 分别对应父项，子项，关联项，依赖项，支撑项。"),
+  relationType: z.enum(["PARENT", "SUB", "ASSOCIATED", "DEPEND_ON", "DEPENDED_BY"]).optional().describe("关联类型，可选值为 PARENT、SUB、ASSOCIATED，DEPEND_ON, DEPENDED_BY 分别对应父项，子项，关联项，依赖项，支撑项。"),
 });
 
 // 添加工作项评论相关的Schema定义

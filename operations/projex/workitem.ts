@@ -472,16 +472,16 @@ export async function getWorkItemTypeFunc(
  * 列出工作项关联的工作项类型
  * @param organizationId 企业ID
  * @param spaceIdentifier 项目唯一标识
- * @param workItemId 工作项ID
+ * @param workItemTypeId 工作项ID
  * @param relationType 关联类型 (BLOCK, RELATE, DUPLICATE, CHILD)
  * @returns 关联的工作项类型列表
  */
 export async function listWorkItemRelationWorkItemTypesFunc(
   organizationId: string,
   workItemTypeId: string,
-  relationType: string
+  relationType?: string
 ): Promise<WorkItemTypeDetail[]> {
-  const url = `/oapi/v1/projex/organizations/${organizationId}/workitemTypes/${workItemTypeId}/relationWorkItemTypes`;
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitemTypes/${workItemTypeId}/relationWorkitemTypes`;
 
   const queryParams: Record<string, string | number | undefined> = {};
   if (relationType != null) {

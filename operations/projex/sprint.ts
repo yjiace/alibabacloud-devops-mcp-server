@@ -103,4 +103,52 @@ export async function createSprintFunc(
   });
 
   return CreateSprintResponseSchema.parse(response);
+}
+
+export async function updateSprintFunc(
+  organizationId: string,
+  projectId: string,
+  id: string,
+  name: string,
+  owners?: string[],
+  startDate?: string,
+  endDate?: string,
+  description?: string,
+  capacityHours?: number,
+  operatorId?: string
+): Promise<void> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/projects/${projectId}/sprints/${id}`;
+
+  const requestBody: Record<string, any> = {
+    name,
+  };
+
+  if (owners !== undefined) {
+    requestBody.owners = owners;
+  }
+
+  if (startDate !== undefined) {
+    requestBody.startDate = startDate;
+  }
+
+  if (endDate !== undefined) {
+    requestBody.endDate = endDate;
+  }
+
+  if (description !== undefined) {
+    requestBody.description = description;
+  }
+
+  if (capacityHours !== undefined) {
+    requestBody.capacityHours = capacityHours;
+  }
+
+  if (operatorId !== undefined) {
+    requestBody.operatorId = operatorId;
+  }
+
+  await yunxiaoRequest(url, {
+    method: "PUT",
+    body: requestBody,
+  });
 } 

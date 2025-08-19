@@ -301,6 +301,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "[Project Management] Create a new sprint",
                 inputSchema: zodToJsonSchema(types.CreateSprintSchema),
             },
+            {
+                name: "update_sprint",
+                description: "[Project Management] Update an existing sprint",
+                inputSchema: zodToJsonSchema(types.UpdateSprintSchema),
+            },
 
             // Work Item Operations
             {
@@ -1037,11 +1042,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     args.startDate,
                     args.endDate,
                     args.description,
-                    args.capacityHours,
-                    args.operatorId
+                    args.capacityHours
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(sprintResult, null, 2) }],
+                };
+            }
+
+            case "update_sprint": {
+                const args = types.UpdateSprintSchema.parse(request.params.arguments);
+                await sprint.updateSprintFunc(
+                    args.organizationId,
+                    args.projectId,
+                    args.id,
+                    args.name,
+                    args.owners,
+                    args.startDate,
+                    args.endDate,
+                    args.description,
+                    args.capacityHours
+                );
+                return {
+                    content: [{ type: "text", text: "Sprint updated successfully" }],
                 };
             }
 

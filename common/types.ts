@@ -192,7 +192,19 @@ export const CreateSprintSchema = z.object({
   endDate: z.string().optional().describe("Date string in YYYY-MM-DD format"),
   description: z.string().optional().describe("Sprint description"),
   capacityHours: z.number().int().optional().describe("Sprint capacity hours"),
-  operatorId: z.string().optional().describe("Operator user ID (invalid when using personal token)"),
+});
+
+// Update Sprint Schema
+export const UpdateSprintSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  projectId: z.string().describe("Project unique identifier"),
+  id: z.string().describe("Sprint unique identifier"),
+  name: z.string().describe("Sprint name"),
+  owners: z.array(z.string()).optional().describe("Sprint owner user IDs"),
+  startDate: z.string().optional().describe("Date string in YYYY-MM-DD format"),
+  endDate: z.string().optional().describe("Date string in YYYY-MM-DD format"),
+  description: z.string().optional().describe("Sprint description"),
+  capacityHours: z.number().int().optional().describe("Sprint capacity hours"),
 });
 
 // Work item related types

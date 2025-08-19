@@ -296,6 +296,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                 description: "[Project Management] List sprints in a project",
                 inputSchema: zodToJsonSchema(types.ListSprintsSchema),
             },
+            {
+                name: "create_sprint",
+                description: "[Project Management] Create a new sprint",
+                inputSchema: zodToJsonSchema(types.CreateSprintSchema),
+            },
 
             // Work Item Operations
             {
@@ -1019,6 +1024,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 );
                 return {
                     content: [{ type: "text", text: JSON.stringify(sprints, null, 2) }],
+                };
+            }
+
+            case "create_sprint": {
+                const args = types.CreateSprintSchema.parse(request.params.arguments);
+                const sprintResult = await sprint.createSprintFunc(
+                    args.organizationId,
+                    args.projectId,
+                    args.name,
+                    args.owners,
+                    args.startDate,
+                    args.endDate,
+                    args.description,
+                    args.capacityHours,
+                    args.operatorId
+                );
+                return {
+                    content: [{ type: "text", text: JSON.stringify(sprintResult, null, 2) }],
                 };
             }
 

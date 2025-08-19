@@ -4,6 +4,11 @@ import {
   SprintInfoSchema
 } from "../../common/types.js";
 
+// Create Sprint Response Schema
+const CreateSprintResponseSchema = z.object({
+  id: z.string().describe("Created sprint ID"),
+});
+
 export async function getSprintFunc(
   organizationId: string,
   projectId: string,
@@ -52,4 +57,50 @@ export async function listSprintsFunc(
   }
 
   return response.map(sprint => SprintInfoSchema.parse(sprint));
+}
+
+export async function createSprintFunc(
+  organizationId: string,
+  projectId: string,
+  name: string,
+  owners: string[],
+  startDate?: string,
+  endDate?: string,
+  description?: string,
+  capacityHours?: number,
+  operatorId?: string
+): Promise<{ id: string }> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/projects/${projectId}/sprints`;
+
+  const requestBody: Record<string, any> = {
+    name,
+    owners,
+  };
+
+  if (startDate !== undefined) {
+    requestBody.startDate = startDate;
+  }
+
+  if (endDate !== undefined) {
+    requestBody.endDate = endDate;
+  }
+
+  if (description !== undefined) {
+    requestBody.description = description;
+  }
+
+  if (capacityHours !== undefined) {
+    requestBody.capacityHours = capacityHours;
+  }
+
+  if (operatorId !== undefined) {
+    requestBody.operatorId = operatorId;
+  }
+
+  const response = await yunxiaoRequest(url, {
+    method: "POST",
+    body: requestBody,
+  });
+
+  return CreateSprintResponseSchema.parse(response);
 } 

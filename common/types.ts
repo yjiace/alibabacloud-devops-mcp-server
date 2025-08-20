@@ -1478,17 +1478,17 @@ export type GetWorkItemWorkflowParams = z.infer<typeof GetWorkItemWorkflowSchema
 
 // UpdateWorkItem字段更新项定义
 export const UpdateWorkItemFieldSchema = z.object({
-  subject: z.string().optional().describe("标题"),
-  description: z.string().optional().describe("描述"),
+  subject: z.string().optional().describe("工作项标题"),
+  description: z.string().optional().describe("工作项描述"),
   status: z.string().optional().describe("状态Id"),
-  assignee: z.string().optional().describe("处理人Id"),
+  assignedTo: z.string().optional().describe("指派人userId"),
   priority: z.string().optional().describe("优先级Id"),
-  labels: z.array(z.string()).optional().describe("标签列表"),
-  sprint: z.string().optional().describe("所属迭代Id"),
-  tracker: z.string().optional().describe("任务类型Id"),
-  verifier: z.string().optional().describe("验证人Id"),
-  participants: z.array(z.string()).optional().describe("参与者Id列表"),
-  versions: z.array(z.string()).optional().describe("版本Id"),
+  labels: z.array(z.string()).optional().describe("关联的标签id列表"),
+  sprint: z.string().optional().describe("关联的迭代Id"),
+  trackers: z.array(z.string()).optional().describe("抄送人userId列表"),
+  verifier: z.string().optional().describe("验证人userId"),
+  participants: z.array(z.string()).optional().describe("参与人userId列表"),
+  versions: z.array(z.string()).optional().describe("关联的版本Id列表"),
 });
 
 export type UpdateWorkItemParams = z.infer<typeof UpdateWorkItemSchema>;

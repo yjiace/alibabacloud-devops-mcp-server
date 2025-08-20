@@ -1,4 +1,4 @@
-import {RecordType, string, z, ZodString} from "zod";
+import {RecordType, string, TypeOf, z, ZodString} from "zod";
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {
   WorkItemSchema,
@@ -7,7 +7,8 @@ import {
   WorkItemTypeDetail,
   WorkItemTypeFieldConfig,
   WorkItemWorkflow,
-  ListWorkItemCommentsParams
+  ListWorkItemCommentsParams,
+  UpdateWorkItemField
 } from "../../common/types.js";
 import { getCurrentUserFunc } from "../organization/organization.js";
 
@@ -361,6 +362,19 @@ export async function createWorkItemFunc(
   });
 
   return WorkItemSchema.parse(response);
+}
+
+export async function updateWorkItemFunc(
+    organizationId: string,
+    workItemId: string,
+    updateWorkItemFields: UpdateWorkItemField
+): Promise<void> {
+  const url = `/oapi/v1/projex/organizations/${organizationId}/workitems/${workItemId}`;
+
+  const response = await yunxiaoRequest(url, {
+    method: "PUT",
+    body: updateWorkItemFields,
+  });
 }
 
 export async function getWorkItemTypesFunc(

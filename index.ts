@@ -332,6 +332,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     category: z.string().describe("Work item type category, optional values: Req, Bug, Task, etc.")
                 })),
             },
+            {
+                name: "update_work_item",
+                description: "[Project Management] Update a work item",
+                inputSchema: zodToJsonSchema(types.UpdateWorkItemSchema),
+            },
 
             // Pipeline Operations
             {
@@ -1125,6 +1130,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 
                 return {
                     content: [{ type: "text", text: JSON.stringify(workItemTypes, null, 2) }],
+                };
+            }
+
+            case "update_work_item": {
+                const args = types.UpdateWorkItemSchema.parse(request.params.arguments);
+                await workitem.updateWorkItemFunc(
+                    args.organizationId,
+                    args.workItemId,
+                    args.updateWorkItemFields
+                );
+                return {
+                    content: [{ type: "text", text: "" }],
                 };
             }
 

@@ -1476,4 +1476,26 @@ export type WorkflowTransition = z.infer<typeof WorkflowTransitionSchema>;
 export type WorkItemWorkflow = z.infer<typeof WorkItemWorkflowSchema>;
 export type GetWorkItemWorkflowParams = z.infer<typeof GetWorkItemWorkflowSchema>;
 
+// UpdateWorkItem字段更新项定义
+export const UpdateWorkItemFieldSchema = z.object({
+  subject: z.string().optional().describe("标题"),
+  description: z.string().optional().describe("描述"),
+  status: z.string().optional().describe("状态Id"),
+  assignee: z.string().optional().describe("处理人Id"),
+  priority: z.string().optional().describe("优先级Id"),
+  labels: z.array(z.string()).optional().describe("标签列表"),
+  sprint: z.string().optional().describe("所属迭代Id"),
+  tracker: z.string().optional().describe("任务类型Id"),
+  verifier: z.string().optional().describe("验证人Id"),
+  participants: z.array(z.string()).optional().describe("参与者Id列表"),
+  versions: z.array(z.string()).optional().describe("版本Id"),
+});
+
+export type UpdateWorkItemParams = z.infer<typeof UpdateWorkItemSchema>;
+export type UpdateWorkItemField = z.infer<typeof UpdateWorkItemFieldSchema>;
+export const UpdateWorkItemSchema = z.object({
+  organizationId: z.string().describe("Organization ID"),
+  workItemId: z.string().describe("Work item ID"),
+  updateWorkItemFields: UpdateWorkItemFieldSchema
+});
 

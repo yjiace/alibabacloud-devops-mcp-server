@@ -4,6 +4,7 @@ import { getProjectManagementTools } from './project-management.js';
 import { getPipelineTools } from './pipeline.js';
 import { getPackageManagementTools } from './packages.js';
 import { getServiceConnectionTools } from './service-connections.js';
+import { getAppStackTools } from './appstack.js';
 
 export const getAllTools = () => [
   ...getCodeManagementTools(),
@@ -12,4 +13,5 @@ export const getAllTools = () => [
   ...getPipelineTools(),
   ...getPackageManagementTools(),
   ...getServiceConnectionTools(),
+  ...getAppStackTools(),
 ];

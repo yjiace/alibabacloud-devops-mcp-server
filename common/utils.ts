@@ -113,6 +113,7 @@ export async function yunxiaoRequest(
 
   const responseBody = await parseResponseBody(response);
   debug(`Response Body:`, responseBody)
+  debug(`Response status:`, response.ok)
 
   if (!response.ok) {
     throw createYunxiaoError(response.status, responseBody);

@@ -4,6 +4,7 @@ import { handleProjectManagementTools } from './project-management.js';
 import { handlePipelineTools } from './pipeline.js';
 import { handlePackageManagementTools } from './packages.js';
 import { handleServiceConnectionTools } from './service-connections.js';
+import { handleAppStackTools } from './appstack.js';
 
 export const handleToolRequest = async (request: any) => {
   // Try each handler in sequence until one returns a result
@@ -13,7 +14,8 @@ export const handleToolRequest = async (request: any) => {
     handleProjectManagementTools,
     handlePipelineTools,
     handlePackageManagementTools,
-    handleServiceConnectionTools
+    handleServiceConnectionTools,
+    handleAppStackTools
   ];
 
   for (const handler of handlers) {

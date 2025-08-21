@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { yunxiaoRequest, buildUrl } from '../../common/utils.js';
 import { YunxiaoError } from '../../common/errors.js';
-import {debug} from "util";
 
 // Schema for the ListApplications API
 export const ListApplicationsRequestSchema = z.object({
@@ -25,8 +24,64 @@ export const ListApplicationsResponseSchema = z.object({
   nextToken: z.string().optional(),
 });
 
+// Schema for the GetApplication API
+export const GetApplicationRequestSchema = z.object({
+  organizationId: z.string().describe("组织id"),
+  appName: z.string().describe("应用名"),
+});
+
+export const GetApplicationResponseSchema = z.object({
+  appTemplateDisplayName: z.string().nullable().optional().describe("应用模版展示名称"),
+  appTemplateName: z.string().nullable().optional().describe("应用模版名称"),
+  creatorId: z.string().optional().describe("应用创建者id"),
+  description: z.string().optional().describe("应用描述"),
+  gmtCreate: z.string().optional().describe("创建时间"),
+  name: z.string().optional().describe("应用名"),
+});
+
+// Schema for the CreateApplication API
+export const CreateApplicationRequestSchema = z.object({
+  organizationId: z.string().describe("组织id"),
+  name: z.string().describe("应用名"),
+  appTemplateName: z.string().optional().describe("应用模板唯一名"),
+  description: z.string().optional().describe("应用描述"),
+  ownerId: z.string().optional().describe("应用 owner ID"),
+  tags: z.array(z.string()).optional().describe("应用标签"),
+});
+
+export const CreateApplicationResponseSchema = z.object({
+  appTemplateDisplayName: z.string().nullable().optional().describe("应用模版展示名称"),
+  appTemplateName: z.string().nullable().optional().describe("应用模版名称"),
+  creatorId: z.string().optional().describe("应用创建者id"),
+  description: z.string().optional().describe("应用描述"),
+  gmtCreate: z.string().optional().describe("创建时间"),
+  name: z.string().optional().describe("应用名"),
+});
+
+// Schema for the UpdateApplication API
+export const UpdateApplicationRequestSchema = z.object({
+  organizationId: z.string().describe("组织id"),
+  appName: z.string().describe("应用名"),
+  ownerId: z.string().optional().describe("应用 owner ID"),
+});
+
+export const UpdateApplicationResponseSchema = z.object({
+  appTemplateDisplayName: z.string().nullable().optional().describe("应用模版展示名称"),
+  appTemplateName: z.string().nullable().optional().describe("应用模版名称"),
+  creatorId: z.string().optional().describe("应用创建者id"),
+  description: z.string().optional().describe("应用描述"),
+  gmtCreate: z.string().optional().describe("创建时间"),
+  name: z.string().optional().describe("应用名"),
+});
+
 export type ListApplicationsRequest = z.infer<typeof ListApplicationsRequestSchema>;
 export type ListApplicationsResponse = z.infer<typeof ListApplicationsResponseSchema>;
+export type GetApplicationRequest = z.infer<typeof GetApplicationRequestSchema>;
+export type GetApplicationResponse = z.infer<typeof GetApplicationResponseSchema>;
+export type CreateApplicationRequest = z.infer<typeof CreateApplicationRequestSchema>;
+export type CreateApplicationResponse = z.infer<typeof CreateApplicationResponseSchema>;
+export type UpdateApplicationRequest = z.infer<typeof UpdateApplicationRequestSchema>;
+export type UpdateApplicationResponse = z.infer<typeof UpdateApplicationResponseSchema>;
 
 /**
  * List applications in an organization with pagination
@@ -56,6 +111,74 @@ export async function listApplications(params: ListApplicationsRequest): Promise
       }
     );
     return ListApplicationsResponseSchema.parse(response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Get application details by name
+ * 
+ * @param params - The request parameters
+ * @returns The application details
+ */
+export async function getApplication(params: GetApplicationRequest): Promise<GetApplicationResponse> {
+  const { organizationId, appName } = params;
+  
+  try {
+    const response = await yunxiaoRequest(
+      `/oapi/v1/appstack/organizations/${organizationId}/apps/${appName}`,
+      {
+        method: 'GET',
+      }
+    );
+    return GetApplicationResponseSchema.parse(response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Create a new application
+ * 
+ * @param params - The request parameters
+ * @returns The created application details
+ */
+export async function createApplication(params: CreateApplicationRequest): Promise<CreateApplicationResponse> {
+  const { organizationId, ...body } = params;
+  
+  try {
+    const response = await yunxiaoRequest(
+      `/oapi/v1/appstack/organizations/${organizationId}/apps`,
+      {
+        method: 'POST',
+        body: body,
+      }
+    );
+    return CreateApplicationResponseSchema.parse(response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Update an existing application
+ * 
+ * @param params - The request parameters
+ * @returns The updated application details
+ */
+export async function updateApplication(params: UpdateApplicationRequest): Promise<UpdateApplicationResponse> {
+  const { organizationId, appName, ...body } = params;
+  
+  try {
+    const response = await yunxiaoRequest(
+      `/oapi/v1/appstack/organizations/${organizationId}/apps/${appName}`,
+      {
+        method: 'PUT',
+        body: body,
+      }
+    );
+    return UpdateApplicationResponseSchema.parse(response);
   } catch (error) {
     throw error;
   }

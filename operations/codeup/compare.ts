@@ -2,7 +2,7 @@ import { z } from "zod";
 import {yunxiaoRequest, buildUrl, handleRepositoryIdEncoding} from "../../common/utils.js";
 import { 
   CompareSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 
 export async function getCompareFunc(

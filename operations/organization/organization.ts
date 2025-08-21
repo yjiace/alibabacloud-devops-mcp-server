@@ -9,7 +9,7 @@ import {
   OrganizationRoleSchema,
   ListOrganizationRolesSchema,
   OrganizationRole,
-} from "../../common/types.js";
+} from "./types.js";
 
 export async function getCurrentOrganizationInfoFunc(
 ): Promise<z.infer<typeof CurrentOrganizationInfoSchema>> {

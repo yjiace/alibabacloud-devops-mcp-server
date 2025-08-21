@@ -1,5 +1,5 @@
 import * as utils from "../../common/utils.js";
-import { ServiceConnectionSchema, ServiceConnection } from "../../common/types.js";
+import { ServiceConnectionSchema, ServiceConnection, ListServiceConnectionsSchema } from "./types.js";
 
 /**
  * 获取服务连接列表

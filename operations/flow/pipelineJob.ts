@@ -11,7 +11,7 @@ import {
   PipelineJobHistoryItem,
   PipelineJobRunLogSchema,
   PipelineJobRunLog
-} from "../../common/types.js";
+} from "./types.js";
 
 /**
  * 按任务分类获取流水线执行的任务

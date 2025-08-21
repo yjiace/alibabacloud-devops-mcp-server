@@ -3,7 +3,7 @@ import {
   OrganizationMembers,
   GetOrganizationMemberInfo,
   MemberInfoSchema, SearchOrganizationMembersResult, SearchOrganizationMembersResultSchema,
-} from '../../common/types.js';
+} from './types.js';
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {debug} from "util";
 

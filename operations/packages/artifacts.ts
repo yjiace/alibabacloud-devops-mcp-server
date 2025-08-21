@@ -2,7 +2,7 @@ import { yunxiaoRequest, buildUrl } from "../../common/utils.js";
 import {
   ArtifactSchema,
   Artifact,
-} from "../../common/types.js";
+} from "./types.js";
 
 /**
  * 查询制品信息

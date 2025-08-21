@@ -2,7 +2,7 @@ import { z } from "zod";
 import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding } from "../../common/utils.js";
 import { 
   ChangeRequestCommentSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 /**
  * 创建合并请求评论

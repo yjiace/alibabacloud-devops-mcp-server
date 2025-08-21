@@ -11,7 +11,7 @@ import {
   PipelineRunListItemSchema,
   PipelineRunListItem,
   ListPipelineRunsOptions
-} from "../../common/types.js";
+} from "./types.js";
 import { TemplateVariables } from "../../common/pipelineTemplates.js";
 import { generateModularPipeline } from "../../common/modularTemplates.js";
 import { listServiceConnectionsFunc } from "./serviceConnection.js";

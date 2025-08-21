@@ -3,13 +3,15 @@ import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {
   WorkItemSchema,
   FilterConditionSchema,
-  ConditionsSchema, ProjectInfoSchema, WorkItemType,
+  ConditionsSchema, 
+  WorkItemType,
   WorkItemTypeDetail,
   WorkItemTypeFieldConfig,
   WorkItemWorkflow,
-  ListWorkItemCommentsParams,
   UpdateWorkItemField
-} from "../../common/types.js";
+} from "./types.js";
+import { ProjectInfoSchema } from "./types.js";
+import { ListWorkItemCommentsParams } from "./types.js";
 import { getCurrentUserFunc } from "../organization/organization.js";
 
 export async function getWorkItemFunc(

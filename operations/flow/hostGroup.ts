@@ -1,5 +1,5 @@
 import * as utils from "../../common/utils.js";
-import { HostGroupSchema, HostGroup } from "../../common/types.js";
+import { HostGroupSchema, HostGroup, ListHostGroupsSchema } from "./types.js";
 
 /**
  * 获取主机组列表
@@ -73,4 +73,4 @@ export async function listHostGroupsFunc(
   }
 
   return response.map(item => HostGroupSchema.parse(item));
-} 
+}

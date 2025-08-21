@@ -3,7 +3,7 @@ import { yunxiaoRequest, buildUrl, handleRepositoryIdEncoding, floatToIntString 
 import { 
   ChangeRequestSchema, 
   PatchSetSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 // 通过API获取仓库的数字ID
 async function getRepositoryNumericId(organizationId: string, repositoryId: string): Promise<string> {

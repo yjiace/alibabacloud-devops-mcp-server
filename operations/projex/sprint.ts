@@ -2,7 +2,7 @@ import { z } from "zod";
 import { yunxiaoRequest, buildUrl } from "../../common/utils.js";
 import {
   SprintInfoSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 // Create Sprint Response Schema
 const CreateSprintResponseSchema = z.object({

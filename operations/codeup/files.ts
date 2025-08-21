@@ -5,7 +5,7 @@ import {
   CreateFileResponseSchema, 
   DeleteFileResponseSchema,
   FileInfoSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 // Common helper function to handle repositoryId and filePath encoding
 function handlePathEncoding(repositoryId: string, filePath: string): { encodedRepoId: string; encodedFilePath: string } {

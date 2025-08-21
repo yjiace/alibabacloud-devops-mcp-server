@@ -13,7 +13,7 @@ import {
   ProjectInfoSchema,
   FilterConditionSchema,
   ConditionsSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 /**
  * 获取项目详情

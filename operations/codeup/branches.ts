@@ -2,7 +2,7 @@ import { z } from "zod";
 import {buildUrl, yunxiaoRequest} from "../../common/utils.js";
 import {
   CodeupBranchSchema
-} from "../../common/types.js";
+} from "./types.js";
 
 // Response type for delete branch operation
 interface DeleteBranchResponse {

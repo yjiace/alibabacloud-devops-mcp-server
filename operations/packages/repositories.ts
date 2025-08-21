@@ -2,7 +2,7 @@ import { yunxiaoRequest, buildUrl } from "../../common/utils.js";
 import {
   PackageRepository,
   PackageRepositorySchema,
-} from "../../common/types.js";
+} from "./types.js";
 
 /**
  * 查看制品仓库信息

@@ -8,7 +8,7 @@ import {
 export const getAppStackTemplateTools = () => [
   {
     name: 'search_app_templates',
-    description: 'Search application templates',
+    description: '[application delivery] Search application templates',
     inputSchema: zodToJsonSchema(SearchAppTemplatesRequestSchema),
   }
 ];

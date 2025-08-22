@@ -12,27 +12,27 @@ import {
 export const getAppStackTagTools = () => [
   {
     name: 'create_app_tag',
-    description: 'Create an application tag',
+    description: '[application delivery] Create an application tag',
     inputSchema: zodToJsonSchema(CreateAppTagRequestSchema),
   },
   {
     name: 'update_app_tag',
-    description: 'Update an application tag',
+    description: '[application delivery] Update an application tag',
     inputSchema: zodToJsonSchema(UpdateAppTagRequestSchema),
   },
   {
     name: 'delete_app_tag',
-    description: 'Delete an application tag',
+    description: '[application delivery] Delete an application tag',
     inputSchema: zodToJsonSchema(DeleteAppTagRequestSchema),
   },
   {
     name: 'search_app_tags',
-    description: 'Search application tags',
+    description: '[application delivery] Search application tags',
     inputSchema: zodToJsonSchema(SearchAppTagRequestSchema),
   },
   {
     name: 'update_app_tag_bind',
-    description: 'Update application tag bindings',
+    description: '[application delivery] Update application tag bindings',
     inputSchema: zodToJsonSchema(UpdateAppTagBindRequestSchema),
   }
 ];

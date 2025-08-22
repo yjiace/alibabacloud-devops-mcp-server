@@ -12,7 +12,6 @@ import { getAppStackVariableGroupTools } from './appstack-variable-groups.js';
 import { getAppStackOrchestrationTools } from './appstack-orchestrations.js';
 import { getAppStackChangeRequestTools } from './appstack-change-requests.js';
 import { getAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
-import { getAppStackSystemTools } from './appstack-systems.js';
 import { getAppStackReleaseWorkflowTools } from './appstack-release-workflows.js';
 import { getAppStackChangeOrderTools } from './appstack-change-orders.js';
 
@@ -31,7 +30,6 @@ export const getAllTools = () => [
   ...getAppStackOrchestrationTools(),
   ...getAppStackChangeRequestTools(),
   ...getAppStackDeploymentResourceTools(),
-  ...getAppStackSystemTools(),
   ...getAppStackReleaseWorkflowTools(),
   ...getAppStackChangeOrderTools()
 ];

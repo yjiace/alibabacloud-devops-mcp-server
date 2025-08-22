@@ -5,6 +5,16 @@ import { handlePipelineTools } from './pipeline.js';
 import { handlePackageManagementTools } from './packages.js';
 import { handleServiceConnectionTools } from './service-connections.js';
 import { handleAppStackTools } from './appstack.js';
+import { handleAppStackTagTools } from './appstack-tags.js';
+import { handleAppStackTemplateTools } from './appstack-templates.js';
+import { handleAppStackGlobalVarTools } from './appstack-global-vars.js';
+import { handleAppStackVariableGroupTools } from './appstack-variable-groups.js';
+import { handleAppStackOrchestrationTools } from './appstack-orchestrations.js';
+import { handleAppStackChangeRequestTools } from './appstack-change-requests.js';
+import { handleAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
+import { handleAppStackSystemTools } from './appstack-systems.js';
+import { handleAppStackReleaseWorkflowTools } from './appstack-release-workflows.js';
+import { handleAppStackChangeOrderTools } from './appstack-change-orders.js';
 
 export const handleToolRequest = async (request: any) => {
   // Try each handler in sequence until one returns a result
@@ -15,7 +25,17 @@ export const handleToolRequest = async (request: any) => {
     handlePipelineTools,
     handlePackageManagementTools,
     handleServiceConnectionTools,
-    handleAppStackTools
+    handleAppStackTools,
+    handleAppStackTagTools,
+    handleAppStackTemplateTools,
+    handleAppStackGlobalVarTools,
+    handleAppStackVariableGroupTools,
+    handleAppStackOrchestrationTools,
+    handleAppStackChangeRequestTools,
+    handleAppStackDeploymentResourceTools,
+    handleAppStackSystemTools,
+    handleAppStackReleaseWorkflowTools,
+    handleAppStackChangeOrderTools
   ];
 
   for (const handler of handlers) {

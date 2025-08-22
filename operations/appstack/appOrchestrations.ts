@@ -8,35 +8,35 @@ const AppSchema = z.object({
 }).describe("应用");
 
 const OrchestrationRevisionSchema = z.object({
-  author: z.string().optional().describe("作者"),
-  commitTime: z.number().optional().describe("提交时间"),
-  message: z.string().optional().describe("提交信息"),
-  sha: z.string().optional().describe("提交SHA"),
+  author: z.string().nullable().optional().describe("作者"),
+  commitTime: z.union([z.number(), z.string()]).nullable().optional().describe("提交时间"),
+  message: z.string().nullable().optional().describe("提交信息"),
+  sha: z.string().nullable().optional().describe("提交SHA"),
 }).describe("编排版本");
 
 const AppOrchestrationSchema = z.object({
   app: AppSchema.optional().describe("应用"),
-  creatorId: z.string().optional().describe("创建人ID"),
-  description: z.string().optional().describe("描述"),
-  format: z.enum(["MANIFEST", "HELM_CHARTS"]).optional().describe("格式"),
-  gmtCreate: z.string().optional().describe("创建时间"),
-  gmtModified: z.string().optional().describe("修改时间"),
-  modifierId: z.string().optional().describe("修改人ID"),
-  name: z.string().optional().describe("名称"),
-  revision: OrchestrationRevisionSchema.optional().describe("版本"),
-  sn: z.string().optional().describe("序列号"),
-  storageType: z.enum(["BUILTIN", "EXTERNAL"]).optional().describe("存储类型"),
-  suitableResourceTypes: z.array(z.enum(["KUBERNETES", "HOST", "BePending"])).optional().describe("适用资源类型"),
-  type: z.string().optional().describe("类型"),
+  creatorId: z.string().nullable().optional().describe("创建人ID"),
+  description: z.string().nullable().optional().describe("描述"),
+  format: z.enum(["MANIFEST", "HELM_CHARTS"]).nullable().optional().describe("格式"),
+  gmtCreate: z.string().nullable().optional().describe("创建时间"),
+  gmtModified: z.string().nullable().optional().describe("修改时间"),
+  modifierId: z.string().nullable().optional().describe("修改人ID"),
+  name: z.string().nullable().optional().describe("名称"),
+  revision: OrchestrationRevisionSchema.nullable().optional().describe("版本"),
+  sn: z.string().nullable().optional().describe("序列号"),
+  storageType: z.enum(["BUILTIN", "EXTERNAL"]).nullable().optional().describe("存储类型"),
+  suitableResourceTypes: z.array(z.enum(["KUBERNETES", "HOST", "BePending"])).nullable().optional().describe("适用资源类型"),
+  type: z.string().nullable().optional().describe("类型"),
 }).describe("应用编排");
 
 const AppBuiltInOrchestrationSchema = AppOrchestrationSchema.extend({
-  componentList: z.array(z.object({}).passthrough()).optional().describe("组件列表"),
-  groupNameMap: z.record(z.string()).optional().describe("组名映射"),
-  labelList: z.array(z.object({}).passthrough()).optional().describe("标签列表"),
-  labelPolicy: z.string().optional().describe("标签策略"),
-  placeholderList: z.array(z.object({}).passthrough()).optional().describe("占位符列表"),
-  syncSourceTemplate: z.object({}).passthrough().optional().describe("同步源模板"),
+  componentList: z.array(z.object({}).passthrough()).nullable().optional().describe("组件列表"),
+  groupNameMap: z.record(z.string()).nullable().optional().describe("组名映射"),
+  labelList: z.array(z.object({}).passthrough()).nullable().optional().describe("标签列表"),
+  labelPolicy: z.string().nullable().optional().describe("标签策略"),
+  placeholderList: z.array(z.object({}).passthrough()).nullable().optional().describe("占位符列表"),
+  syncSourceTemplate: z.object({}).passthrough().nullable().optional().describe("同步源模板"),
 }).describe("应用内置编排");
 
 const AppExternalCodeupOrchestrationSchema = AppOrchestrationSchema.extend({

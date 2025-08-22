@@ -307,122 +307,17 @@ export async function deleteHostListFromDeployGroup(params: DeleteHostListFromDe
  * @returns Whether the operation was successful
  */
 export async function deleteHostListFromHostGroup(params: DeleteHostListFromHostGroupRequest): Promise<DeleteHostListFromHostGroupResponse> {
-  const { organizationId, instanceName, ...body } = params;
-  
+  const {organizationId, instanceName, ...body} = params;
+
   try {
     const response = await yunxiaoRequest(
-      `/oapi/v1/appstack/organizations/${organizationId}/pools/instances/${instanceName}/removeHostList`,
-      {
-        method: 'PUT',
-        body: body,
-      }
+        `/oapi/v1/appstack/organizations/${organizationId}/pools/instances/${instanceName}/removeHostList`,
+        {
+          method: 'PUT',
+          body: body,
+        }
     );
     return DeleteHostListFromHostGroupResponseSchema.parse(response);
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
- * Get deploy group
- * 
- * @param params - The request parameters
- * @returns The deploy group
- */
-export async function getDeployGroup(params: GetDeployGroupRequest): Promise<GetDeployGroupResponse> {
-  const { organizationId, poolName, deployGroupName } = params;
-  
-  try {
-    const response = await yunxiaoRequest(
-      `/oapi/v1/appstack/organizations/${organizationId}/pools/${poolName}/deployGroups/${deployGroupName}`,
-      {
-        method: 'GET',
-      }
-    );
-    return GetDeployGroupResponseSchema.parse(response);
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
- * List resource instances
- * 
- * @param params - The request parameters
- * @returns The list of resource instances
- */
-export async function listResourceInstances(params: ListResourceInstancesRequest): Promise<ListResourceInstancesResponse> {
-  const { organizationId, poolName, pagination, perPage, orderBy, sort, nextToken, page } = params;
-  
-  // Build query string properly
-  const query: Record<string, string | number> = {};
-  if (pagination) query.pagination = pagination;
-  if (perPage !== undefined) query.perPage = perPage;
-  if (orderBy) query.orderBy = orderBy;
-  if (sort) query.sort = sort;
-  if (nextToken) query.nextToken = nextToken;
-  if (page !== undefined) query.page = page;
-  
-  try {
-    const url = buildUrl(`/oapi/v1/appstack/organizations/${organizationId}/pools/${poolName}/instances`, query);
-    
-    const response = await yunxiaoRequest(
-      url,
-      {
-        method: 'GET',
-      }
-    );
-    return ListResourceInstancesResponseSchema.parse(response);
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
- * Get resource instance
- * 
- * @param params - The request parameters
- * @returns The resource instance
- */
-export async function getResourceInstance(params: GetResourceInstanceRequest): Promise<GetResourceInstanceResponse> {
-  const { organizationId, poolName, instanceName } = params;
-  
-  try {
-    const response = await yunxiaoRequest(
-      `/oapi/v1/appstack/organizations/${organizationId}/pools/${poolName}/instances/${instanceName}`,
-      {
-        method: 'GET',
-      }
-    );
-    return GetResourceInstanceResponseSchema.parse(response);
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
- * Update resource instance
- * 
- * @param params - The request parameters
- * @returns The updated resource instance
- */
-export async function updateResourceInstance(params: UpdateResourceInstanceRequest): Promise<UpdateResourceInstanceResponse> {
-  const { organizationId, name, kubeconfig } = params;
-  
-  // Build query string properly
-  const query: Record<string, string | number> = {};
-  if (kubeconfig) query.kubeconfig = kubeconfig;
-  
-  try {
-    const url = buildUrl(`/oapi/v1/appstack/organizations/${organizationId}/pools/instances/${name}`, query);
-    
-    const response = await yunxiaoRequest(
-      url,
-      {
-        method: 'PUT',
-      }
-    );
-    return UpdateResourceInstanceResponseSchema.parse(response);
   } catch (error) {
     throw error;
   }

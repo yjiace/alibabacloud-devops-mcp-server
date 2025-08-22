@@ -4,10 +4,6 @@ import {
   addHostListToDeployGroup,
   deleteHostListFromDeployGroup,
   deleteHostListFromHostGroup,
-  getDeployGroup,
-  listResourceInstances,
-  getResourceInstance,
-  updateResourceInstance,
   GetMachineDeployLogRequestSchema,
   AddHostListToHostGroupRequestSchema,
   AddHostListToDeployGroupRequestSchema,
@@ -60,34 +56,6 @@ export async function handleAppStackDeploymentResourceTools(request: any) {
       const deleteHostGroupResult = await deleteHostListFromHostGroup(deleteHostGroupParams);
       return {
         content: [{ type: "text", text: JSON.stringify(deleteHostGroupResult, null, 2) }],
-      };
-      
-    case 'get_deploy_group':
-      const getDeployGroupParams = GetDeployGroupRequestSchema.parse(request.params.arguments);
-      const getDeployGroupResult = await getDeployGroup(getDeployGroupParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(getDeployGroupResult, null, 2) }],
-      };
-      
-    case 'list_resource_instances':
-      const listInstancesParams = ListResourceInstancesRequestSchema.parse(request.params.arguments);
-      const listInstancesResult = await listResourceInstances(listInstancesParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(listInstancesResult, null, 2) }],
-      };
-      
-    case 'get_resource_instance':
-      const getInstanceParams = GetResourceInstanceRequestSchema.parse(request.params.arguments);
-      const getInstanceResult = await getResourceInstance(getInstanceParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(getInstanceResult, null, 2) }],
-      };
-      
-    case 'update_resource_instance':
-      const updateInstanceParams = UpdateResourceInstanceRequestSchema.parse(request.params.arguments);
-      const updateInstanceResult = await updateResourceInstance(updateInstanceParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(updateInstanceResult, null, 2) }],
       };
       
     default:

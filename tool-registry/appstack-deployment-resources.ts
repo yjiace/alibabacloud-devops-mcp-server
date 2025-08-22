@@ -38,24 +38,4 @@ export const getAppStackDeploymentResourceTools = () => [
     description: '[application delivery] Delete host list from host group',
     inputSchema: zodToJsonSchema(DeleteHostListFromHostGroupRequestSchema),
   },
-  {
-    name: 'get_deploy_group',
-    description: '[application delivery] Get deploy group',
-    inputSchema: zodToJsonSchema(GetDeployGroupRequestSchema),
-  },
-  {
-    name: 'list_resource_instances',
-    description: '[application delivery] List resource instances',
-    inputSchema: zodToJsonSchema(ListResourceInstancesRequestSchema),
-  },
-  {
-    name: 'get_resource_instance',
-    description: '[application delivery] Get resource instance',
-    inputSchema: zodToJsonSchema(GetResourceInstanceRequestSchema),
-  },
-  {
-    name: 'update_resource_instance',
-    description: '[application delivery] Update resource instance',
-    inputSchema: zodToJsonSchema(UpdateResourceInstanceRequestSchema),
-  }
 ];

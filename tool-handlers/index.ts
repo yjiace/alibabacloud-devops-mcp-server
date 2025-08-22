@@ -12,7 +12,6 @@ import { handleAppStackVariableGroupTools } from './appstack-variable-groups.js'
 import { handleAppStackOrchestrationTools } from './appstack-orchestrations.js';
 import { handleAppStackChangeRequestTools } from './appstack-change-requests.js';
 import { handleAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
-import { handleAppStackReleaseWorkflowTools } from './appstack-release-workflows.js';
 import { handleAppStackChangeOrderTools } from './appstack-change-orders.js';
 
 export const handleToolRequest = async (request: any) => {
@@ -32,7 +31,6 @@ export const handleToolRequest = async (request: any) => {
     handleAppStackOrchestrationTools,
     handleAppStackChangeRequestTools,
     handleAppStackDeploymentResourceTools,
-    handleAppStackReleaseWorkflowTools,
     handleAppStackChangeOrderTools
   ];
 

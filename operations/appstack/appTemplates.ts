@@ -14,7 +14,7 @@ export const SearchAppTemplatesRequestSchema = z.object({
 });
 
 export const SearchAppTemplatesResponseSchema = z.object({
-  current: z.number().optional().describe("页码分页时存在该字段，表示当前页"),
+  current: z.number().optional().nullable().describe("页码分页时存在该字段，表示当前页"),
   data: z.array(z.object({
     cover: z.string().nullable().optional().describe("应用模板封面"),
     creatorId: z.string().nullable().optional().describe("应用模板创建人"),

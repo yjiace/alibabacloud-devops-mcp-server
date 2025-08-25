@@ -1,7 +1,7 @@
 <p align="center"><a href="README.md">English</a> | 中文<br></p>
 
 # alibabacloud-devops-mcp-server
-[云效](https://www.aliyun.com/product/yunxiao)mcp-server工具为 AI 助手提供了与云效平台交互的能力，能够让 AI 助手可以读取项目中工作项的内容，在理解需求后自动编写代码，并提交代码合并请求。企业研发团队可以使用它协助代码审查、优化任务管理、减少重复性操作，从而专注于更重要的创新和产品交付。
+[云效](https://www.aliyun.com/product/yunxiao)mcp-server工具为 AI 助手提供了与云效平台交互的能力，能够让 AI 助手可以读取项目中工作项的内容，在理解需求后自动编写代码，并提交代码合并请求。企业研发团队可以使用它协助代码审查、优化任务管理、完成构建、部署等任务，从而专注于更重要的创新和产品交付。
 
 ## 功能特性
 
@@ -159,7 +159,7 @@ npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client cla
 
 ![MCP市场安装云效MCP服务](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_9.png)
 
-### 通过 NPX 运行 MCP 服务器
+### 在Cursor、Claude code/iFlow等终端中配置mcp server。通过npx的方式来运行mcp server。
 ```json
 {
   "mcpServers": {

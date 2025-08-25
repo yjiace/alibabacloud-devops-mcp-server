@@ -163,7 +163,7 @@ The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provid
 
 ![Install AlibabaCloud Devops MCP Service from the MCP Market](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_9.png)
 
-### Run MCP Server via NPX
+### Run MCP Server via NPX/Cursor/Claude code etc. 
 ```json
 {
   "mcpServers": {

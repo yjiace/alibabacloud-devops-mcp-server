@@ -18,23 +18,26 @@ export const CreateChangeOrderReqSchema = z.object({
 
 // Schema for JobSummary
 export const JobSummarySchema = z.object({
-  // Based on the reference in the swagger, we'll define a basic structure
-  // You may need to update this with the actual fields from JobSummary
-  sn: z.string().optional().describe("环境部署单唯一标识"),
-  envName: z.string().optional().describe("环境名称"),
-  state: z.string().optional().describe("环境部署单状态"),
+  operator: z.string().nullable().optional().describe("操作人"),
+  action: z.string().nullable().optional().describe("操作类型"),
+  state: z.string().nullable().optional().describe("环境部署单状态"),
+  jobSn: z.string().nullable().optional().describe("环境部署单编号"),
+  message: z.string().nullable().optional().describe("消息"),
+  gmtCreate: z.string().nullable().optional().describe("创建时间"),
+  sn: z.string().nullable().optional().describe("环境部署单唯一标识"),
+  envName: z.string().nullable().optional().describe("环境名称"),
 });
 
 // Schema for ChangeOrderSummary
 export const ChangeOrderSummarySchema = z.object({
   creator: z.string().describe("创建人"),
-  description: z.string().optional().describe("描述"),
-  endedAt: z.string().optional().describe("部署单结束时间"),
+  description: z.string().nullable().optional().describe("描述"),
+  endedAt: z.string().nullable().optional().describe("部署单结束时间"),
   gmtCreate: z.string().describe("部署单最后修改时间"),
   jobs: z.array(JobSummarySchema).describe("环境部署单列表"),
   name: z.string().describe("部署单名称"),
   sn: z.string().describe("部署单唯一标识"),
-  startedAt: z.string().optional().describe("部署单开始时间"),
+  startedAt: z.string().nullable().optional().describe("部署单开始时间"),
   state: z.enum(["INIT", "PREPARING", "RUNNING", "SUSPENDED", "CANCELED", "SUCCESS", "FAILED"]).describe("部署单状态"),
   type: z.enum(["Deploy", "Scale", "Rollback", "Destroy"]).describe("部署单类型"),
   version: z.string().describe("使用版本"),
@@ -50,10 +53,8 @@ export const ChangeOrderVersionRecordSchema = z.object({
 
 // Schema for JobLog
 export const JobLogSchema = z.object({
-  // Based on the reference in the swagger, we'll define a basic structure
-  // You may need to update this with the actual fields from JobLog
-  content: z.string().optional().describe("日志内容"),
-  timestamp: z.string().optional().describe("日志时间戳"),
+  content: z.string().nullable().optional().describe("日志内容"),
+  timestamp: z.string().nullable().optional().describe("日志时间戳"),
 });
 
 // Schema for ActionContext

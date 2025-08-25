@@ -13,6 +13,7 @@ alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 * **项目管理**：搜索项目、获取项目详情
 * **流水线管理**：获取流水线详情、获取流水线列表、运行流水线、获取最近一次流水线运行信息、获取流水线运行实例、获取流水线运行实例列表、查询/运行流水线部署任务
 * **制品仓库管理**：查看制品仓库信息、查询制品信息、查看单个制品信息
+* **应用交付**：创建和管理部署单、应用、编排、变量组、模板、标签、全局变量和部署资源
 
 ## 工具列表
 
@@ -93,6 +94,49 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `list_package_repositories`: 查看制品仓库信息
 - `list_artifacts`: 查询制品信息
 - `get_artifact`: 查看单个制品信息
+
+### 应用交付工具
+
+- `create_change_order`: [应用交付] 创建部署单
+- `list_change_order_versions`: [应用交付] 查看部署单版本列表
+- `get_change_order`: [应用交付] 读取部署单使用的物料和工单状态
+- `list_change_order_job_logs`: [应用交付] 查询环境部署单日志
+- `find_task_operation_log`: [应用交付] 查询部署任务执行日志，其中通常包含下游部署引擎的调度细节信息
+- `execute_job_action`: [应用交付] 操作环境部署单
+- `list_change_orders_by_origin`: [应用交付] 根据创建来源查询部署单
+- `list_applications`: [应用交付] 分页获取组织中的应用列表
+- `get_application`: [应用交付] 根据应用名获取应用详情
+- `create_application`: [应用交付] 创建应用
+- `update_application`: [应用交付] 更新应用
+- `get_latest_orchestration`: [应用交付] 获取环境的最新编排
+- `list_app_orchestration`: [应用交付] 列出应用编排
+- `create_app_orchestration`: [应用交付] 创建应用编排
+- `delete_app_orchestration`: [应用交付] 删除应用编排
+- `get_app_orchestration`: [应用交付] 获取应用编排
+- `update_app_orchestration`: [应用交付] 更新应用编排
+- `get_env_variable_groups`: [应用交付] 获取环境的变量组
+- `create_variable_group`: [应用交付] 创建变量组
+- `delete_variable_group`: [应用交付] 删除变量组
+- `get_variable_group`: [应用交付] 获取变量组
+- `update_variable_group`: [应用交付] 更新变量组
+- `get_app_variable_groups`: [应用交付] 获取应用的变量组
+- `get_app_variable_groups_revision`: [应用交付] 获取应用变量组的版本
+- `search_app_templates`: [应用交付] 搜索应用模板
+- `create_app_tag`: [应用交付] 创建应用标签
+- `update_app_tag`: [应用交付] 更新应用标签
+- `delete_app_tag`: [应用交付] 删除应用标签
+- `search_app_tags`: [应用交付] 搜索应用标签
+- `update_app_tag_bind`: [应用交付] 更新应用标签绑定
+- `create_global_var`: [应用交付] 创建全局变量组
+- `delete_global_var`: [应用交付] 删除全局变量组
+- `get_global_var`: [应用交付] 获取全局变量组
+- `update_global_var`: [应用交付] 更新全局变量组
+- `list_global_vars`: [应用交付] 列出全局变量组
+- `get_machine_deploy_log`: [应用交付] 获取机器部署日志
+- `add_host_list_to_host_group`: [应用交付] 添加主机列表到主机组
+- `add_host_list_to_deploy_group`: [应用交付] 添加主机列表到部署组
+- `delete_host_list_from_deploy_group`: [应用交付] 从部署组删除主机列表
+- `delete_host_list_from_host_group`: [应用交付] 从主机组删除主机列表
 
 ## 用法
 

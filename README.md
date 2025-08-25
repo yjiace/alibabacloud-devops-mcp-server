@@ -15,6 +15,7 @@ alibabacloud-devops-mcp-server provides the following capabilities for AI assist
 * **Project Management**: Search projects, get project details
 * **Pipeline Management**: Get pipeline details, get pipeline list, create a pipeline run instance, get the latest pipeline run instance, get pipeline run details, get pipeline run list, Query / Run a pipeline deployment task
 * **Package Management**: Get package repository details list, Get artifacts details list, Get single artifact details
+* **Application Delivery**: Create and manage deployment orders, applications, orchestrations, variable groups, templates, tags, global variables, and deployment resources
 
 ## Tools
 
@@ -97,6 +98,49 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_package_repositories`: Get package repositories details list
 - `list_artifacts`: Get artifacts details list
 - `get_artifact`: Get single artifact details
+
+### Application Delivery Tools
+
+- `create_change_order`: [application delivery] 创建部署单
+- `list_change_order_versions`: [application delivery] 查看部署单版本列表
+- `get_change_order`: [application delivery] 读取部署单使用的物料和工单状态
+- `list_change_order_job_logs`: [application delivery] 查询环境部署单日志
+- `find_task_operation_log`: [application delivery] 查询部署任务执行日志，其中通常包含下游部署引擎的调度细节信息
+- `execute_job_action`: [application delivery] 操作环境部署单
+- `list_change_orders_by_origin`: [application delivery] 根据创建来源查询部署单
+- `list_applications`: [application delivery] List applications in an organization with pagination
+- `get_application`: [application delivery] Get application details by name
+- `create_application`: [application delivery] Create a new application
+- `update_application`: [application delivery] Update an existing application
+- `get_latest_orchestration`: [application delivery] Get the latest orchestration for an environment
+- `list_app_orchestration`: [application delivery] List application orchestrations
+- `create_app_orchestration`: [application delivery] Create an application orchestration
+- `delete_app_orchestration`: [application delivery] Delete an application orchestration
+- `get_app_orchestration`: [application delivery] Get an application orchestration
+- `update_app_orchestration`: [application delivery] Update an application orchestration
+- `get_env_variable_groups`: [application delivery] Get variable groups for an environment
+- `create_variable_group`: [application delivery] Create a variable group
+- `delete_variable_group`: [application delivery] Delete a variable group
+- `get_variable_group`: [application delivery] Get a variable group
+- `update_variable_group`: [application delivery] Update a variable group
+- `get_app_variable_groups`: [application delivery] Get variable groups for an application
+- `get_app_variable_groups_revision`: [application delivery] Get the revision of variable groups for an application
+- `search_app_templates`: [application delivery] Search application templates
+- `create_app_tag`: [application delivery] Create an application tag
+- `update_app_tag`: [application delivery] Update an application tag
+- `delete_app_tag`: [application delivery] Delete an application tag
+- `search_app_tags`: [application delivery] Search application tags
+- `update_app_tag_bind`: [application delivery] Update application tag bindings
+- `create_global_var`: [application delivery] Create a global variable group
+- `delete_global_var`: [application delivery] Delete a global variable group
+- `get_global_var`: [application delivery] Get a global variable group
+- `update_global_var`: [application delivery] Update a global variable group
+- `list_global_vars`: [application delivery] List global variable groups
+- `get_machine_deploy_log`: [application delivery] Get machine deployment log
+- `add_host_list_to_host_group`: [application delivery] Add host list to host group
+- `add_host_list_to_deploy_group`: [application delivery] Add host list to deploy group
+- `delete_host_list_from_deploy_group`: [application delivery] Delete host list from deploy group
+- `delete_host_list_from_host_group`: [application delivery] Delete host list from host group
 
 ## Usage
 

@@ -11,7 +11,7 @@ import {
 // Export all appstack change requests tools
 export const getAppStackChangeRequestTools = () => [
   {
-    name: 'create_change_request',
+    name: 'create_appstack_change_request',
     description: '[application delivery] Create a change request',
     inputSchema: zodToJsonSchema(CreateChangeRequestRequestSchema),
   },

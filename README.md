@@ -207,6 +207,26 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
   }
 }
 ```
+###  Run MCP Server via Docker Compose
+1. Environment Setup
+```shell
+cd alibabacloud-devops-mcp-server
+cp .env.example
+```
+
+2. Running the Services:
+```shell
+docker compose up -d
+```
+3. Configure MCP Server
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url":"http://localhost:3000/sse"
+    }
+  }
+}
 
 ## Contact Us
 If you have any questions, please join the Alibaba Cloud Devops discussion group (134400004101) for discussion.

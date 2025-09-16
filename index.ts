@@ -135,26 +135,34 @@ async function runServer() {
         const app: any = express();
         const port = process.env.PORT || 3000;
         
-        // Store sessions
-        const sessions: Record<string, { transport: SSEServerTransport; server: Server }> = {};
+        // Store sessions with their tokens
+        const sessions: Record<string, { transport: SSEServerTransport; server: Server; token?: string }> = {};
         
         // SSE endpoint - handles initial connection
         app.get('/sse', async (req: any, res: any) => {
             // In SSE mode, we can use console.log for debugging since it doesn't interfere with the protocol
             console.log(`New SSE connection from ${req.ip}`);
             
+            // Get token from query parameters or headers
+            const token = req.query.token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+            
             // Create transport with endpoint for POST messages
             const sseTransport = new SSEServerTransport('/messages', res);
             const sessionId = sseTransport.sessionId;
             
             if (sessionId) {
-                sessions[sessionId] = { transport: sseTransport, server };
+                sessions[sessionId] = { transport: sseTransport, server, token };
             }
             
             try {
                 await server.connect(sseTransport);
                 // In SSE mode, console.error is acceptable for status messages
                 console.error(`Yunxiao MCP Server connected via SSE with session ${sessionId}`);
+                if (token) {
+                    console.error(`Session ${sessionId} using custom token`);
+                } else {
+                    console.error(`Session ${sessionId} using default token from environment`);
+                }
             } catch (error) {
                 console.error("Failed to start SSE server:", error);
                 res.status(500).send("Server error");
@@ -173,6 +181,10 @@ async function runServer() {
             }
             
             try {
+                // Set the session token before handling the message
+                const utils = await import('./common/utils.js');
+                utils.setCurrentSessionToken(session.token);
+                
                 await session.transport.handlePostMessage(req, res, req.body);
             } catch (error) {
                 console.error("Error handling POST message:", error);

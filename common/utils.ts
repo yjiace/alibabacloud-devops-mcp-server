@@ -83,6 +83,24 @@ export function buildUrl(baseUrl: string, params: Record<string, string | number
 
 const USER_AGENT = `modelcontextprotocol/servers/alibabacloud-devops-mcp-server/v${VERSION} ${getUserAgent()}`;
 
+let currentSessionToken: string | undefined = undefined;
+
+/**
+ * Set the token for the current session (used in SSE mode)
+ * @param token The token to use for the current session
+ */
+export function setCurrentSessionToken(token: string | undefined): void {
+  currentSessionToken = token;
+}
+
+/**
+ * Get the token for the current session
+ * @returns The token for the current session, or the default token from environment
+ */
+export function getCurrentSessionToken(): string | undefined {
+  return currentSessionToken || process.env.YUNXIAO_ACCESS_TOKEN;
+}
+
 export async function yunxiaoRequest(
   urlPath: string,
   options: RequestOptions = {},
@@ -97,8 +115,10 @@ export async function yunxiaoRequest(
     ...options.headers,
   };
 
-  if (process.env.YUNXIAO_ACCESS_TOKEN) {
-    requestHeaders["x-yunxiao-token"] = process.env.YUNXIAO_ACCESS_TOKEN;
+  // Use session-specific token if available, otherwise use default token
+  const token = getCurrentSessionToken();
+  if (token) {
+    requestHeaders["x-yunxiao-token"] = token;
   }
 
   debug(`Request: ${options.method} ${url}`);

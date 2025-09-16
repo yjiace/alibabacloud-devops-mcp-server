@@ -224,6 +224,22 @@ docker compose up -d
     }
   }
 }
+```
+
+### SSE 模式下使用独立令牌
+在 SSE 模式下运行时，每个用户都可以通过查询参数或请求头传递自己的令牌：
+
+1. 通过查询参数：
+```
+http://localhost:3000/sse?token=USER_SPECIFIC_TOKEN
+```
+
+2. 通过请求头：
+```
+x-yunxiao-token: USER_SPECIFIC_TOKEN
+```
+
+这允许多个用户共享同一个 SSE 服务，同时使用各自独立的令牌进行身份验证。
 
 ## 联系我们
 如有任何疑问或疑虑，请通过钉钉群联系我们：134400004101

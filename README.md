@@ -227,6 +227,24 @@ docker compose up -d
     }
   }
 }
+```
+
+### SSE Mode with Custom Tokens
+When running in SSE mode, each user can use their own token by passing it as a query parameter or request header:
+
+1. Via query parameter:
+```
+http://localhost:3000/sse?token=USER_SPECIFIC_TOKEN
+```
+
+2. Via request header:
+```
+x-yunxiao-token: USER_SPECIFIC_TOKEN
+```
+
+This allows multiple users to share the same SSE service while using their own individual tokens for authentication.
+
+## Contact Us
 
 ## Contact Us
 If you have any questions, please join the Alibaba Cloud Devops discussion group (134400004101) for discussion.

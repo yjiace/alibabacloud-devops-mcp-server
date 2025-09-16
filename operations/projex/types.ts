@@ -442,6 +442,104 @@ export const UpdateWorkItemSchema = z.object({
   updateWorkItemFields: UpdateWorkItemFieldSchema
 });
 
+// Effort related types
+export const MiniUserSchema = z.object({
+  id: z.string().nullable().optional().describe("用户id"),
+  name: z.string().nullable().optional().describe("名称"),
+});
+
+export const EffortRecordSchema = z.object({
+  actualTime: z.number().nullable().optional().describe("时间工时"),
+  creator: MiniUserSchema.nullable().optional().describe("创建人"),
+  description: z.string().nullable().optional().describe("描述"),
+  gmtCreate: z.string().nullable().optional().describe("创建时间"),
+  gmtEnd: z.string().nullable().optional().describe("工作的结束日期"),
+  gmtModified: z.string().nullable().optional().describe("修改时间"),
+  gmtStart: z.string().nullable().optional().describe("工作的开始日期"),
+  id: z.string().nullable().optional().describe("id"),
+  modifier: MiniUserSchema.nullable().optional().describe("修改人"),
+  owner: MiniUserSchema.nullable().optional().describe("负责人"),
+  workType: z.string().nullable().optional().describe("工作类别"),
+  workitemId: z.string().nullable().optional().describe("工作项id"),
+});
+
+export const EstimatedEffortSchema = z.object({
+  creator: MiniUserSchema.nullable().optional().describe("创建人"),
+  description: z.string().nullable().optional().describe("描述"),
+  gmtCreate: z.string().nullable().optional().describe("创建时间"),
+  gmtModified: z.string().nullable().optional().describe("修改时间"),
+  id: z.string().nullable().optional().describe("id"),
+  modifier: MiniUserSchema.nullable().optional().describe("修改人"),
+  owner: MiniUserSchema.nullable().optional().describe("负责人"),
+  spentTime: z.number().nullable().optional().describe("预计工时"),
+  workType: z.string().nullable().optional().describe("工作项类别"),
+  workitemId: z.string().nullable().optional().describe("工作项id"),
+});
+
+export const IdentifierDTOSchema = z.object({
+  id: z.string().nullable().optional().describe("id"),
+});
+
+export const CreateEffortRecordRequestSchema = z.object({
+  actualTime: z.number().positive().describe("实际工时"),
+  description: z.string().max(500).optional().describe("工作描述"),
+  gmtEnd: z.string().describe("工作开始结束日期"),
+  gmtStart: z.string().describe("工作开始日期"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  workType: z.string().optional().describe("工作类型"),
+});
+
+export const CreateEstimatedEffortRequestSchema = z.object({
+  description: z.string().max(500).optional().describe("工作描述"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  owner: z.string().describe("负责人，填userId"),
+  spentTime: z.number().positive().describe("预计工时"),
+  workType: z.string().optional().describe("工作类别"),
+});
+
+// Effort related schemas
+export const ListCurrentUserEffortRecordsSchema = z.object({
+  organizationId: z.string().describe("organizationId"),
+  startDate: z.string().describe("工作的开始时间，格式为yyyy-MM-dd"),
+  endDate: z.string().describe("工作的结束时间，格式为yyyy-MM-dd"),
+});
+
+export const ListEffortRecordsSchema = z.object({
+  id: z.string().describe("工作项唯一标识"),
+  organizationId: z.string().describe("organizationId"),
+});
+
+export const CreateEffortRecordSchema = z.object({
+  id: z.string().describe("工作项唯一标识"),
+  organizationId: z.string().describe("organizationId"),
+  request: CreateEffortRecordRequestSchema,
+});
+
+export const ListEstimatedEffortsSchema = z.object({
+  id: z.string().describe("工作项唯一标识"),
+  organizationId: z.string().describe("organizationId"),
+});
+
+export const CreateEstimatedEffortSchema = z.object({
+  id: z.string().describe("工作项唯一标识"),
+  organizationId: z.string().describe("organizationId"),
+  request: CreateEstimatedEffortRequestSchema,
+});
+
+export const UpdateEffortRecordSchema = z.object({
+  organizationId: z.string().describe("organizationId"),
+  workitemId: z.string().describe("工作项唯一标识"),
+  id: z.string().describe("工时记录唯一标识"),
+  request: CreateEffortRecordRequestSchema,
+});
+
+export const UpdateEstimatedEffortSchema = z.object({
+  organizationId: z.string().describe("organizationId"),
+  workitemId: z.string().describe("工作项唯一标识"),
+  id: z.string().describe("预计工时记录唯一标识"),
+  request: CreateEstimatedEffortRequestSchema,
+});
+
 // Type exports
 export type WorkItemTypeDetail = z.infer<typeof WorkItemTypeDetailSchema>;
 export type ListAllWorkItemTypesParams = z.infer<typeof ListAllWorkItemTypesSchema>;
@@ -463,3 +561,19 @@ export type UpdateWorkItemField = z.infer<typeof UpdateWorkItemFieldSchema>;
 export type Status = z.infer<typeof StatusSchema>;
 export type Space = z.infer<typeof SpaceSchema>;
 export type Sprint = z.infer<typeof SprintSchema>;
+
+// Effort type exports
+export type MiniUser = z.infer<typeof MiniUserSchema>;
+export type EffortRecord = z.infer<typeof EffortRecordSchema>;
+export type EstimatedEffort = z.infer<typeof EstimatedEffortSchema>;
+export type IdentifierDTO = z.infer<typeof IdentifierDTOSchema>;
+export type CreateEffortRecordRequest = z.infer<typeof CreateEffortRecordRequestSchema>;
+export type CreateEstimatedEffortRequest = z.infer<typeof CreateEstimatedEffortRequestSchema>;
+
+export type ListCurrentUserEffortRecordsParams = z.infer<typeof ListCurrentUserEffortRecordsSchema>;
+export type ListEffortRecordsParams = z.infer<typeof ListEffortRecordsSchema>;
+export type CreateEffortRecordParams = z.infer<typeof CreateEffortRecordSchema>;
+export type ListEstimatedEffortsParams = z.infer<typeof ListEstimatedEffortsSchema>;
+export type CreateEstimatedEffortParams = z.infer<typeof CreateEstimatedEffortSchema>;
+export type UpdateEffortRecordParams = z.infer<typeof UpdateEffortRecordSchema>;
+export type UpdateEstimatedEffortParams = z.infer<typeof UpdateEstimatedEffortSchema>;

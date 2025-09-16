@@ -92,7 +92,16 @@ export {
   
   // Work item comment schemas
   ListWorkItemCommentsSchema,
-  CreateWorkItemCommentSchema
+  CreateWorkItemCommentSchema,
+  
+  // Effort schemas
+  ListCurrentUserEffortRecordsSchema,
+  ListEffortRecordsSchema,
+  CreateEffortRecordSchema,
+  ListEstimatedEffortsSchema,
+  CreateEstimatedEffortSchema,
+  UpdateEffortRecordSchema,
+  UpdateEstimatedEffortSchema
 } from "../operations/projex/types.js";
 
 // Flow types

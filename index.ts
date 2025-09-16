@@ -157,11 +157,11 @@ async function runServer() {
             try {
                 await server.connect(sseTransport);
                 // In SSE mode, console.error is acceptable for status messages
-                console.error(`Yunxiao MCP Server connected via SSE with session ${sessionId}`);
+                console.info(`Yunxiao MCP Server connected via SSE with session ${sessionId}`);
                 if (token) {
-                    console.error(`Session ${sessionId} using custom token`);
+                    console.info(`Session ${sessionId} using custom token`);
                 } else {
-                    console.error(`Session ${sessionId} using default token from environment`);
+                    console.info(`Session ${sessionId} using default token from environment`);
                 }
             } catch (error) {
                 console.error("Failed to start SSE server:", error);

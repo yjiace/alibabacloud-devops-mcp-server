@@ -13,7 +13,7 @@ import { getAppStackOrchestrationTools } from './appstack-orchestrations.js';
 import { getAppStackChangeRequestTools } from './appstack-change-requests.js';
 import { getAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
 import { getAppStackChangeOrderTools } from './appstack-change-orders.js';
-import { effortTools } from './effort.js';
+import { getEffortTools } from './effort.js';
 
 export const getAllTools = () => [
   ...getCodeManagementTools(),
@@ -31,5 +31,5 @@ export const getAllTools = () => [
   ...getAppStackChangeRequestTools(),
   ...getAppStackDeploymentResourceTools(),
   ...getAppStackChangeOrderTools(),
-  ...effortTools
+  ...getEffortTools()
 ];

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { handleApiRequest } from "../../common/utils.js";
+import { yunxiaoRequest } from "../../common/utils.js";
 import {
   EffortRecordSchema,
   EstimatedEffortSchema,
@@ -19,15 +19,17 @@ export async function listCurrentUserEffortRecords(
 ) {
   const validatedParams = ListCurrentUserEffortRecordsSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/effortRecords`,
-    method: "GET",
-    queryParams: {
-      startDate: validatedParams.startDate,
-      endDate: validatedParams.endDate
-    },
-    responseSchema: z.array(EffortRecordSchema)
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/effortRecords`;
+  const queryParams = {
+    startDate: validatedParams.startDate,
+    endDate: validatedParams.endDate
+  };
+  
+  const response = await yunxiaoRequest(`${url}?startDate=${queryParams.startDate}&endDate=${queryParams.endDate}`, {
+    method: "GET"
   });
+
+  return z.array(EffortRecordSchema).parse(response);
 }
 
 // List effort records
@@ -36,11 +38,13 @@ export async function listEffortRecords(
 ) {
   const validatedParams = ListEffortRecordsSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/effortRecords`,
-    method: "GET",
-    responseSchema: z.array(EffortRecordSchema)
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/effortRecords`;
+  
+  const response = await yunxiaoRequest(url, {
+    method: "GET"
   });
+
+  return z.array(EffortRecordSchema).parse(response);
 }
 
 // Create effort record
@@ -49,12 +53,14 @@ export async function createEffortRecord(
 ) {
   const { request, ...validatedParams } = CreateEffortRecordSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/effortRecords`,
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/effortRecords`;
+  
+  const response = await yunxiaoRequest(url, {
     method: "POST",
-    body: request,
-    responseSchema: IdentifierDTOSchema
+    body: request
   });
+
+  return IdentifierDTOSchema.parse(response);
 }
 
 // List estimated efforts
@@ -63,11 +69,13 @@ export async function listEstimatedEfforts(
 ) {
   const validatedParams = ListEstimatedEffortsSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/estimatedEfforts`,
-    method: "GET",
-    responseSchema: z.array(EstimatedEffortSchema)
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/estimatedEfforts`;
+  
+  const response = await yunxiaoRequest(url, {
+    method: "GET"
   });
+
+  return z.array(EstimatedEffortSchema).parse(response);
 }
 
 // Create estimated effort
@@ -76,12 +84,14 @@ export async function createEstimatedEffort(
 ) {
   const { request, ...validatedParams } = CreateEstimatedEffortSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/estimatedEfforts`,
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/estimatedEfforts`;
+  
+  const response = await yunxiaoRequest(url, {
     method: "POST",
-    body: request,
-    responseSchema: IdentifierDTOSchema
+    body: request
   });
+
+  return IdentifierDTOSchema.parse(response);
 }
 
 // Update effort record
@@ -90,12 +100,14 @@ export async function updateEffortRecord(
 ) {
   const { request, ...validatedParams } = UpdateEffortRecordSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/effortRecords/${validatedParams.id}`,
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/effortRecords/${validatedParams.id}`;
+  
+  const response = await yunxiaoRequest(url, {
     method: "PUT",
-    body: request,
-    responseSchema: z.any()
+    body: request
   });
+
+  return response;
 }
 
 // Update estimated effort
@@ -104,10 +116,12 @@ export async function updateEstimatedEffort(
 ) {
   const { request, ...validatedParams } = UpdateEstimatedEffortSchema.parse(params);
   
-  return handleApiRequest({
-    path: `projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/estimatedEfforts/${validatedParams.id}`,
+  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/estimatedEfforts/${validatedParams.id}`;
+  
+  const response = await yunxiaoRequest(url, {
     method: "PUT",
-    body: request,
-    responseSchema: z.any()
+    body: request
   });
+
+  return response;
 }

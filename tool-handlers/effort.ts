@@ -1,67 +1,93 @@
-import {
-  ListCurrentUserEffortRecordsSchema,
-  ListEffortRecordsSchema,
-  CreateEffortRecordSchema,
-  ListEstimatedEffortsSchema,
-  CreateEstimatedEffortSchema,
-  UpdateEffortRecordSchema,
-  UpdateEstimatedEffortSchema
-} from "../common/types.js";
-import {
-  listCurrentUserEffortRecords,
-  listEffortRecords,
-  createEffortRecord,
-  listEstimatedEfforts,
-  createEstimatedEffort,
-  updateEffortRecord,
-  updateEstimatedEffort
-} from "../operations/projex/effort.js";
+import * as effort from '../operations/projex/effort.js';
+import * as types from '../common/types.js';
 
-export async function listCurrentUserEffortRecordsHandler(
-  params: unknown
-) {
-  const validatedParams = ListCurrentUserEffortRecordsSchema.parse(params);
-  return listCurrentUserEffortRecords(validatedParams);
-}
+export const handleEffortTools = async (request: any) => {
+  switch (request.params.name) {
+    case "list_current_user_effort_records": {
+      const args = types.ListCurrentUserEffortRecordsSchema.parse(request.params.arguments);
+      const effortRecords = await effort.listCurrentUserEffortRecords({
+        organizationId: args.organizationId,
+        startDate: args.startDate,
+        endDate: args.endDate
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(effortRecords, null, 2) }],
+      };
+    }
 
-export async function listEffortRecordsHandler(
-  params: unknown
-) {
-  const validatedParams = ListEffortRecordsSchema.parse(params);
-  return listEffortRecords(validatedParams);
-}
+    case "list_effort_records": {
+      const args = types.ListEffortRecordsSchema.parse(request.params.arguments);
+      const effortRecords = await effort.listEffortRecords({
+        id: args.id,
+        organizationId: args.organizationId
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(effortRecords, null, 2) }],
+      };
+    }
 
-export async function createEffortRecordHandler(
-  params: unknown
-) {
-  const validatedParams = CreateEffortRecordSchema.parse(params);
-  return createEffortRecord(validatedParams);
-}
+    case "create_effort_record": {
+      const args = types.CreateEffortRecordSchema.parse(request.params.arguments);
+      const result = await effort.createEffortRecord({
+        id: args.id,
+        organizationId: args.organizationId,
+        request: args.request
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    }
 
-export async function listEstimatedEffortsHandler(
-  params: unknown
-) {
-  const validatedParams = ListEstimatedEffortsSchema.parse(params);
-  return listEstimatedEfforts(validatedParams);
-}
+    case "list_estimated_efforts": {
+      const args = types.ListEstimatedEffortsSchema.parse(request.params.arguments);
+      const estimatedEfforts = await effort.listEstimatedEfforts({
+        id: args.id,
+        organizationId: args.organizationId
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(estimatedEfforts, null, 2) }],
+      };
+    }
 
-export async function createEstimatedEffortHandler(
-  params: unknown
-) {
-  const validatedParams = CreateEstimatedEffortSchema.parse(params);
-  return createEstimatedEffort(validatedParams);
-}
+    case "create_estimated_effort": {
+      const args = types.CreateEstimatedEffortSchema.parse(request.params.arguments);
+      const result = await effort.createEstimatedEffort({
+        id: args.id,
+        organizationId: args.organizationId,
+        request: args.request
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    }
 
-export async function updateEffortRecordHandler(
-  params: unknown
-) {
-  const validatedParams = UpdateEffortRecordSchema.parse(params);
-  return updateEffortRecord(validatedParams);
-}
+    case "update_effort_record": {
+      const args = types.UpdateEffortRecordSchema.parse(request.params.arguments);
+      await effort.updateEffortRecord({
+        organizationId: args.organizationId,
+        workitemId: args.workitemId,
+        id: args.id,
+        request: args.request
+      });
+      return {
+        content: [{ type: "text", text: "Effort record updated successfully" }],
+      };
+    }
 
-export async function updateEstimatedEffortHandler(
-  params: unknown
-) {
-  const validatedParams = UpdateEstimatedEffortSchema.parse(params);
-  return updateEstimatedEffort(validatedParams);
-}
+    case "update_estimated_effort": {
+      const args = types.UpdateEstimatedEffortSchema.parse(request.params.arguments);
+      await effort.updateEstimatedEffort({
+        organizationId: args.organizationId,
+        workitemId: args.workitemId,
+        id: args.id,
+        request: args.request
+      });
+      return {
+        content: [{ type: "text", text: "Estimated effort updated successfully" }],
+      };
+    }
+
+    default:
+      return null;
+  }
+};

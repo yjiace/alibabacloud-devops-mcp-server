@@ -75,6 +75,13 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_work_item_workflow`: Get workflow information for a specific work item type
 - `list_work_item_comments`: List comments for a specific work item
 - `create_work_item_comment`: Create a comment for a specific work item
+- `list_current_user_effort_records`: [Project Management] 获取用户的实际工时明细，结束时间和开始时间的间隔不能大于6个月
+- `list_effort_records`: [Project Management] 获取实际工时明细
+- `create_effort_record`: [Project Management] 登记实际工时
+- `list_estimated_efforts`: [Project Management] 获取预计工时明细
+- `create_estimated_effort`: [Project Management] 登记预计工时
+- `update_effort_record`: [Project Management] 更新登记实际工时
+- `update_estimated_effort`: [Project Management] 更新登记预计工时
 
 ### Pipeline Management Tools
 

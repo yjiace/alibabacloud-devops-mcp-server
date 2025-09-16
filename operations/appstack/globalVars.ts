@@ -10,7 +10,7 @@ const VariableSchema = z.object({
 
 const RevisionSchema = z.object({
   author: z.string().optional().describe("提交人"),
-  commitTime: z.number().optional().describe("提交时间"),
+  commitTime: z.number().optional().describe("提交时间 (毫秒时间戳)"),
   message: z.string().optional().describe("版本提交信息"),
   refs: z.array(z.string()).optional().describe("关联信息"),
   sha: z.string().optional().describe("版本sha值"),

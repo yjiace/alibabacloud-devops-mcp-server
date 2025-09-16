@@ -9,7 +9,7 @@ const AppSchema = z.object({
 
 const OrchestrationRevisionSchema = z.object({
   author: z.string().nullable().optional().describe("作者"),
-  commitTime: z.union([z.number(), z.string()]).nullable().optional().describe("提交时间"),
+  commitTime: z.union([z.number(), z.string()]).nullable().optional().describe("提交时间 (毫秒时间戳或ISO字符串)"),
   message: z.string().nullable().optional().describe("提交信息"),
   sha: z.string().nullable().optional().describe("提交SHA"),
 }).describe("编排版本");

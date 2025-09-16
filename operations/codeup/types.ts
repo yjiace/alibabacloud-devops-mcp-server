@@ -103,14 +103,14 @@ export const ChangeRequestCommentSchema = z.object({
   }).nullable().optional().describe("评论作者信息"),
   child_comments_list: z.array(z.any()).nullable().optional().describe("子评论列表"),
   comment_biz_id: z.string().nullable().optional().describe("评论业务ID"),
-  comment_time: z.string().nullable().optional().describe("评论时间"),
+  comment_time: z.string().nullable().optional().describe("评论时间 (ISO 8601格式)"),
   comment_type: z.string().nullable().optional().describe("评论类型：GLOBAL_COMMENT - 全局评论；INLINE_COMMENT - 行内评论"),
   content: z.string().nullable().optional().describe("评论内容"),
   expression_reply_list: z.array(z.any()).nullable().optional().describe("表情回复列表"),
   filePath: z.string().nullable().optional().describe("文件路径，仅行内评论有"),
   from_patchset_biz_id: z.string().nullable().optional().describe("比较的起始版本ID"),
   is_deleted: z.boolean().nullable().optional().describe("是否已删除"),
-  last_edit_time: z.string().nullable().optional().describe("最后编辑时间"),
+  last_edit_time: z.string().nullable().optional().describe("最后编辑时间 (ISO 8601格式)"),
   last_edit_user: z.object({
     avatar: z.string().nullable().optional().describe("用户头像地址"),
     email: z.string().nullable().optional().describe("用户邮箱"),
@@ -119,7 +119,7 @@ export const ChangeRequestCommentSchema = z.object({
     userId: z.string().nullable().optional().describe("云效用户ID"),
     username: z.string().nullable().optional().describe("用户登录名")
   }).nullable().optional().describe("最后编辑用户"),
-  last_resolved_status_change_time: z.string().nullable().optional().describe("最后解决状态变更时间"),
+  last_resolved_status_change_time: z.string().nullable().optional().describe("最后解决状态变更时间 (ISO 8601格式)"),
   last_resolved_status_change_user: z.object({
     avatar: z.string().nullable().optional().describe("用户头像地址"),
     email: z.string().nullable().optional().describe("用户邮箱"),
@@ -141,7 +141,7 @@ export const ChangeRequestCommentSchema = z.object({
   project_id: z.number().int().nullable().optional().describe("代码库ID"),
   related_patchset: z.object({
     commitId: z.string().nullable().optional().describe("版本对应的提交ID"),
-    createTime: z.string().nullable().optional().describe("版本创建时间"),
+    createTime: z.string().nullable().optional().describe("版本创建时间 (ISO 8601格式)"),
     patchSetBizId: z.string().nullable().optional().describe("版本ID，具有唯一性"),
     patchSetName: z.string().nullable().optional().describe("版本名称"),
     ref: z.string().nullable().optional().describe("版本对应的ref信息"),
@@ -170,7 +170,7 @@ export const ChangeRequestSchema = z.object({
   canRevertOrCherryPick: z.boolean().nullable().optional().describe("是否能Revert或者CherryPick"),
   conflictCheckStatus: z.string().nullable().optional().describe("冲突检测状态：CHECKING - 检测中；HAS_CONFLICT - 有冲突；NO_CONFLICT - 无冲突；FAILED - 检测失败"),
   createFrom: z.string().nullable().optional().describe("创建来源：WEB - 页面创建；COMMAND_LINE - 命令行创建"),
-  createTime: z.string().nullable().optional().describe("创建时间"),
+  createTime: z.string().nullable().optional().describe("创建时间 (ISO 8601格式)"),
   description: z.string().nullable().optional().describe("描述"),
   detailUrl: z.string().nullable().optional().describe("合并请求详情地址"),
   hasReverted: z.boolean().nullable().optional().describe("是否Revert过"),
@@ -185,7 +185,7 @@ export const ChangeRequestSchema = z.object({
     hasReviewed: z.boolean().nullable().optional().describe("是否已审阅"),
     name: z.string().nullable().optional().describe("用户名称"),
     reviewOpinionStatus: z.string().nullable().optional().describe("审阅意见状态"),
-    reviewTime: z.string().nullable().optional().describe("审阅时间"),
+    reviewTime: z.string().nullable().optional().describe("审阅时间 (ISO 8601格式)"),
     state: z.string().nullable().optional().describe("用户状态"),
     userId: z.string().nullable().optional().describe("云效用户ID"),
     username: z.string().nullable().optional().describe("用户登录名")
@@ -211,7 +211,7 @@ export const ChangeRequestSchema = z.object({
   title: z.string().nullable().optional().describe("标题"),
   totalCommentCount: z.number().int().nullable().optional().describe("总评论数"),
   unResolvedCommentCount: z.number().int().nullable().optional().describe("未解决评论数"),
-  updateTime: z.string().nullable().optional().describe("更新时间"),
+  updateTime: z.string().nullable().optional().describe("更新时间 (ISO 8601格式)"),
   webUrl: z.string().nullable().optional().describe("页面地址")
 });
 

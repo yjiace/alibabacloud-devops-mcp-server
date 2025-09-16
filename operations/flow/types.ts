@@ -37,7 +37,7 @@ export const PipelineConfigSchema = z.object({
 
 // Flow Pipeline detail schema
 export const PipelineDetailSchema = z.object({
-  createTime: z.number().int().nullable().optional().describe("Creation time"),
+  createTime: z.number().int().nullable().optional().describe("Creation time in milliseconds"),
   creatorAccountId: z.string().nullable().optional().describe("Creator account ID"),
   envId: z.number().int().nullable().optional().describe("Environment ID: 0-Daily 1-Pre-release 2-Production"),
   envName: z.string().nullable().optional().describe("Environment name"),
@@ -134,7 +134,7 @@ export const PipelineListItemSchema = z.object({
   name: z.string().nullable().optional().describe("Pipeline name"),
   id: z.number().int().nullable().optional().describe("Pipeline ID"),
   creatorAccountId: z.string().nullable().optional().describe("Creator account ID"),
-  createTime: z.number().int().nullable().optional().describe("Creation time"),
+  createTime: z.number().int().nullable().optional().describe("Creation time in milliseconds"),
 });
 
 // Flow Create pipeline run schema
@@ -172,8 +172,8 @@ export const PipelineRunActionSchema = z.object({
 export const PipelineRunJobSchema = z.object({
   id: z.number().int().nullable().optional().describe("Job ID"),
   name: z.string().nullable().optional().describe("Job name"),
-  startTime: z.number().int().nullable().optional().describe("Start time of the job"),
-  endTime: z.number().int().nullable().optional().describe("End time of the job"),
+  startTime: z.number().int().nullable().optional().describe("Start time of the job in milliseconds"),
+  endTime: z.number().int().nullable().optional().describe("End time of the job in milliseconds"),
   status: z.string().nullable().optional().describe("Job status: FAIL, SUCCESS, RUNNING"),
   params: z.string().nullable().optional().describe("Job parameters in JSON string format"),
   jobSign: z.string().nullable().optional().describe("Job unique identifier"),
@@ -182,8 +182,8 @@ export const PipelineRunJobSchema = z.object({
 });
 
 export const PipelineStageInfoSchema = z.object({
-  startTime: z.number().int().nullable().optional().describe("Start time of the stage"),
-  endTime: z.number().int().nullable().optional().describe("End time of the stage"),
+  startTime: z.number().int().nullable().optional().describe("Start time of the stage in milliseconds"),
+  endTime: z.number().int().nullable().optional().describe("End time of the stage in milliseconds"),
   name: z.string().nullable().optional().describe("Stage name"),
   status: z.string().nullable().optional().describe("Stage status: FAIL, SUCCESS, RUNNING"),
   id: z.number().int().nullable().optional().describe("Stage ID"),
@@ -222,9 +222,9 @@ export const PipelineRunGroupSchema = z.object({
 });
 
 export const PipelineRunSchema = z.object({
-  updateTime: z.number().int().nullable().optional().describe("Last update time"),
+  updateTime: z.number().int().nullable().optional().describe("Last update time in milliseconds"),
   pipelineConfigId: z.number().int().nullable().optional().describe("Pipeline configuration ID"),
-  createTime: z.number().int().nullable().optional().describe("Creation time of the run"),
+  createTime: z.number().int().nullable().optional().describe("Creation time of the run in milliseconds"),
   pipelineId: z.number().int().nullable().optional().describe("Pipeline ID"),
   pipelineRunId: z.number().int().nullable().optional().describe("Pipeline run ID"),
   status: z.string().optional().nullable().describe("Pipeline run status: FAIL, SUCCESS, RUNNING"),
@@ -257,11 +257,11 @@ export const GetPipelineRunSchema = z.object({
 // Flow Pipeline run list item schema
 export const PipelineRunListItemSchema = z.object({
   status: z.string().nullable().optional().describe("Pipeline run status: FAIL, SUCCESS, RUNNING"),
-  startTime: z.number().int().nullable().optional().describe("Start time of the run"),
+  startTime: z.number().int().nullable().optional().describe("Start time of the run in milliseconds"),
   triggerMode: z.number().int().nullable().optional().describe("Trigger mode: 1-Manual, 2-Scheduled, 3-Code commit, 5-Pipeline, 6-Webhook"),
   pipelineRunId: z.number().int().nullable().optional().describe("Pipeline run ID"),
   pipelineId: z.number().int().nullable().optional().describe("Pipeline ID"),
-  endTime: z.number().int().nullable().optional().describe("End time of the run"),
+  endTime: z.number().int().nullable().optional().describe("End time of the run in milliseconds"),
   creator: z.string().nullable().optional().describe("Creator"),
   creatorAccountId: z.string().nullable().optional().describe("Creator account ID"),
 });
@@ -346,7 +346,7 @@ export const UpdatePipelineSchema = z.object({
 
 // Service Connection related types
 export const ServiceConnectionSchema = z.object({
-  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  createTime: z.number().int().nullable().optional().describe("创建时间 (毫秒时间戳)"),
   id: z.number().int().nullable().optional().describe("服务连接ID"),
   name: z.string().nullable().optional().describe("服务连接名称"),
   ownerAccountId: z.union([z.string(), z.number().int()]).nullable().optional().describe("拥有者阿里云账号ID"),
@@ -380,7 +380,7 @@ export type ServiceConnection = z.infer<typeof ServiceConnectionSchema>;
 // Host Group related types
 export const HostInfoSchema = z.object({
   aliyunRegion: z.string().nullable().optional().describe("阿里云区域"),
-  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  createTime: z.number().int().nullable().optional().describe("创建时间 (毫秒时间戳)"),
   creatorAccountId: z.string().nullable().optional().describe("创建者阿里云账号"),
   instanceName: z.string().nullable().optional().describe("主机名"),
   ip: z.string().nullable().optional().describe("机器IP"),
@@ -392,7 +392,7 @@ export const HostInfoSchema = z.object({
 
 export const HostGroupSchema = z.object({
   aliyunRegion: z.string().nullable().optional().describe("阿里云区域"),
-  createTime: z.number().int().nullable().optional().describe("创建时间"),
+  createTime: z.number().int().nullable().optional().describe("创建时间 (毫秒时间戳)"),
   creatorAccountId: z.string().nullable().optional().describe("创建人"),
   description: z.string().nullable().optional().describe("主机组描述"),
   ecsLabelKey: z.string().nullable().optional().describe("ECS标签Key"),
@@ -406,7 +406,7 @@ export const HostGroupSchema = z.object({
   name: z.string().nullable().optional().describe("主机组名称"),
   serviceConnectionId: z.number().int().nullable().optional().describe("服务连接ID"),
   type: z.string().nullable().optional().describe("主机组类型"),
-  updateTime: z.number().int().nullable().optional().describe("更新时间"),
+  updateTime: z.number().int().nullable().optional().describe("更新时间 (毫秒时间戳)"),
 });
 
 export const ListHostGroupsSchema = z.object({

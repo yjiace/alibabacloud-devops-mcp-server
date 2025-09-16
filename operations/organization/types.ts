@@ -65,8 +65,8 @@ export const CurrentUserSchema = z.object({
   staffId: z.string().optional().describe("Staff ID"),
   nickName: z.string().optional().describe("Nickname"),
   sysDeptIds: z.array(z.string()).optional().describe("Department IDs"),
-  createdAt: z.string().optional().describe("Creation time"),
-  deletedAt: z.string().optional().describe("Deletion time")
+  createdAt: z.string().optional().describe("Creation time (ISO 8601格式)"),
+  deletedAt: z.string().optional().describe("Deletion time (ISO 8601格式)")
 });
 
 // Organization Department related types
@@ -87,13 +87,13 @@ export type DepartmentInfo = z.infer<typeof DepartmentInfoSchema>;
 export const MemberInfoSchema = z.object({
   deptIds: z.array(z.string()).optional().describe("所属组织部门列表"),
   id: z.string().optional().describe("成员 ID"),
-  joined: z.string().optional().describe("加入时间"),
+  joined: z.string().optional().describe("加入时间 (ISO 8601格式)"),
   name: z.string().optional().describe("成员名"),
   organizationId: z.string().optional().describe("组织 ID"),
   roleIds: z.array(z.string()).optional().describe("角色信息"),
   status: z.string().optional().describe("成员状态，可选值：ENABLED,DISABLED,UNDELETED,DELETED,NORMAL_USING,UNVISITED"),
   userId: z.string().optional().describe("用户 ID"),
-  visited: z.string().optional().describe("最后访问时间")
+  visited: z.string().optional().describe("最后访问时间 (ISO 8601格式)"),
 });
 
 export const OrganizationMembersSchema = z.array(MemberInfoSchema);

@@ -17,7 +17,7 @@ const RepoMetaSchema = z.object({
 // Define the Revision schema based on the definition in 变量组.swagger.json
 const RevisionSchema = z.object({
   author: z.string().describe("提交人"),
-  commitTime: z.number().describe("提交时间"),
+  commitTime: z.number().describe("提交时间 (毫秒时间戳)"),
   message: z.string().describe("版本提交信息"),
   refs: z.array(z.string()).describe("关联信息"),
   repoMeta: RepoMetaSchema.describe("仓库元信息"),

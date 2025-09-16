@@ -51,10 +51,23 @@ const server = new Server(
 function formatYunxiaoError(error: YunxiaoError): string {
     let message = `Yunxiao API Error: ${error.message}`;
 
+    // 添加请求上下文信息
+    if (error.method || error.url) {
+        message += `\n Request: ${error.method || 'GET'} ${error.url || 'unknown'}`;
+    }
+    
+    if (error.requestHeaders) {
+        message += `\n Request Headers: ${JSON.stringify(error.requestHeaders, null, 2)}`;
+    }
+    
+    if (error.requestBody) {
+        message += `\n Request Body: ${JSON.stringify(error.requestBody, null, 2)}`;
+    }
+
     if (error instanceof YunxiaoValidationError) {
         message = `Parameter validation failed: ${error.message}`;
         if (error.response) {
-            message += `\n errorMessage: ${JSON.stringify(error.response, null, 2)}`;
+            message += `\n Response: ${JSON.stringify(error.response, null, 2)}`;
         }
         // 添加常见参数错误的提示
         if (error.message.includes('name')) {
@@ -76,6 +89,11 @@ function formatYunxiaoError(error: YunxiaoError): string {
             }
             if (response.data && typeof response.data === 'object') {
                 message += `\n data: ${JSON.stringify(response.data, null, 2)}`;
+            }
+            
+            // 如果响应体中有更多详细信息，也一并显示
+            if (Object.keys(response).length > 0) {
+                message += `\n Full Response: ${JSON.stringify(response, null, 2)}`;
             }
         }
         

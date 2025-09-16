@@ -2,7 +2,11 @@ export class YunxiaoError extends Error {
   constructor(
       message: string,
       public readonly status: number,
-      public readonly response: unknown
+      public readonly response: unknown,
+      public readonly url?: string,
+      public readonly method?: string,
+      public readonly requestHeaders?: Record<string, string>,
+      public readonly requestBody?: unknown
   ) {
     super(message);
     this.name = "YunxiaoError";
@@ -58,7 +62,14 @@ export function isYunxiaoError(error: unknown): error is YunxiaoError {
   return error instanceof YunxiaoError;
 }
 
-export function createYunxiaoError(status: number, response: any): YunxiaoError {
+export function createYunxiaoError(
+  status: number, 
+  response: any, 
+  url?: string, 
+  method?: string,
+  requestHeaders?: Record<string, string>,
+  requestBody?: unknown
+): YunxiaoError {
   switch (status) {
     case 401:
       return new YunxiaoAuthenticationError(response?.message);
@@ -83,7 +94,11 @@ export function createYunxiaoError(status: number, response: any): YunxiaoError 
       return new YunxiaoError(
           response?.message || "Yunxiao API error",
           status,
-          response
+          response,
+          url,
+          method,
+          requestHeaders,
+          requestBody
       );
   }
 }

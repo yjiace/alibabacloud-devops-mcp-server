@@ -136,7 +136,14 @@ export async function yunxiaoRequest(
   debug(`Response status:`, response.ok)
 
   if (!response.ok) {
-    throw createYunxiaoError(response.status, responseBody);
+    throw createYunxiaoError(
+      response.status, 
+      responseBody,
+      url,
+      options.method || "GET",
+      requestHeaders,
+      options.body
+    );
   }
 
   return responseBody;

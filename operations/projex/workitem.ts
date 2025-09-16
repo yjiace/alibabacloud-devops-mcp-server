@@ -373,9 +373,55 @@ export async function updateWorkItemFunc(
 ): Promise<void> {
   const url = `/oapi/v1/projex/organizations/${organizationId}/workitems/${workItemId}`;
 
+  // 构建请求体，将自定义字段合并到主对象中
+  const requestBody: Record<string, any> = {};
+
+  // 复制所有标准字段
+  if (updateWorkItemFields.subject !== undefined) {
+    requestBody.subject = updateWorkItemFields.subject;
+  }
+  if (updateWorkItemFields.description !== undefined) {
+    requestBody.description = updateWorkItemFields.description;
+  }
+  if (updateWorkItemFields.status !== undefined) {
+    requestBody.status = updateWorkItemFields.status;
+  }
+  if (updateWorkItemFields.assignedTo !== undefined) {
+    requestBody.assignedTo = updateWorkItemFields.assignedTo;
+  }
+  if (updateWorkItemFields.priority !== undefined) {
+    requestBody.priority = updateWorkItemFields.priority;
+  }
+  if (updateWorkItemFields.labels !== undefined) {
+    requestBody.labels = updateWorkItemFields.labels;
+  }
+  if (updateWorkItemFields.sprint !== undefined) {
+    requestBody.sprint = updateWorkItemFields.sprint;
+  }
+  if (updateWorkItemFields.trackers !== undefined) {
+    requestBody.trackers = updateWorkItemFields.trackers;
+  }
+  if (updateWorkItemFields.verifier !== undefined) {
+    requestBody.verifier = updateWorkItemFields.verifier;
+  }
+  if (updateWorkItemFields.participants !== undefined) {
+    requestBody.participants = updateWorkItemFields.participants;
+  }
+  if (updateWorkItemFields.versions !== undefined) {
+    requestBody.versions = updateWorkItemFields.versions;
+  }
+
+  // 处理自定义字段
+  if (updateWorkItemFields.customFieldValues !== undefined) {
+    // 将自定义字段合并到请求体中
+    Object.entries(updateWorkItemFields.customFieldValues).forEach(([fieldId, value]) => {
+      requestBody[fieldId] = value;
+    });
+  }
+
   const response = await yunxiaoRequest(url, {
     method: "PUT",
-    body: updateWorkItemFields,
+    body: requestBody,
   });
 }
 

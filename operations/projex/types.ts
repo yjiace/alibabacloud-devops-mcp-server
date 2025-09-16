@@ -433,6 +433,7 @@ export const UpdateWorkItemFieldSchema = z.object({
   verifier: z.string().optional().describe("验证人userId"),
   participants: z.array(z.string()).optional().describe("参与人userId列表"),
   versions: z.array(z.string()).optional().describe("关联的版本Id列表"),
+  customFieldValues: z.record(z.string(), z.any()).optional().describe("自定义字段值，格式为 {\"fieldId\": \"value\"} 或 {\"fieldId\": [\"value1\", \"value2\"]}"),
 });
 
 export const UpdateWorkItemSchema = z.object({

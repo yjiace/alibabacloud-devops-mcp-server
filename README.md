@@ -234,7 +234,7 @@ When running in SSE mode, each user can use their own token by passing it as a q
 
 1. Via query parameter:
 ```
-http://localhost:3000/sse?token=USER_SPECIFIC_TOKEN
+http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
 2. Via request header:

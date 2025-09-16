@@ -136,7 +136,7 @@ async function runServer() {
         const port = process.env.PORT || 3000;
         
         // Store sessions with their tokens
-        const sessions: Record<string, { transport: SSEServerTransport; server: Server; token?: string }> = {};
+        const sessions: Record<string, { transport: SSEServerTransport; server: Server; yunxiao_access_token?: string }> = {};
         
         // SSE endpoint - handles initial connection
         app.get('/sse', async (req: any, res: any) => {
@@ -144,24 +144,24 @@ async function runServer() {
             console.log(`New SSE connection from ${req.ip}`);
             
             // Get token from query parameters or headers
-            const token = req.query.token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+            const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
             
             // Create transport with endpoint for POST messages
             const sseTransport = new SSEServerTransport('/messages', res);
             const sessionId = sseTransport.sessionId;
             
             if (sessionId) {
-                sessions[sessionId] = { transport: sseTransport, server, token };
+                sessions[sessionId] = { transport: sseTransport, server, yunxiao_access_token };
             }
             
             try {
                 await server.connect(sseTransport);
                 // In SSE mode, console.error is acceptable for status messages
                 console.info(`Yunxiao MCP Server connected via SSE with session ${sessionId}`);
-                if (token) {
-                    console.info(`Session ${sessionId} using custom token`);
+                if (yunxiao_access_token) {
+                    console.error(`Session ${sessionId} using custom token`);
                 } else {
-                    console.info(`Session ${sessionId} using default token from environment`);
+                    console.error(`Session ${sessionId} using default token from environment`);
                 }
             } catch (error) {
                 console.error("Failed to start SSE server:", error);
@@ -183,7 +183,7 @@ async function runServer() {
             try {
                 // Set the session token before handling the message
                 const utils = await import('./common/utils.js');
-                utils.setCurrentSessionToken(session.token);
+                utils.setCurrentSessionToken(session.yunxiao_access_token);
                 
                 await session.transport.handlePostMessage(req, res, req.body);
             } catch (error) {

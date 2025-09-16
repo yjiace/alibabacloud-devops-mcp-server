@@ -85,12 +85,12 @@ const USER_AGENT = `modelcontextprotocol/servers/alibabacloud-devops-mcp-server/
 
 let currentSessionToken: string | undefined = undefined;
 
-/**
+/** 
  * Set the token for the current session (used in SSE mode)
- * @param token The token to use for the current session
+ * @param yunxiao_access_token The token to use for the current session
  */
-export function setCurrentSessionToken(token: string | undefined): void {
-  currentSessionToken = token;
+export function setCurrentSessionToken(yunxiao_access_token: string | undefined): void {
+  currentSessionToken = yunxiao_access_token;
 }
 
 /**

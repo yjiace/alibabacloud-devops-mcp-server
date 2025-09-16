@@ -231,7 +231,7 @@ docker compose up -d
 
 1. 通过查询参数：
 ```
-http://localhost:3000/sse?token=USER_SPECIFIC_TOKEN
+http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
 2. 通过请求头：

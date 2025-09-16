@@ -31,7 +31,12 @@ export const handleEffortTools = async (request: any) => {
       const result = await effort.createEffortRecord({
         id: args.id,
         organizationId: args.organizationId,
-        request: args.request
+        actualTime: args.actualTime,
+        description: args.description,
+        gmtEnd: args.gmtEnd,
+        gmtStart: args.gmtStart,
+        operatorId: args.operatorId,
+        workType: args.workType
       });
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
@@ -54,7 +59,11 @@ export const handleEffortTools = async (request: any) => {
       const result = await effort.createEstimatedEffort({
         id: args.id,
         organizationId: args.organizationId,
-        request: args.request
+        description: args.description,
+        operatorId: args.operatorId,
+        owner: args.owner,
+        spentTime: args.spentTime,
+        workType: args.workType
       });
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
@@ -67,7 +76,12 @@ export const handleEffortTools = async (request: any) => {
         organizationId: args.organizationId,
         workitemId: args.workitemId,
         id: args.id,
-        request: args.request
+        actualTime: args.actualTime,
+        description: args.description,
+        gmtEnd: args.gmtEnd,
+        gmtStart: args.gmtStart,
+        operatorId: args.operatorId,
+        workType: args.workType
       });
       return {
         content: [{ type: "text", text: "Effort record updated successfully" }],
@@ -80,7 +94,11 @@ export const handleEffortTools = async (request: any) => {
         organizationId: args.organizationId,
         workitemId: args.workitemId,
         id: args.id,
-        request: args.request
+        description: args.description,
+        operatorId: args.operatorId,
+        owner: args.owner,
+        spentTime: args.spentTime,
+        workType: args.workType
       });
       return {
         content: [{ type: "text", text: "Estimated effort updated successfully" }],

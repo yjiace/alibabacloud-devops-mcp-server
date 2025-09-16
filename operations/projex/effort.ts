@@ -6,9 +6,9 @@ import {
   IdentifierDTOSchema,
   ListCurrentUserEffortRecordsSchema,
   ListEffortRecordsSchema,
-  CreateEffortRecordSchema,
+  CreateEffortRecordRequestSchema,
   ListEstimatedEffortsSchema,
-  CreateEstimatedEffortSchema,
+  CreateEstimatedEffortRequestSchema,
   UpdateEffortRecordSchema,
   UpdateEstimatedEffortSchema
 } from "./types.js";
@@ -49,15 +49,25 @@ export async function listEffortRecords(
 
 // Create effort record
 export async function createEffortRecord(
-  params: z.infer<typeof CreateEffortRecordSchema>
+  params: z.infer<typeof CreateEffortRecordRequestSchema> & {
+    id: string;
+    organizationId: string;
+  }
 ) {
-  const { request, ...validatedParams } = CreateEffortRecordSchema.parse(params);
+  const validatedParams = CreateEffortRecordRequestSchema.parse({
+    actualTime: params.actualTime,
+    description: params.description,
+    gmtEnd: params.gmtEnd,
+    gmtStart: params.gmtStart,
+    operatorId: params.operatorId,
+    workType: params.workType
+  });
   
-  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/effortRecords`;
+  const url = `/oapi/v1/projex/organizations/${params.organizationId}/workitems/${params.id}/effortRecords`;
   
   const response = await yunxiaoRequest(url, {
     method: "POST",
-    body: request
+    body: validatedParams
   });
 
   return IdentifierDTOSchema.parse(response);
@@ -80,15 +90,24 @@ export async function listEstimatedEfforts(
 
 // Create estimated effort
 export async function createEstimatedEffort(
-  params: z.infer<typeof CreateEstimatedEffortSchema>
+  params: z.infer<typeof CreateEstimatedEffortRequestSchema> & {
+    id: string;
+    organizationId: string;
+  }
 ) {
-  const { request, ...validatedParams } = CreateEstimatedEffortSchema.parse(params);
+  const validatedParams = CreateEstimatedEffortRequestSchema.parse({
+    description: params.description,
+    operatorId: params.operatorId,
+    owner: params.owner,
+    spentTime: params.spentTime,
+    workType: params.workType
+  });
   
-  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.id}/estimatedEfforts`;
+  const url = `/oapi/v1/projex/organizations/${params.organizationId}/workitems/${params.id}/estimatedEfforts`;
   
   const response = await yunxiaoRequest(url, {
     method: "POST",
-    body: request
+    body: validatedParams
   });
 
   return IdentifierDTOSchema.parse(response);
@@ -96,15 +115,26 @@ export async function createEstimatedEffort(
 
 // Update effort record
 export async function updateEffortRecord(
-  params: z.infer<typeof UpdateEffortRecordSchema>
+  params: z.infer<typeof CreateEffortRecordRequestSchema> & {
+    organizationId: string;
+    workitemId: string;
+    id: string;
+  }
 ) {
-  const { request, ...validatedParams } = UpdateEffortRecordSchema.parse(params);
+  const validatedParams = CreateEffortRecordRequestSchema.parse({
+    actualTime: params.actualTime,
+    description: params.description,
+    gmtEnd: params.gmtEnd,
+    gmtStart: params.gmtStart,
+    operatorId: params.operatorId,
+    workType: params.workType
+  });
   
-  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/effortRecords/${validatedParams.id}`;
+  const url = `/oapi/v1/projex/organizations/${params.organizationId}/workitems/${params.workitemId}/effortRecords/${params.id}`;
   
   const response = await yunxiaoRequest(url, {
     method: "PUT",
-    body: request
+    body: validatedParams
   });
 
   return response;
@@ -112,15 +142,25 @@ export async function updateEffortRecord(
 
 // Update estimated effort
 export async function updateEstimatedEffort(
-  params: z.infer<typeof UpdateEstimatedEffortSchema>
+  params: z.infer<typeof CreateEstimatedEffortRequestSchema> & {
+    organizationId: string;
+    workitemId: string;
+    id: string;
+  }
 ) {
-  const { request, ...validatedParams } = UpdateEstimatedEffortSchema.parse(params);
+  const validatedParams = CreateEstimatedEffortRequestSchema.parse({
+    description: params.description,
+    operatorId: params.operatorId,
+    owner: params.owner,
+    spentTime: params.spentTime,
+    workType: params.workType
+  });
   
-  const url = `/oapi/v1/projex/organizations/${validatedParams.organizationId}/workitems/${validatedParams.workitemId}/estimatedEfforts/${validatedParams.id}`;
+  const url = `/oapi/v1/projex/organizations/${params.organizationId}/workitems/${params.workitemId}/estimatedEfforts/${params.id}`;
   
   const response = await yunxiaoRequest(url, {
     method: "PUT",
-    body: request
+    body: validatedParams
   });
 
   return response;

@@ -452,10 +452,10 @@ export const EffortRecordSchema = z.object({
   actualTime: z.number().nullable().optional().describe("时间工时"),
   creator: MiniUserSchema.nullable().optional().describe("创建人"),
   description: z.string().nullable().optional().describe("描述"),
-  gmtCreate: z.string().nullable().optional().describe("创建时间"),
-  gmtEnd: z.string().nullable().optional().describe("工作的结束日期"),
-  gmtModified: z.string().nullable().optional().describe("修改时间"),
-  gmtStart: z.string().nullable().optional().describe("工作的开始日期"),
+  gmtCreate: z.number().nullable().optional().describe("创建时间"),
+  gmtEnd: z.number().nullable().optional().describe("工作的结束日期"),
+  gmtModified: z.number().nullable().optional().describe("修改时间"),
+  gmtStart: z.number().nullable().optional().describe("工作的开始日期"),
   id: z.string().nullable().optional().describe("id"),
   modifier: MiniUserSchema.nullable().optional().describe("修改人"),
   owner: MiniUserSchema.nullable().optional().describe("负责人"),
@@ -466,8 +466,8 @@ export const EffortRecordSchema = z.object({
 export const EstimatedEffortSchema = z.object({
   creator: MiniUserSchema.nullable().optional().describe("创建人"),
   description: z.string().nullable().optional().describe("描述"),
-  gmtCreate: z.string().nullable().optional().describe("创建时间"),
-  gmtModified: z.string().nullable().optional().describe("修改时间"),
+  gmtCreate: z.number().nullable().optional().describe("创建时间"),
+  gmtModified: z.number().nullable().optional().describe("修改时间"),
   id: z.string().nullable().optional().describe("id"),
   modifier: MiniUserSchema.nullable().optional().describe("修改人"),
   owner: MiniUserSchema.nullable().optional().describe("负责人"),
@@ -512,7 +512,12 @@ export const ListEffortRecordsSchema = z.object({
 export const CreateEffortRecordSchema = z.object({
   id: z.string().describe("工作项唯一标识"),
   organizationId: z.string().describe("organizationId"),
-  request: CreateEffortRecordRequestSchema,
+  actualTime: z.number().positive().describe("实际工时"),
+  description: z.string().max(500).optional().describe("工作描述"),
+  gmtEnd: z.string().describe("工作开始结束日期"),
+  gmtStart: z.string().describe("工作开始日期"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  workType: z.string().optional().describe("工作类型"),
 });
 
 export const ListEstimatedEffortsSchema = z.object({
@@ -523,21 +528,34 @@ export const ListEstimatedEffortsSchema = z.object({
 export const CreateEstimatedEffortSchema = z.object({
   id: z.string().describe("工作项唯一标识"),
   organizationId: z.string().describe("organizationId"),
-  request: CreateEstimatedEffortRequestSchema,
+  description: z.string().max(500).optional().describe("工作描述"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  owner: z.string().describe("负责人，填userId"),
+  spentTime: z.number().positive().describe("预计工时"),
+  workType: z.string().optional().describe("工作类别"),
 });
 
 export const UpdateEffortRecordSchema = z.object({
   organizationId: z.string().describe("organizationId"),
   workitemId: z.string().describe("工作项唯一标识"),
   id: z.string().describe("工时记录唯一标识"),
-  request: CreateEffortRecordRequestSchema,
+  actualTime: z.number().positive().describe("实际工时"),
+  description: z.string().max(500).optional().describe("工作描述"),
+  gmtEnd: z.string().describe("工作开始结束日期"),
+  gmtStart: z.string().describe("工作开始日期"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  workType: z.string().optional().describe("工作类型"),
 });
 
 export const UpdateEstimatedEffortSchema = z.object({
   organizationId: z.string().describe("organizationId"),
   workitemId: z.string().describe("工作项唯一标识"),
   id: z.string().describe("预计工时记录唯一标识"),
-  request: CreateEstimatedEffortRequestSchema,
+  description: z.string().max(500).optional().describe("工作描述"),
+  operatorId: z.string().optional().describe("操作者的useId，个人token时该参数无效"),
+  owner: z.string().describe("负责人，填userId"),
+  spentTime: z.number().positive().describe("预计工时"),
+  workType: z.string().optional().describe("工作类别"),
 });
 
 // Type exports

@@ -131,7 +131,20 @@ export {
   CreateResourceMemberSchema,
   UpdateResourceOwnerSchema,
   ResourceMemberSchema,
-  ResourceMemberBaseSchema
+  ResourceMemberBaseSchema,
+  
+  // Tag schemas
+  CreateTagSchema,
+  CreateTagGroupSchema,
+  DeleteTagGroupSchema,
+  UpdateTagGroupSchema,
+  DeleteTagSchema,
+  UpdateTagSchema,
+  GetTagGroupSchema,
+  TagGroupSchema,
+  TagSchema,
+  TagGroupWithTagsSchema,
+  BaseTagSchema
 } from "../operations/flow/types.js";
 
 // Packages types

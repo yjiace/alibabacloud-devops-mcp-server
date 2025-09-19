@@ -15,6 +15,7 @@ import { getAppStackDeploymentResourceTools } from './appstack-deployment-resour
 import { getAppStackChangeOrderTools } from './appstack-change-orders.js';
 import { getEffortTools } from './effort.js';
 import { getResourceMemberTools } from './resourceMember.js';
+import { getTagTools } from './tag.js';
 
 export const getAllTools = () => [
   ...getCodeManagementTools(),
@@ -33,5 +34,6 @@ export const getAllTools = () => [
   ...getAppStackDeploymentResourceTools(),
   ...getAppStackChangeOrderTools(),
   ...getEffortTools(),
-  ...getResourceMemberTools()
+  ...getResourceMemberTools(),
+  ...getTagTools()
 ];

@@ -462,6 +462,73 @@ export type UpdateResourceMemberParams = z.infer<typeof UpdateResourceMemberSche
 export type CreateResourceMemberParams = z.infer<typeof CreateResourceMemberSchema>;
 export type UpdateResourceOwnerParams = z.infer<typeof UpdateResourceOwnerSchema>;
 
+// Tag schemas
+export const TagGroupSchema = z.object({
+  id: z.number().int().nullable().optional().describe("标签分类 id"),
+  name: z.string().nullable().optional().describe("标签分类名称"),
+  creatorAccountId: z.string().nullable().optional().describe("创建人"),
+  modifierAccountId: z.string().nullable().optional().describe("更新人"),
+});
+
+export const TagSchema = z.object({
+  id: z.number().int().nullable().optional().describe("标签 id"),
+  name: z.string().nullable().optional().describe("标签名称"),
+  color: z.string().nullable().optional().describe("标签颜色"),
+  creatorAccountId: z.string().nullable().optional().describe("创建人"),
+  modifierAccountId: z.string().nullable().optional().describe("更新人"),
+});
+
+export const TagGroupWithTagsSchema = TagGroupSchema.extend({
+  flowTagList: z.array(TagSchema).nullable().optional().describe("标签列表"),
+});
+
+// Define base schema for common parameters
+export const BaseTagSchema = z.object({
+  organizationId: z.string().describe("企业Id"),
+});
+
+export const CreateTagSchema = BaseTagSchema.extend({
+  name: z.string().describe("标签名称"),
+  color: z.string().describe("#1F9AEF 蓝色; #E63A3A 红色; #FA8C15 黄色; #15AD31 绿色; #7978E5 紫色; #8C8C8C 灰色"),
+  flowTagGroupId: z.number().int().describe("标签分类 id"),
+});
+
+export const CreateTagGroupSchema = BaseTagSchema.extend({
+  name: z.string().describe("标签分类名称"),
+});
+
+export const DeleteTagGroupSchema = BaseTagSchema.extend({
+  id: z.number().int().describe("标签分类 id"),
+});
+
+export const UpdateTagGroupSchema = DeleteTagGroupSchema.extend({
+  name: z.string().describe("标签分类名称"),
+});
+
+export const DeleteTagSchema = BaseTagSchema.extend({
+  id: z.number().int().describe("标签 id"),
+});
+
+export const UpdateTagSchema = DeleteTagSchema.extend({
+  name: z.string().describe("标签名称"),
+  color: z.string().describe("#1F9AEF 蓝色; #E63A3A 红色; #FA8C15 黄色; #15AD31 绿色; #7978E5 紫色; #8C8C8C 灰色"),
+  flowTagGroupId: z.number().int().describe("标签分类 id"),
+});
+
+export const GetTagGroupSchema = DeleteTagGroupSchema;
+
+// Tag type exports
+export type TagGroup = z.infer<typeof TagGroupSchema>;
+export type Tag = z.infer<typeof TagSchema>;
+export type TagGroupWithTags = z.infer<typeof TagGroupWithTagsSchema>;
+export type CreateTagParams = z.infer<typeof CreateTagSchema>;
+export type CreateTagGroupParams = z.infer<typeof CreateTagGroupSchema>;
+export type DeleteTagGroupParams = z.infer<typeof DeleteTagGroupSchema>;
+export type UpdateTagGroupParams = z.infer<typeof UpdateTagGroupSchema>;
+export type DeleteTagParams = z.infer<typeof DeleteTagSchema>;
+export type UpdateTagParams = z.infer<typeof UpdateTagSchema>;
+export type GetTagGroupParams = z.infer<typeof GetTagGroupSchema>;
+
 // Flow type exports
 export type PipelineDetail = z.infer<typeof PipelineDetailSchema>;
 export type PipelineListItem = z.infer<typeof PipelineListItemSchema>;

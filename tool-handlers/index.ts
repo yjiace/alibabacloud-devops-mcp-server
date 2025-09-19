@@ -15,6 +15,7 @@ import { handleAppStackDeploymentResourceTools } from './appstack-deployment-res
 import { handleAppStackChangeOrderTools } from './appstack-change-orders.js';
 import { handleEffortTools } from './effort.js';
 import { handleResourceMemberTools } from './resourceMember.js';
+import { handleTagTools } from './tag.js';
 
 export const handleToolRequest = async (request: any) => {
   // Try each handler in sequence until one returns a result
@@ -35,7 +36,8 @@ export const handleToolRequest = async (request: any) => {
     handleAppStackDeploymentResourceTools,
     handleAppStackChangeOrderTools,
     handleEffortTools,
-    handleResourceMemberTools
+    handleResourceMemberTools,
+    handleTagTools
   ];
 
   for (const handler of handlers) {

@@ -144,7 +144,17 @@ export {
   TagGroupSchema,
   TagSchema,
   TagGroupWithTagsSchema,
-  BaseTagSchema
+  BaseTagSchema,
+  
+  // VM Deploy Order schemas
+  StopVMDeployOrderSchema,
+  SkipVMDeployMachineSchema,
+  RetryVMDeployMachineSchema,
+  ResumeVMDeployOrderSchema,
+  GetVMDeployOrderSchema,
+  GetVMDeployMachineLogSchema,
+  DeployOrderSchema,
+  DeployOrderLogSchema
 } from "../operations/flow/types.js";
 
 // Packages types

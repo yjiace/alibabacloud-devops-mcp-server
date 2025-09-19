@@ -123,7 +123,15 @@ export {
   GetPipelineJobRunLogSchema,
   
   // Service connection schemas
-  ListServiceConnectionsSchema
+  ListServiceConnectionsSchema,
+  
+  // Resource member schemas
+  DeleteResourceMemberSchema,
+  UpdateResourceMemberSchema,
+  CreateResourceMemberSchema,
+  UpdateResourceOwnerSchema,
+  ResourceMemberSchema,
+  ResourceMemberBaseSchema
 } from "../operations/flow/types.js";
 
 // Packages types

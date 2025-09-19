@@ -336,6 +336,37 @@ export const PipelineJobRunLogSchema = z.object({
   more: z.boolean().nullable().optional().describe("Whether there are more logs available")
 });
 
+// Resource member schemas
+export const ResourceMemberSchema = z.object({
+  username: z.string().nullable().optional().describe("用户名"),
+  userId: z.string().nullable().optional().describe("用户id"),
+  role: z.string().nullable().optional().describe("用户角色"),
+});
+
+export const ResourceMemberBaseSchema = z.object({
+  organizationId: z.string().describe("企业Id"),
+  resourceType: z.string().describe("资源类型 pipeline 流水线 hostGroup 主机组"),
+  resourceId: z.string().describe("资源Id"),
+});
+
+export const DeleteResourceMemberSchema = ResourceMemberBaseSchema.extend({
+  userId: z.string().describe("用户Id"),
+});
+
+export const UpdateResourceMemberSchema = ResourceMemberBaseSchema.extend({
+  roleName: z.string().describe("角色部署组 hostGroup: user(成员，使用权限) admin(管理员，使用编辑权限) 流水线 pipeline: admin(管理员，查看、运行、编辑权限) member(运行权限) viewer(查看权限)"),
+  userId: z.string().describe("用户id"),
+});
+
+export const CreateResourceMemberSchema = ResourceMemberBaseSchema.extend({
+  roleName: z.string().describe("角色部署组 hostGroup: user(成员，使用权限) admin(管理员，使用编辑权限) owner(拥有者，所有权限)  流水线 pipeline: owner(拥有者，所有权限) admin(管理员，查看、运行、编辑权限) member(运行权限) viewer(查看权限)"),
+  userId: z.string().describe("用户id"),
+});
+
+export const UpdateResourceOwnerSchema = ResourceMemberBaseSchema.extend({
+  newOwnerId: z.string().describe("新拥有者用户Id"),
+});
+
 // Flow Update pipeline schema
 export const UpdatePipelineSchema = z.object({
   organizationId: z.string().describe("Organization ID"),
@@ -423,6 +454,13 @@ export const ListHostGroupsSchema = z.object({
 });
 
 export type HostGroup = z.infer<typeof HostGroupSchema>;
+
+// Resource member type exports
+export type ResourceMember = z.infer<typeof ResourceMemberSchema>;
+export type DeleteResourceMemberParams = z.infer<typeof DeleteResourceMemberSchema>;
+export type UpdateResourceMemberParams = z.infer<typeof UpdateResourceMemberSchema>;
+export type CreateResourceMemberParams = z.infer<typeof CreateResourceMemberSchema>;
+export type UpdateResourceOwnerParams = z.infer<typeof UpdateResourceOwnerSchema>;
 
 // Flow type exports
 export type PipelineDetail = z.infer<typeof PipelineDetailSchema>;

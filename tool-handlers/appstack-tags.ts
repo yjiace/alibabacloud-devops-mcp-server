@@ -2,12 +2,10 @@ import { z } from 'zod';
 import { 
   createAppTag,
   updateAppTag,
-  deleteAppTag,
   searchAppTag,
   updateAppTagBind,
   CreateAppTagRequestSchema,
   UpdateAppTagRequestSchema,
-  DeleteAppTagRequestSchema,
   SearchAppTagRequestSchema,
   UpdateAppTagBindRequestSchema
 } from '../operations/appstack/appTags.js';
@@ -32,13 +30,6 @@ export async function handleAppStackTagTools(request: any) {
       const updateResult = await updateAppTag(updateParams);
       return {
         content: [{ type: "text", text: JSON.stringify(updateResult, null, 2) }],
-      };
-      
-    case 'delete_app_tag':
-      const deleteParams = DeleteAppTagRequestSchema.parse(request.params.arguments);
-      await deleteAppTag(deleteParams);
-      return {
-        content: [{ type: "text", text: "Application tag deleted successfully" }],
       };
       
     case 'search_app_tags':

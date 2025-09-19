@@ -3,8 +3,6 @@ import {
   GetMachineDeployLogRequestSchema,
   AddHostListToHostGroupRequestSchema,
   AddHostListToDeployGroupRequestSchema,
-  DeleteHostListFromDeployGroupRequestSchema,
-  DeleteHostListFromHostGroupRequestSchema,
   GetDeployGroupRequestSchema,
   ListResourceInstancesRequestSchema,
   GetResourceInstanceRequestSchema,
@@ -27,15 +25,5 @@ export const getAppStackDeploymentResourceTools = () => [
     name: 'add_host_list_to_deploy_group',
     description: '[application delivery] Add host list to deploy group',
     inputSchema: zodToJsonSchema(AddHostListToDeployGroupRequestSchema),
-  },
-  {
-    name: 'delete_host_list_from_deploy_group',
-    description: '[application delivery] Delete host list from deploy group',
-    inputSchema: zodToJsonSchema(DeleteHostListFromDeployGroupRequestSchema),
-  },
-  {
-    name: 'delete_host_list_from_host_group',
-    description: '[application delivery] Delete host list from host group',
-    inputSchema: zodToJsonSchema(DeleteHostListFromHostGroupRequestSchema),
   },
 ];

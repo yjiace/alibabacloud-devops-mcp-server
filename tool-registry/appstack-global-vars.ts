@@ -1,7 +1,6 @@
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { 
   CreateGlobalVarRequestSchema,
-  DeleteGlobalVarRequestSchema,
   GetGlobalVarRequestSchema,
   UpdateGlobalVarRequestSchema,
   ListGlobalVarsRequestSchema
@@ -13,11 +12,6 @@ export const getAppStackGlobalVarTools = () => [
     name: 'create_global_var',
     description: '[application delivery] Create a global variable group',
     inputSchema: zodToJsonSchema(CreateGlobalVarRequestSchema),
-  },
-  {
-    name: 'delete_global_var',
-    description: '[application delivery] Delete a global variable group',
-    inputSchema: zodToJsonSchema(DeleteGlobalVarRequestSchema),
   },
   {
     name: 'get_global_var',

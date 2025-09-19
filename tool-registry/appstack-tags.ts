@@ -3,7 +3,6 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { 
   CreateAppTagRequestSchema,
   UpdateAppTagRequestSchema,
-  DeleteAppTagRequestSchema,
   SearchAppTagRequestSchema,
   UpdateAppTagBindRequestSchema
 } from '../operations/appstack/appTags.js';
@@ -19,11 +18,6 @@ export const getAppStackTagTools = () => [
     name: 'update_app_tag',
     description: '[application delivery] Update an application tag',
     inputSchema: zodToJsonSchema(UpdateAppTagRequestSchema),
-  },
-  {
-    name: 'delete_app_tag',
-    description: '[application delivery] Delete an application tag',
-    inputSchema: zodToJsonSchema(DeleteAppTagRequestSchema),
   },
   {
     name: 'search_app_tags',

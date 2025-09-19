@@ -159,19 +159,15 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `search_app_templates`: [应用交付] 搜索应用模板
 - `create_app_tag`: [应用交付] 创建应用标签
 - `update_app_tag`: [应用交付] 更新应用标签
-- `delete_app_tag`: [应用交付] 删除应用标签
 - `search_app_tags`: [应用交付] 搜索应用标签
 - `update_app_tag_bind`: [应用交付] 更新应用标签绑定
 - `create_global_var`: [应用交付] 创建全局变量组
-- `delete_global_var`: [应用交付] 删除全局变量组
 - `get_global_var`: [应用交付] 获取全局变量组
 - `update_global_var`: [应用交付] 更新全局变量组
 - `list_global_vars`: [应用交付] 列出全局变量组
 - `get_machine_deploy_log`: [应用交付] 获取机器部署日志
 - `add_host_list_to_host_group`: [应用交付] 添加主机列表到主机组
 - `add_host_list_to_deploy_group`: [应用交付] 添加主机列表到部署组
-- `delete_host_list_from_deploy_group`: [应用交付] 从部署组删除主机列表
-- `delete_host_list_from_host_group`: [应用交付] 从主机组删除主机列表
 
 ## 用法
 

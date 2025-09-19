@@ -163,19 +163,15 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `search_app_templates`: [application delivery] Search application templates
 - `create_app_tag`: [application delivery] Create an application tag
 - `update_app_tag`: [application delivery] Update an application tag
-- `delete_app_tag`: [application delivery] Delete an application tag
 - `search_app_tags`: [application delivery] Search application tags
 - `update_app_tag_bind`: [application delivery] Update application tag bindings
 - `create_global_var`: [application delivery] Create a global variable group
-- `delete_global_var`: [application delivery] Delete a global variable group
 - `get_global_var`: [application delivery] Get a global variable group
 - `update_global_var`: [application delivery] Update a global variable group
 - `list_global_vars`: [application delivery] List global variable groups
 - `get_machine_deploy_log`: [application delivery] Get machine deployment log
 - `add_host_list_to_host_group`: [application delivery] Add host list to host group
 - `add_host_list_to_deploy_group`: [application delivery] Add host list to deploy group
-- `delete_host_list_from_deploy_group`: [application delivery] Delete host list from deploy group
-- `delete_host_list_from_host_group`: [application delivery] Delete host list from host group
 
 ## Usage
 

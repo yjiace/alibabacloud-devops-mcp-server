@@ -1,11 +1,9 @@
 import { 
   createGlobalVar,
-  deleteGlobalVar,
   getGlobalVar,
   updateGlobalVar,
   listGlobalVars,
   CreateGlobalVarRequestSchema,
-  DeleteGlobalVarRequestSchema,
   GetGlobalVarRequestSchema,
   UpdateGlobalVarRequestSchema,
   ListGlobalVarsRequestSchema
@@ -24,13 +22,6 @@ export async function handleAppStackGlobalVarTools(request: any) {
       const createResult = await createGlobalVar(createParams);
       return {
         content: [{ type: "text", text: JSON.stringify(createResult, null, 2) }],
-      };
-      
-    case 'delete_global_var':
-      const deleteParams = DeleteGlobalVarRequestSchema.parse(request.params.arguments);
-      const deleteResult = await deleteGlobalVar(deleteParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(deleteResult, null, 2) }],
       };
       
     case 'get_global_var':

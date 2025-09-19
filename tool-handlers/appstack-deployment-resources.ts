@@ -2,13 +2,9 @@ import {
   getMachineDeployLog,
   addHostListToHostGroup,
   addHostListToDeployGroup,
-  deleteHostListFromDeployGroup,
-  deleteHostListFromHostGroup,
   GetMachineDeployLogRequestSchema,
   AddHostListToHostGroupRequestSchema,
   AddHostListToDeployGroupRequestSchema,
-  DeleteHostListFromDeployGroupRequestSchema,
-  DeleteHostListFromHostGroupRequestSchema,
   GetDeployGroupRequestSchema,
   ListResourceInstancesRequestSchema,
   GetResourceInstanceRequestSchema,
@@ -42,20 +38,6 @@ export async function handleAppStackDeploymentResourceTools(request: any) {
       const addDeployGroupResult = await addHostListToDeployGroup(addDeployGroupParams);
       return {
         content: [{ type: "text", text: JSON.stringify(addDeployGroupResult, null, 2) }],
-      };
-      
-    case 'delete_host_list_from_deploy_group':
-      const deleteDeployGroupParams = DeleteHostListFromDeployGroupRequestSchema.parse(request.params.arguments);
-      const deleteDeployGroupResult = await deleteHostListFromDeployGroup(deleteDeployGroupParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(deleteDeployGroupResult, null, 2) }],
-      };
-      
-    case 'delete_host_list_from_host_group':
-      const deleteHostGroupParams = DeleteHostListFromHostGroupRequestSchema.parse(request.params.arguments);
-      const deleteHostGroupResult = await deleteHostListFromHostGroup(deleteHostGroupParams);
-      return {
-        content: [{ type: "text", text: JSON.stringify(deleteHostGroupResult, null, 2) }],
       };
       
     default:

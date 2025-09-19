@@ -100,6 +100,34 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `create_pipeline_from_description`: Automatically generates YAML configuration and creates pipeline
 - `update_pipeline`: Update an existing pipeline in Yunxiao by pipelineId. Use this to update pipeline YAML, stages, jobs, etc.
 
+#### Resource Member Management Tools
+
+- `create_resource_member`: Create a resource member
+- `delete_resource_member`: Delete a resource member
+- `list_resource_members`: Get a list of resource members
+- `update_resource_member`: Update a resource member
+- `update_resource_owner`: Transfer resource owner
+
+#### Tag Management Tools
+
+- `create_tag`: Create a tag
+- `create_tag_group`: Create a tag group
+- `list_tag_groups`: Get a list of tag groups
+- `delete_tag_group`: Delete a tag group
+- `update_tag_group`: Update a tag group
+- `get_tag_group`: Get a tag group
+- `delete_tag`: Delete a tag
+- `update_tag`: Update a tag
+
+#### VM Deploy Order Management Tools
+
+- `stop_vm_deploy_order`: Stop VM deploy order
+- `skip_vm_deploy_machine`: Skip VM deploy machine
+- `retry_vm_deploy_machine`: Retry VM deploy machine
+- `resume_vm_deploy_order`: Resume VM deploy order
+- `get_vm_deploy_order`: Get VM deploy order details
+- `get_vm_deploy_machine_log`: Get VM deploy machine log
+
 ### Packages Management Tools
 
 - `list_package_repositories`: Get package repositories details list

@@ -96,6 +96,34 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `create_pipeline_from_description`: 根据自然语言描述生成流水线 YAML 并创建流水线
 - `update_pipeline`: 更新流水线YAML内容
 
+#### 资源成员管理工具
+
+- `create_resource_member`: 创建资源成员
+- `delete_resource_member`: 删除资源成员
+- `list_resource_members`: 获取资源成员列表
+- `update_resource_member`: 更新资源成员
+- `update_resource_owner`: 移交资源对象拥有者
+
+#### 标签管理工具
+
+- `create_tag`: 创建标签
+- `create_tag_group`: 创建标签分类
+- `list_tag_groups`: 获取流水线分类列表
+- `delete_tag_group`: 删除标签分类
+- `update_tag_group`: 更新标签分类
+- `get_tag_group`: 获取标签分类
+- `delete_tag`: 删除标签
+- `update_tag`: 更新标签
+
+#### VM部署单管理工具
+
+- `stop_vm_deploy_order`: 终止机器部署
+- `skip_vm_deploy_machine`: 跳过机器部署
+- `retry_vm_deploy_machine`: 重试机器部署
+- `resume_vm_deploy_order`: 继续部署单运行
+- `get_vm_deploy_order`: 获取部署单详情
+- `get_vm_deploy_machine_log`: 查询机器部署日志
+
 ### 制品仓库工具
 
 - `list_package_repositories`: 查看制品仓库信息

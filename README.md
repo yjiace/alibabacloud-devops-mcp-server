@@ -134,34 +134,6 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_artifacts`: Get artifacts details list
 - `get_artifact`: Get single artifact details
 
-### Resource Member Management Tools
-
-- `create_resource_member`: Create a resource member
-- `delete_resource_member`: Delete a resource member
-- `list_resource_members`: Get a list of resource members
-- `update_resource_member`: Update a resource member
-- `update_resource_owner`: Transfer resource owner
-
-### Tag Management Tools
-
-- `create_tag`: Create a tag
-- `create_tag_group`: Create a tag group
-- `list_tag_groups`: Get a list of tag groups
-- `delete_tag_group`: Delete a tag group
-- `update_tag_group`: Update a tag group
-- `get_tag_group`: Get a tag group
-- `delete_tag`: Delete a tag
-- `update_tag`: Update a tag
-
-### VM Deploy Order Management Tools
-
-- `stop_vm_deploy_order`: Stop VM deploy order
-- `skip_vm_deploy_machine`: Skip VM deploy machine
-- `retry_vm_deploy_machine`: Retry VM deploy machine
-- `resume_vm_deploy_order`: Resume VM deploy order
-- `get_vm_deploy_order`: Get VM deploy order details
-- `get_vm_deploy_machine_log`: Get VM deploy machine log
-
 ### Application Delivery Tools
 
 - `create_change_order`: [application delivery] 创建部署单

@@ -1,0 +1,583 @@
+{
+  "openapi":"3.0.3",
+  "info":{
+    "title":"tag",
+    "description":"tag",
+    "version":"1.0"
+  },
+  "tags":[
+    {
+      "name":"标签",
+      "description":"tag"
+    }
+  ],
+  "paths":{
+    "/flow/organizations/{organizationId}/tags":{
+      "post":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"创建标签",
+        "operationId":"CreateFlowTag",
+        "description": "创建标签",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"name",
+            "in":"query",
+            "description":"标签名称",
+            "example":"标签名称",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"color",
+            "in":"query",
+            "description":"#1F9AEF 蓝色; #E63A3A 红色; #FA8C15 黄色; #15AD31 绿色; #7978E5 紫色; #8C8C8C 灰色",
+            "example":"#1F9AEF",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"flowTagGroupId",
+            "in":"query",
+            "description":"标签分类 id",
+            "example":11,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"成功",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "name":"id",
+                  "type":"integer",
+                  "description":"标签 id",
+                  "example":111,
+                  "format":"int64"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      }
+    },
+    "/flow/organizations/{organizationId}/tagGroups": {
+      "post": {
+        "tags": [
+          "标签"
+        ],
+        "summary": "创建标签分类",
+        "operationId": "CreateFlowTagGroup",
+        "description": "创建标签分类",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "企业Id",
+            "example": "5ebbc0228123212b59xxxxx",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name":"name",
+            "in":"query",
+            "description":"标签分类名称",
+            "example":"标签分类名称",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "name": "id",
+                  "type": "integer",
+                  "description": "标签分类 id",
+                  "example": 1223,
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "标签"
+        ],
+        "summary": " 获取流水线分类列表",
+        "operationId": "ListFlowTagGroups",
+        "description": " 获取流水线分类列表",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "企业Id",
+            "example": "5ebbc0228123212b59xxxxx",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "流水线分类列表",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "标签分类 id",
+                        "example": "1111",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "标签分类名称",
+                        "example": "标签分类名称"
+                      },
+                      "creatorAccountId": {
+                        "type": "string",
+                        "description": "创建人",
+                        "example": "1111111111111"
+                      },
+                      "modifierAccountId": {
+                        "type": "string",
+                        "description": "更新人",
+                        "example": "1111111111111"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/flow/organizations/{organizationId}/tagGroups/{id}":{
+      "delete":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"删除标签分类",
+        "operationId":"DeleteFlowTagGroup",
+        "description": "删除标签分类",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"id",
+            "in":"path",
+            "description":"标签分类 id",
+            "example":111,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"成功",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "name":"success",
+                  "type":"boolean",
+                  "example":true,
+                  "description":"是否成功"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      },
+      "put":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"更新标签分类",
+        "operationId":"UpdateFlowTagGroup",
+        "description": "更新标签分类",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"id",
+            "in":"path",
+            "description":"标签分类 id",
+            "example":111,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          },
+          {
+            "name":"name",
+            "in":"query",
+            "description":"标签分类名称",
+            "example":"标签分类名称",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"成功",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "name":"success",
+                  "type":"boolean",
+                  "example":true,
+                  "description":"是否成功"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      },
+      "get":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"获取标签分类",
+        "operationId":"GetFlowTagGroup",
+        "description": "获取标签分类",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"id",
+            "in":"path",
+            "description":"标签分类 id",
+            "example":111,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"标签分类",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "type":"object",
+                  "$ref":"#/components/schemas/TagGroupVO"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      }
+    },
+    "/flow/organizations/{organizationId}/tags/{id}":{
+      "delete":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"删除标签",
+        "operationId":"DeleteFlowTag",
+        "description": "删除标签",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"id",
+            "in":"path",
+            "description":"标签 id",
+            "example":111,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"成功",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "name":"success",
+                  "type":"boolean",
+                  "example":true,
+                  "description":"是否成功"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      },
+      "put":{
+        "tags":[
+          "标签"
+        ],
+        "summary":"更新标签",
+        "operationId":"UpdateFlowTag",
+        "description": "更新标签",
+        "parameters":[
+          {
+            "name":"organizationId",
+            "in":"path",
+            "description":"企业Id",
+            "example":"5ebbc0228123212b59xxxxx",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"id",
+            "in":"path",
+            "description":"标签 id",
+            "example":111,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          },
+          {
+            "name":"name",
+            "in":"query",
+            "description":"标签名称",
+            "example":"标签名称",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"color",
+            "in":"query",
+            "description":"#1F9AEF 蓝色; #E63A3A 红色; #FA8C15 黄色; #15AD31 绿色; #7978E5 紫色; #8C8C8C 灰色",
+            "example":"#1F9AEF",
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"string"
+            }
+          },
+          {
+            "name":"flowTagGroupId",
+            "in":"query",
+            "description":"标签分类 id",
+            "example":11,
+            "required":true,
+            "style":"simple",
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"成功",
+            "content":{
+              "*/*":{
+                "schema":{
+                  "name":"success",
+                  "type":"boolean",
+                  "example":true,
+                  "description":"是否成功"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components":{
+    "schemas":{
+      "TagGroupVO":{
+        "title":"TagGroupVO",
+        "type":"object",
+        "properties":{
+          "id": {
+            "type":"integer",
+            "description":"标签分类 id",
+            "example":"1111",
+            "format":"int64"
+          },
+          "name": {
+            "type":"string",
+            "description":"标签分类名称",
+            "example":"标签分类名称"
+          },
+          "creatorAccountId": {
+            "type":"string",
+            "description":"创建人",
+            "example":"1111111111111"
+          },
+          "modifierAccountId": {
+            "type":"string",
+            "description":"更新人",
+            "example":"1111111111111"
+          },
+          "flowTagList": {
+            "type":"array",
+            "items":{
+              "type":"object",
+              "properties": {
+                "id": {
+                  "type":"integer",
+                  "description":"标签 id",
+                  "example":"111",
+                  "format":"int64"
+                },
+                "name": {
+                  "type":"string",
+                  "description":"标签名称",
+                  "example":"标签名称"
+                },
+                "color": {
+                  "type":"string",
+                  "description":"标签颜色",
+                  "example":"#1F9AEF"
+                },
+                "creatorAccountId": {
+                  "type":"string",
+                  "description":"创建人",
+                  "example":"1111111111111"
+                },
+                "modifierAccountId": {
+                  "type":"string",
+                  "description":"更新人",
+                  "example":"1111111111111"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security":[
+    {
+      "ApiKeyAuth":[
+        "PERSONAL",
+        "ORGANIZATION",
+        "APPLICATION"
+      ]
+    }
+  ]
+}

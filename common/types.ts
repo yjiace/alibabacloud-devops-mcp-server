@@ -61,7 +61,15 @@ export {
   
   // Change request comment schemas
   CreateChangeRequestCommentSchema,
-  ListChangeRequestCommentsSchema
+  ListChangeRequestCommentsSchema,
+  
+  // Commit schemas
+  ListCommitsRequestSchema,
+  GetCommitRequestSchema,
+  CreateCommitCommentRequestSchema,
+  DevopsCommitVOSchema,
+  DevopsCommitStatVOSchema,
+  CreateCommitCommentVOSchema
 } from "../operations/codeup/types.js";
 
 // Projex types

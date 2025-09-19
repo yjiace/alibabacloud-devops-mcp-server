@@ -16,6 +16,7 @@ import { getAppStackChangeOrderTools } from './appstack-change-orders.js';
 import { getEffortTools } from './effort.js';
 import { getResourceMemberTools } from './resourceMember.js';
 import { getVMDeployOrderTools } from './vmDeployOrder.js';
+import { getCommitTools } from './commit.js';
 
 export const getAllTools = () => [
   ...getCodeManagementTools(),
@@ -35,5 +36,6 @@ export const getAllTools = () => [
   ...getAppStackChangeOrderTools(),
   ...getEffortTools(),
   ...getResourceMemberTools(),
-  ...getVMDeployOrderTools()
+  ...getVMDeployOrderTools(),
+  ...getCommitTools()
 ];

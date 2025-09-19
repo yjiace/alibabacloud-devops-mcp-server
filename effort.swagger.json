@@ -1,0 +1,691 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API文档",
+    "description": "这是描述信息",
+    "version": "1.0"
+  },
+  "servers": [],
+  "tags": [
+    {
+      "name": "工时",
+      "description": "项目协作工时相关接口"
+    }
+  ],
+  "paths": {
+    "/projex/organizations/{organizationId}/effortRecords": {
+      "get": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "获取用户的实际工时明细，结束时间和开始时间的间隔不能大于6个月",
+        "operationId": "ListCurrentUserEffortRecords",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "工作的开始时间，格式为yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "工作的结束时间，格式为yyyy-MM-dd",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EffortRecord"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projex/organizations/{organizationId}/workitems/{id}/effortRecords": {
+      "get": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "获取实际工时明细",
+        "operationId": "ListEffortRecords",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EffortRecord"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "登记实际工时",
+        "operationId": "CreateEffortRecord",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEffortRecordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentifierDTO"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projex/organizations/{organizationId}/workitems/{id}/estimatedEfforts": {
+      "get": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "获取预计工时明细",
+        "operationId": "ListEstimatedEfforts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EstimatedEffort"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "登记预计工时",
+        "operationId": "CreateEstimatedEffort",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEstimatedEffortRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentifierDTO"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projex/organizations/{organizationId}/workitems/{workitemId}/effortRecords/{id}": {
+      "put": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "更新登记实际工时",
+        "operationId": "UpdateEffortRecord",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workitemId",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "工时记录唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEffortRecordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projex/organizations/{organizationId}/workitems/{workitemId}/estimatedEfforts/{id}": {
+      "put": {
+        "tags": [
+          "工时"
+        ],
+        "summary": "更新登记预计工时",
+        "operationId": "UpdateEstimatedEffort",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "description": "organizationId",
+            "required": true,
+            "style": "simple",
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workitemId",
+            "in": "path",
+            "description": "工作项唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "预计工时记录唯一标识",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEstimatedEffortRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateEffortRecordRequest": {
+        "title": "CreateEffortRecordRequest",
+        "required": [
+          "actualTime",
+          "gmtEnd",
+          "gmtStart"
+        ],
+        "type": "object",
+        "properties": {
+          "actualTime": {
+            "minimum": 0.01,
+            "exclusiveMinimum": false,
+            "type": "number",
+            "description": "实际工时",
+            "format": "bigdecimal",
+            "example": 1.5
+          },
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "description": "工作描述",
+            "example": "描述内容"
+          },
+          "gmtEnd": {
+            "type": "string",
+            "description": "工作开始结束日期",
+            "format": "date-time"
+          },
+          "gmtStart": {
+            "type": "string",
+            "description": "工作开始日期",
+            "format": "date-time"
+          },
+          "operatorId": {
+            "type": "string",
+            "description": "操作者的useId，个人token时该参数无效",
+            "example": "操作者的useId，个人token时该参数无效"
+          },
+          "workType": {
+            "type": "string",
+            "description": "工作类型",
+            "example": "后端开发"
+          }
+        }
+      },
+      "CreateEstimatedEffortRequest": {
+        "title": "CreateEstimatedEffortRequest",
+        "required": [
+          "description",
+          "owner",
+          "spentTime"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "description": "工作描述"
+          },
+          "operatorId": {
+            "type": "string",
+            "description": "操作者的useId，个人token时该参数无效",
+            "example": "操作者的useId，个人token时该参数无效"
+          },
+          "owner": {
+            "type": "string",
+            "description": "负责人，填userId"
+          },
+          "spentTime": {
+            "minimum": 0.01,
+            "exclusiveMinimum": false,
+            "type": "number",
+            "description": "预计工时",
+            "format": "bigdecimal"
+          },
+          "workType": {
+            "type": "string",
+            "description": "工作类别"
+          }
+        }
+      },
+      "EffortRecord": {
+        "title": "EffortRecord",
+        "type": "object",
+        "properties": {
+          "actualTime": {
+            "type": "number",
+            "description": "时间工时",
+            "format": "bigdecimal",
+            "example": 1.5
+          },
+          "creator": {
+            "description": "创建人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "description": {
+            "type": "string",
+            "description": "描述",
+            "example": "test"
+          },
+          "gmtCreate": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "gmtEnd": {
+            "type": "string",
+            "description": "工作的结束日期",
+            "format": "date-time"
+          },
+          "gmtModified": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "gmtStart": {
+            "type": "string",
+            "description": "工作的开始日期",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "description": "id",
+            "example": "id-xxx"
+          },
+          "modifier": {
+            "description": "修改人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "owner": {
+            "description": "负责人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "workType": {
+            "type": "string",
+            "description": "工作类别",
+            "example": "后端开发"
+          },
+          "workitemId": {
+            "type": "string",
+            "description": "工作项id",
+            "example": "beda1775d1c3eca7dbdff5****"
+          }
+        }
+      },
+      "EstimatedEffort": {
+        "title": "EstimatedEffort",
+        "type": "object",
+        "properties": {
+          "creator": {
+            "description": "创建人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "description": {
+            "type": "string",
+            "description": "描述",
+            "example": "test"
+          },
+          "gmtCreate": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "gmtModified": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "description": "id",
+            "example": "id-xxx"
+          },
+          "modifier": {
+            "description": "修改人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "owner": {
+            "description": "负责人",
+            "$ref": "#/components/schemas/MiniUser"
+          },
+          "spentTime": {
+            "type": "number",
+            "description": "预计工时",
+            "format": "bigdecimal",
+            "example": 1.5
+          },
+          "workType": {
+            "type": "string",
+            "description": "工作项类别",
+            "example": "后端开发"
+          },
+          "workitemId": {
+            "type": "string",
+            "description": "工作项id",
+            "example": "beda1775d1c3eca7dbdff5****"
+          }
+        }
+      },
+      "IdentifierDTO": {
+        "title": "IdentifierDTO",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id",
+            "example": "id-xxx"
+          }
+        }
+      },
+      "MiniUser": {
+        "title": "MiniUser",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "用户id",
+            "example": "674d96abd497cd558d68****"
+          },
+          "name": {
+            "type": "string",
+            "description": "名称",
+            "example": "name-xxx"
+          }
+        }
+      }
+    }
+  }
+}

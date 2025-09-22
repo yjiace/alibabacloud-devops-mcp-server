@@ -21,9 +21,15 @@ import { getEffortTools } from '../tool-registry/effort.js';
 import { getResourceMemberTools } from '../tool-registry/resourceMember.js';
 import { getVMDeployOrderTools } from '../tool-registry/vmDeployOrder.js';
 import { getCommitTools } from '../tool-registry/commit.js';
+import { getBaseTools } from '../tool-registry/base.js';
 
 // 定义所有工具集配置
 const ALL_TOOLSET_CONFIGS: Record<Toolset, ToolsetConfig> = {
+  [Toolset.BASE]: {
+    name: Toolset.BASE,
+    description: "Base tools that are always loaded",
+    tools: getBaseTools as () => Tool[]
+  },
   [Toolset.CODE_MANAGEMENT]: {
     name: Toolset.CODE_MANAGEMENT,
     description: "Code repository management tools",
@@ -35,7 +41,16 @@ const ALL_TOOLSET_CONFIGS: Record<Toolset, ToolsetConfig> = {
   [Toolset.ORGANIZATION_MANAGEMENT]: {
     name: Toolset.ORGANIZATION_MANAGEMENT,
     description: "Organization management tools",
-    tools: getOrganizationTools as () => Tool[]
+    tools: (() => {
+      const allOrgTools = getOrganizationTools();
+      // 移除基础工具集中的三个常用工具
+      const filteredOrgTools = allOrgTools.filter(tool => 
+        tool.name !== "get_current_organization_info" &&
+        tool.name !== "get_user_organizations" &&
+        tool.name !== "get_current_user"
+      );
+      return filteredOrgTools;
+    }) as () => Tool[]
   },
   [Toolset.PROJECT_MANAGEMENT]: {
     name: Toolset.PROJECT_MANAGEMENT,

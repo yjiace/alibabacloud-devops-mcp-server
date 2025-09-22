@@ -276,8 +276,9 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。
 
 可用的工具集：
+- `base`: 基础工具集，总是被加载（get_current_user, get_current_organization_info, get_user_organizations）
 - `code-management`: 代码仓库管理工具（包含提交管理工具）
-- `organization-management`: 组织管理工具
+- `organization-management`: 组织管理工具（不包含基础工具）
 - `project-management`: 项目管理工具（包含工时管理工具）
 - `pipeline-management`: 流水线管理工具（包含服务连接、资源成员和虚拟机部署单工具）
 - `packages-management`: 制品仓库管理工具

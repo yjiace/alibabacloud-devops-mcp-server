@@ -17,10 +17,12 @@ import { handleEffortTools } from './effort.js';
 import { handleResourceMemberTools } from './resourceMember.js';
 import { handleVMDeployOrderTools } from './vmDeployOrder.js';
 import { handleCommitTools } from './commit.js';
+import { handleBaseTools } from './base.js';
 import { Toolset } from '../common/toolsets.js';
 
 // 定义处理函数映射
 const HANDLER_MAP: Record<Toolset, (request: any) => Promise<any>> = {
+  [Toolset.BASE]: handleBaseTools,
   [Toolset.CODE_MANAGEMENT]: handleCodeManagementTools,
   [Toolset.ORGANIZATION_MANAGEMENT]: handleOrganizationTools,
   [Toolset.PROJECT_MANAGEMENT]: handleProjectManagementTools,
@@ -33,6 +35,7 @@ const HANDLER_MAP: Record<Toolset, (request: any) => Promise<any>> = {
 export const handleToolRequest = async (request: any) => {
   // Try each handler in sequence until one returns a result
   const handlers = [
+    handleBaseTools,
     handleCodeManagementTools,
     handleOrganizationTools,
     handleProjectManagementTools,

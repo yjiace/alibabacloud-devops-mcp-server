@@ -279,8 +279,9 @@ This allows multiple users to share the same SSE service while using their own i
 The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.
 
 Available toolsets:
+- `base`: Base tools that are always loaded (get_current_user, get_current_organization_info, get_user_organizations)
 - `code-management`: Code repository management tools (includes commit management tools)
-- `organization-management`: Organization management tools
+- `organization-management`: Organization management tools (excluding base tools)
 - `project-management`: Project management tools (includes effort management tools)
 - `pipeline-management`: Pipeline management tools (includes service connections, resource member, and VM deploy order tools)
 - `packages-management`: Package repository management tools

@@ -118,9 +118,16 @@ function formatYunxiaoError(error: YunxiaoError): string {
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-    const tools = enabledToolsets.length > 0 
+    // 获取基础工具（总是加载）
+    const baseTools = getEnabledTools([Toolset.BASE]);
+    
+    // 获取启用的工具集工具
+    const enabledTools = enabledToolsets.length > 0 
         ? getEnabledTools(enabledToolsets) 
         : getAllTools();
+    
+    // 合并基础工具和启用的工具集工具
+    const tools = [...baseTools, ...enabledTools];
     
     return {
         tools,

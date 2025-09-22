@@ -1,5 +1,6 @@
 // 定义工具集枚举
 export enum Toolset {
+  BASE = "base",
   CODE_MANAGEMENT = "code-management",
   ORGANIZATION_MANAGEMENT = "organization-management",
   PROJECT_MANAGEMENT = "project-management",
@@ -52,6 +53,7 @@ export interface ToolsetManager {
 
 // 默认启用的工具集
 export const DEFAULT_ENABLED_TOOLSETS: Toolset[] = [
+  Toolset.BASE,
   Toolset.CODE_MANAGEMENT,
   Toolset.ORGANIZATION_MANAGEMENT,
   Toolset.PROJECT_MANAGEMENT,

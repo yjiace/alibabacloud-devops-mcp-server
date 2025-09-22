@@ -1,41 +1,11 @@
-import { getCodeManagementTools } from './code-management.js';
-import { getOrganizationTools } from './organization.js';
-import { getProjectManagementTools } from './project-management.js';
-import { getPipelineTools } from './pipeline.js';
-import { getPackageManagementTools } from './packages.js';
-import { getServiceConnectionTools } from './service-connections.js';
-import { getAppStackTools } from './appstack.js';
-import { getAppStackTagTools } from './appstack-tags.js';
-import { getAppStackTemplateTools } from './appstack-templates.js';
-import { getAppStackGlobalVarTools } from './appstack-global-vars.js';
-import { getAppStackVariableGroupTools } from './appstack-variable-groups.js';
-import { getAppStackOrchestrationTools } from './appstack-orchestrations.js';
-import { getAppStackChangeRequestTools } from './appstack-change-requests.js';
-import { getAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
-import { getAppStackChangeOrderTools } from './appstack-change-orders.js';
-import { getEffortTools } from './effort.js';
-import { getResourceMemberTools } from './resourceMember.js';
-import { getVMDeployOrderTools } from './vmDeployOrder.js';
-import { getCommitTools } from './commit.js';
+import { defaultToolsetManager } from '../common/toolsetManager.js';
+import { Toolset } from '../common/toolsets.js';
 
-export const getAllTools = () => [
-  ...getCodeManagementTools(),
-  ...getOrganizationTools(),
-  ...getProjectManagementTools(),
-  ...getPipelineTools(),
-  ...getPackageManagementTools(),
-  ...getServiceConnectionTools(),
-  ...getAppStackTools(),
-  ...getAppStackTagTools(),
-  ...getAppStackTemplateTools(),
-  ...getAppStackGlobalVarTools(),
-  ...getAppStackVariableGroupTools(),
-  ...getAppStackOrchestrationTools(),
-  ...getAppStackChangeRequestTools(),
-  ...getAppStackDeploymentResourceTools(),
-  ...getAppStackChangeOrderTools(),
-  ...getEffortTools(),
-  ...getResourceMemberTools(),
-  ...getVMDeployOrderTools(),
-  ...getCommitTools()
-];
+// 保持向后兼容的接口
+export const getAllTools = () => defaultToolsetManager.getAllTools();
+
+// 新增按工具集获取工具的接口
+export const getToolsByToolset = (toolsetName: Toolset) => defaultToolsetManager.getToolsByToolset(toolsetName);
+
+// 新增获取启用工具的接口
+export const getEnabledTools = (enabledToolsets: Toolset[]) => defaultToolsetManager.getEnabledTools(enabledToolsets);

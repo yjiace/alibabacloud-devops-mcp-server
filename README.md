@@ -275,6 +275,31 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 
 This allows multiple users to share the same SSE service while using their own individual tokens for authentication.
 
+### Toolsets
+The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.
+
+Available toolsets:
+- `code-management`: Code repository management tools (includes commit management tools)
+- `organization-management`: Organization management tools
+- `project-management`: Project management tools (includes effort management tools)
+- `pipeline-management`: Pipeline management tools (includes service connections, resource member, and VM deploy order tools)
+- `packages-management`: Package repository management tools
+- `application-delivery`: Application delivery tools
+
+To use toolsets, you can specify them via command line arguments or environment variables:
+
+1. Via command line argument:
+```bash
+npx -y alibabacloud-devops-mcp-server --toolsets=code-management,project-management
+```
+
+2. Via environment variable:
+```bash
+MCP_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
+```
+
+If no toolsets are specified, all tools will be enabled by default.
+
 ## Contact Us
 
 ## Contact Us

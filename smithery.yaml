@@ -7,6 +7,8 @@ startCommand:
     |-
     (config) => ({ command: 'node', args: ['dist/index.js'], env: { YUNXIAO_ACCESS_TOKEN: config.yunxiaoAccessToken } })
   configSchema:
+    
+    
     # JSON Schema defining the configuration options for the MCP.
     type: object
     required:

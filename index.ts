@@ -33,8 +33,9 @@ import {
 import { VERSION } from "./common/version.js";
 import {config} from "dotenv";
 import * as types from "./common/types.js";
-import { getAllTools } from "./tool-registry/index.js";
-import { handleToolRequest } from "./tool-handlers/index.js";
+import { getAllTools, getEnabledTools } from "./tool-registry/index.js";
+import { handleToolRequest, handleEnabledToolRequest } from "./tool-handlers/index.js";
+import { Toolset } from "./common/toolsets.js";
 
 const server = new Server(
     {
@@ -117,8 +118,12 @@ function formatYunxiaoError(error: YunxiaoError): string {
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
+    const tools = enabledToolsets.length > 0 
+        ? getEnabledTools(enabledToolsets) 
+        : getAllTools();
+    
     return {
-        tools: getAllTools(),
+        tools,
     };
 });
 
@@ -128,8 +133,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             throw new Error("Arguments are required");
         }
 
-        // Delegate to our modular tool handler
-        return await handleToolRequest(request);
+        // Delegate to our modular tool handler with toolset support
+        const result = enabledToolsets.length > 0 
+            ? await handleEnabledToolRequest(request, enabledToolsets)
+            : await handleToolRequest(request);
+            
+        return result;
     } catch (error) {
         if (error instanceof z.ZodError) {
             throw new Error(`Invalid input: ${JSON.stringify(error.errors)}`);
@@ -142,6 +151,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 config();
+
+// 解析启用的工具集
+const parseEnabledToolsets = (input: string | undefined): Toolset[] => {
+  if (!input) return [];
+  
+  return input.split(',').map(toolset => {
+    const trimmed = toolset.trim() as Toolset;
+    // 验证工具集名称是否有效
+    if (!Object.values(Toolset).includes(trimmed)) {
+      throw new Error(`Unknown toolset: ${trimmed}`);
+    }
+    return trimmed;
+  });
+};
+
+// 获取启用的工具集（从命令行参数或环境变量）
+const enabledToolsets = parseEnabledToolsets(
+  process.argv.find(arg => arg.startsWith('--toolsets='))?.split('=')[1] || 
+  process.env.MCP_TOOLSETS
+);
 
 // Check if we should run in SSE mode
 const useSSE = process.argv.includes('--sse') || process.env.MCP_TRANSPORT === 'sse';

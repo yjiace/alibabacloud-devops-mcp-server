@@ -272,6 +272,31 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 
 这允许多个用户共享同一个 SSE 服务，同时使用各自独立的令牌进行身份验证。
 
+### 工具集（Toolsets）
+服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。
+
+可用的工具集：
+- `code-management`: 代码仓库管理工具（包含提交管理工具）
+- `organization-management`: 组织管理工具
+- `project-management`: 项目管理工具（包含工时管理工具）
+- `pipeline-management`: 流水线管理工具（包含服务连接、资源成员和虚拟机部署单工具）
+- `packages-management`: 制品仓库管理工具
+- `application-delivery`: 应用交付工具
+
+要使用工具集，您可以通过命令行参数或环境变量来指定：
+
+1. 通过命令行参数：
+```bash
+npx -y alibabacloud-devops-mcp-server --toolsets=code-management,project-management
+```
+
+2. 通过环境变量：
+```bash
+MCP_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
+```
+
+如果没有指定工具集，将默认启用所有工具。
+
 ## 联系我们
 如有任何疑问或疑虑，请通过钉钉群联系我们：134400004101
 

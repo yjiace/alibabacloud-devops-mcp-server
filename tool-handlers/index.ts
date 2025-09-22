@@ -79,11 +79,30 @@ export const handleToolRequestByToolset = async (request: any, toolsetName: Tool
 
 // 新增处理启用工具集的接口
 export const handleEnabledToolRequest = async (request: any, enabledToolsets: Toolset[]) => {
-  // 如果没有指定启用的工具集，则处理所有工具集
-  const toolsets = enabledToolsets.length > 0 ? enabledToolsets : Object.values(Toolset);
+  // 总是先尝试处理基础工具集
+  try {
+    const baseResult = await handleToolRequestByToolset(request, Toolset.BASE);
+    if (baseResult !== null) {
+      return baseResult;
+    }
+  } catch (error) {
+    // 如果工具不在基础工具集中，继续尝试其他工具集
+    // 如果是其他错误，重新抛出
+    if (!(error instanceof Error && error.message.includes("Unknown tool"))) {
+      throw error;
+    }
+  }
+  
+  // 如果没有指定启用的工具集，则处理所有工具集（除了基础工具集，因为已经处理过了）
+  const toolsets = enabledToolsets.length > 0 ? enabledToolsets : Object.values(Toolset).filter(t => t !== Toolset.BASE);
   
   // 按顺序尝试每个启用的工具集
   for (const toolset of toolsets) {
+    // 跳过基础工具集，因为我们已经处理过了
+    if (toolset === Toolset.BASE) {
+      continue;
+    }
+    
     try {
       const result = await handleToolRequestByToolset(request, toolset);
       if (result !== null) {

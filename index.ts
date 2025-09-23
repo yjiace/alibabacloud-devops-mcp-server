@@ -118,16 +118,21 @@ function formatYunxiaoError(error: YunxiaoError): string {
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-    // 获取基础工具（总是加载）
-    const baseTools = getEnabledTools([Toolset.BASE]);
+    let tools: any[];
     
-    // 获取启用的工具集工具
-    const enabledTools = enabledToolsets.length > 0 
-        ? getEnabledTools(enabledToolsets) 
-        : getAllTools();
-    
-    // 合并基础工具和启用的工具集工具
-    const tools = [...baseTools, ...enabledTools];
+    if (enabledToolsets.length > 0) {
+        // 获取基础工具（总是加载）
+        const baseTools = getEnabledTools([Toolset.BASE]);
+        
+        // 获取启用的工具集工具
+        const enabledTools = getEnabledTools(enabledToolsets);
+        
+        // 合并基础工具和启用的工具集工具
+        tools = [...baseTools, ...enabledTools];
+    } else {
+        // 如果没有指定启用的工具集，则获取所有工具（已包含基础工具）
+        tools = getAllTools();
+    }
     
     return {
         tools,

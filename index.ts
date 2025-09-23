@@ -176,7 +176,7 @@ const parseEnabledToolsets = (input: string | undefined): Toolset[] => {
 // 获取启用的工具集（从命令行参数或环境变量）
 const enabledToolsets = parseEnabledToolsets(
   process.argv.find(arg => arg.startsWith('--toolsets='))?.split('=')[1] || 
-  process.env.MCP_TOOLSETS
+  process.env.DEVOPS_TOOLSETS
 );
 
 // Check if we should run in SSE mode

@@ -80,7 +80,7 @@ npm start -- --toolsets=code-management,project-management
 
 2. Via environment variable:
 ```bash
-MCP_TOOLSETS=code-management,project-management npm start
+DEVOPS_TOOLSETS=code-management,project-management npm start
 ```
 
 If no toolsets are specified, all tools will be enabled by default.

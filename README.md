@@ -296,7 +296,7 @@ npx -y alibabacloud-devops-mcp-server --toolsets=code-management,project-managem
 
 2. Via environment variable:
 ```bash
-MCP_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
+DEVOPS_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
 ```
 
 If no toolsets are specified, all tools will be enabled by default.

@@ -293,7 +293,7 @@ npx -y alibabacloud-devops-mcp-server --toolsets=code-management,project-managem
 
 2. 通过环境变量：
 ```bash
-MCP_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
+DEVOPS_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
 ```
 
 如果没有指定工具集，将默认启用所有工具。

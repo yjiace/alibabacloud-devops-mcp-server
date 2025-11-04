@@ -214,7 +214,21 @@ The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provid
 
 ### Run MCP Server via Docker Container
 
-#### 1. Build the Docker Image
+#### Option 1: Use Official Image (Recommended)
+
+You can use the official Docker image without building it yourself:
+
+```shell
+# Pull the official image
+docker pull build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
+```
+
+Then use the official image name in your docker run commands instead of `alibabacloud/alibabacloud-devops-mcp-server`.
+
+#### Option 2: Build Your Own Image
+
+If you prefer to build the image yourself:
+
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
@@ -225,11 +239,11 @@ The MCP server supports two modes: **stdio mode** (default) and **SSE mode** (HT
 
 ##### Stdio Mode (for MCP clients)
 
-Run the container directly:
+Run the container directly (using official image):
 ```shell
 docker run -i --rm \
   -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  alibabacloud/alibabacloud-devops-mcp-server
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
 
 Or use an environment file:
@@ -237,21 +251,25 @@ Or use an environment file:
 # Create .env file with: YUNXIAO_ACCESS_TOKEN=your_token_here
 docker run -i --rm \
   --env-file .env \
-  alibabacloud/alibabacloud-devops-mcp-server
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
+
+> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
 
 ##### SSE Mode (for HTTP access)
 
-Run the container in background:
+Run the container in background (using official image):
 ```shell
 docker run -d --name yunxiao-mcp \
   -p 3000:3000 \
   -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
   -e PORT=3000 \
   -e MCP_TRANSPORT=sse \
-  alibabacloud/alibabacloud-devops-mcp-server \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
   node dist/index.js --sse
 ```
+
+> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
 
 The server will be available at:
 - SSE endpoint: `http://localhost:3000/sse`
@@ -282,7 +300,7 @@ If you're using a MCP client (like Claude Desktop, Cursor, etc.), configure it t
         "--rm",
         "-e",
         "YUNXIAO_ACCESS_TOKEN",
-        "alibabacloud/alibabacloud-devops-mcp-server"
+        "build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0"
       ],
       "env": {
         "YUNXIAO_ACCESS_TOKEN": "<YOUR_TOKEN>"
@@ -291,6 +309,8 @@ If you're using a MCP client (like Claude Desktop, Cursor, etc.), configure it t
   }
 }
 ```
+
+> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
 ###  Run MCP Server via Docker Compose
 1. Environment Setup
 ```shell

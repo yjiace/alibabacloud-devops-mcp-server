@@ -211,7 +211,21 @@ npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client cla
 ```
 ### 通过 Docker 容器运行 MCP 服务器
 
-#### 1. 构建 Docker 镜像
+#### 方式一：使用官方镜像（推荐）
+
+您可以直接使用官方 Docker 镜像，无需自行构建：
+
+```shell
+# 拉取官方镜像
+docker pull build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
+```
+
+然后在 docker run 命令中使用官方镜像名称，而不是 `alibabacloud/alibabacloud-devops-mcp-server`。
+
+#### 方式二：自行构建镜像
+
+如果您希望自行构建镜像：
+
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
@@ -222,11 +236,11 @@ MCP 服务器支持两种模式：**stdio 模式**（默认）和 **SSE 模式**
 
 ##### Stdio 模式（用于 MCP 客户端）
 
-直接运行容器：
+直接运行容器（使用官方镜像）：
 ```shell
 docker run -i --rm \
   -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  alibabacloud/alibabacloud-devops-mcp-server
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
 
 或使用环境变量文件：
@@ -234,21 +248,25 @@ docker run -i --rm \
 # 创建 .env 文件，内容：YUNXIAO_ACCESS_TOKEN=your_token_here
 docker run -i --rm \
   --env-file .env \
-  alibabacloud/alibabacloud-devops-mcp-server
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
+
+> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
 
 ##### SSE 模式（用于 HTTP 访问）
 
-后台运行容器：
+后台运行容器（使用官方镜像）：
 ```shell
 docker run -d --name yunxiao-mcp \
   -p 3000:3000 \
   -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
   -e PORT=3000 \
   -e MCP_TRANSPORT=sse \
-  alibabacloud/alibabacloud-devops-mcp-server \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
   node dist/index.js --sse
 ```
+
+> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
 
 服务器将在以下地址可用：
 - SSE 端点: `http://localhost:3000/sse`
@@ -279,7 +297,7 @@ docker stop yunxiao-mcp
         "--rm",
         "-e",
         "YUNXIAO_ACCESS_TOKEN",
-        "alibabacloud/alibabacloud-devops-mcp-server"
+        "build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0"
       ],
       "env": {
         "YUNXIAO_ACCESS_TOKEN": "<YOUR_TOKEN>"
@@ -288,6 +306,8 @@ docker stop yunxiao-mcp
   }
 }
 ```
+
+> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
 ### 通过 docker compose 运行MCP 服务器
 1. 环境设置
 ```shell

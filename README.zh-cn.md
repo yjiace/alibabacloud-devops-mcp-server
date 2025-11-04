@@ -210,11 +210,64 @@ npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client cla
 }
 ```
 ### 通过 Docker 容器运行 MCP 服务器
-1.Docker build
+
+#### 1. 构建 Docker 镜像
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
-2.配置 MCP 服务器
+
+#### 2. 运行容器
+
+MCP 服务器支持两种模式：**stdio 模式**（默认）和 **SSE 模式**（HTTP）。
+
+##### Stdio 模式（用于 MCP 客户端）
+
+直接运行容器：
+```shell
+docker run -i --rm \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  alibabacloud/alibabacloud-devops-mcp-server
+```
+
+或使用环境变量文件：
+```shell
+# 创建 .env 文件，内容：YUNXIAO_ACCESS_TOKEN=your_token_here
+docker run -i --rm \
+  --env-file .env \
+  alibabacloud/alibabacloud-devops-mcp-server
+```
+
+##### SSE 模式（用于 HTTP 访问）
+
+后台运行容器：
+```shell
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  alibabacloud/alibabacloud-devops-mcp-server \
+  node dist/index.js --sse
+```
+
+服务器将在以下地址可用：
+- SSE 端点: `http://localhost:3000/sse`
+- 消息端点: `http://localhost:3000/messages?sessionId=<session-id>`
+
+查看日志：
+```shell
+docker logs -f yunxiao-mcp
+```
+
+停止容器：
+```shell
+docker stop yunxiao-mcp
+```
+
+#### 3. 配置 MCP 客户端（用于 stdio 模式）
+
+如果使用 MCP 客户端（如 Claude Desktop、Cursor 等），配置其使用 Docker：
+
 ```json
 {
   "mcpServers": {

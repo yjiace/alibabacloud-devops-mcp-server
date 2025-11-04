@@ -213,11 +213,64 @@ The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provid
 ```
 
 ### Run MCP Server via Docker Container
-1. Docker build
+
+#### 1. Build the Docker Image
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
-2. Configure MCP Server
+
+#### 2. Run the Container
+
+The MCP server supports two modes: **stdio mode** (default) and **SSE mode** (HTTP).
+
+##### Stdio Mode (for MCP clients)
+
+Run the container directly:
+```shell
+docker run -i --rm \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  alibabacloud/alibabacloud-devops-mcp-server
+```
+
+Or use an environment file:
+```shell
+# Create .env file with: YUNXIAO_ACCESS_TOKEN=your_token_here
+docker run -i --rm \
+  --env-file .env \
+  alibabacloud/alibabacloud-devops-mcp-server
+```
+
+##### SSE Mode (for HTTP access)
+
+Run the container in background:
+```shell
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  alibabacloud/alibabacloud-devops-mcp-server \
+  node dist/index.js --sse
+```
+
+The server will be available at:
+- SSE endpoint: `http://localhost:3000/sse`
+- Messages endpoint: `http://localhost:3000/messages?sessionId=<session-id>`
+
+View logs:
+```shell
+docker logs -f yunxiao-mcp
+```
+
+Stop the container:
+```shell
+docker stop yunxiao-mcp
+```
+
+#### 3. Configure MCP Client (for stdio mode)
+
+If you're using a MCP client (like Claude Desktop, Cursor, etc.), configure it to use Docker:
+
 ```json
 {
   "mcpServers": {

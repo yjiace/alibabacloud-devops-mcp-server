@@ -259,21 +259,42 @@ async function runServer() {
                 utils.setCurrentSessionToken(yunxiao_access_token);
                 
                 // Create a fresh Server instance for this request
+                console.log('[MCP] Creating new server instance...');
                 const requestServer = createServer(enabledToolsets);
                 
                 // Create a stateless transport for this request
+                console.log('[MCP] Creating transport...');
                 const httpTransport = new StreamableHTTPServerTransport({
                     sessionIdGenerator: undefined, // Stateless mode
                 });
                 
+                // Set up transport event handlers for debugging
+                httpTransport.onerror = (error) => {
+                    console.error('[MCP Transport Error]', error);
+                };
+                
+                httpTransport.onclose = () => {
+                    console.log('[MCP Transport] Connection closed');
+                };
+                
+                httpTransport.onmessage = (message) => {
+                    console.log('[MCP Transport] Message:', JSON.stringify(message));
+                };
+                
                 // Connect the server to the transport (only for this request)
+                console.log('[MCP] Connecting server to transport...');
                 await requestServer.connect(httpTransport);
+                console.log('[MCP] Server connected successfully');
                 
                 // Handle the request
+                // Note: For StreamableHTTP, this returns immediately after setting up the SSE stream
+                // The actual response is sent asynchronously through the stream
+                console.log('[MCP] Handling request with body:', JSON.stringify(req.body));
                 await httpTransport.handleRequest(req, res, req.body);
+                console.log('[MCP] handleRequest completed');
                 
-                // Close the transport after handling
-                await httpTransport.close();
+                // Don't close the transport immediately - let the SSE stream complete naturally
+                // The transport will be garbage collected when the request/response cycle completes
             } catch (error) {
                 console.error("[MCP Error] Error handling HTTP request:", error);
                 

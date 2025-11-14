@@ -9,6 +9,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from 'zod';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import { randomUUID } from 'node:crypto';
 
 import * as branches from './operations/codeup/branches.js';
 import * as files from './operations/codeup/files.js';
@@ -190,8 +191,8 @@ const useSSE = process.argv.includes('--sse') || process.env.MCP_TRANSPORT === '
 const useHTTP = process.argv.includes('--http') || process.env.MCP_TRANSPORT === 'http';
 
 // Validate that only one transport mode is selected
-if ((useSSE && useHTTP) || (useSSE && !useHTTP && !useSSE)) {
-    console.error('Error: Only one transport mode can be selected (stdio, sse, or http)');
+if (useSSE && useHTTP) {
+    console.error('Error: Cannot use both SSE and HTTP modes simultaneously');
     process.exit(1);
 }
 
@@ -202,8 +203,20 @@ async function runServer() {
         const app: any = express();
         const port = process.env.PORT || 3000;
         
-        // Store sessions with their tokens
-        const sessions: Record<string, { transport: StreamableHTTPServerTransport; server: Server; yunxiao_access_token?: string }> = {};
+        // Create a single transport instance for the server
+        const httpTransport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            onsessioninitialized: async (sid) => {
+                console.log(`HTTP session initialized: ${sid}`);
+            },
+            onsessionclosed: async (sid) => {
+                console.log(`HTTP session closed: ${sid}`);
+            }
+        });
+        
+        // Connect the server to the transport once
+        await server.connect(httpTransport);
+        console.info(`Yunxiao MCP Server connected via HTTP transport`);
         
         // Middleware to parse JSON bodies
         app.use(express.json({ limit: '10mb' }));
@@ -212,47 +225,16 @@ async function runServer() {
         app.all('/mcp', async (req: any, res: any) => {
             console.log(`${req.method} /mcp from ${req.ip}`);
             
-            // Get token from query parameters or headers
-            const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
-            
-            // Create or reuse transport based on session
-            const sessionId = req.headers['mcp-session-id'] || req.query.sessionId;
-            let session = sessionId ? sessions[sessionId] : null;
-            
-            if (!session) {
-                // Create new transport with session management
-                const httpTransport = new StreamableHTTPServerTransport({
-                    sessionIdGenerator: () => {
-                        // Generate a simple session ID
-                        return `http-${Date.now()}-${Math.random().toString(36).substring(7)}`;
-                    },
-                    onsessioninitialized: async (sid) => {
-                        console.log(`HTTP session initialized: ${sid}`);
-                    },
-                    onsessionclosed: async (sid) => {
-                        console.log(`HTTP session closed: ${sid}`);
-                        delete sessions[sid];
-                    }
-                });
-                
-                session = { transport: httpTransport, server, yunxiao_access_token };
-                
-                // Connect the server to the transport
-                await server.connect(httpTransport);
-                console.info(`Yunxiao MCP Server connected via HTTP`);
-                
-                if (httpTransport.sessionId) {
-                    sessions[httpTransport.sessionId] = session;
-                }
-            }
-            
             try {
+                // Get token from query parameters or headers
+                const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+                
                 // Set the session token before handling the request
                 const utils = await import('./common/utils.js');
-                utils.setCurrentSessionToken(session.yunxiao_access_token);
+                utils.setCurrentSessionToken(yunxiao_access_token);
                 
                 // Handle the request using the transport
-                await session.transport.handleRequest(req, res, req.body);
+                await httpTransport.handleRequest(req, res, req.body);
             } catch (error) {
                 console.error("Error handling HTTP request:", error);
                 if (!res.headersSent) {

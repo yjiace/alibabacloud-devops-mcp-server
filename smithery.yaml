@@ -1,14 +1,19 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config
 
 startCommand:
-  type: stdio
+  type: http
   commandFunction:
-    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    # A JS function that produces the CLI command based on the given config to start the MCP on HTTP.
     |-
-    (config) => ({ command: 'node', args: ['dist/index.js'], env: { YUNXIAO_ACCESS_TOKEN: config.yunxiaoAccessToken } })
+    (config) => ({ 
+      command: 'node', 
+      args: ['dist/index.js', '--http'], 
+      env: { 
+        YUNXIAO_ACCESS_TOKEN: config.yunxiaoAccessToken,
+        PORT: '3000'
+      } 
+    })
   configSchema:
-    
-    
     # JSON Schema defining the configuration options for the MCP.
     type: object
     required:

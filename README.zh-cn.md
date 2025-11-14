@@ -232,7 +232,7 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 
 #### 2. 运行容器
 
-MCP 服务器支持两种模式：**stdio 模式**（默认）和 **SSE 模式**（HTTP）。
+MCP 服务器支持三种模式：**stdio 模式**（默认）、**SSE 模式** 和 **HTTP 模式**（Streamable HTTP）。
 
 ##### Stdio 模式（用于 MCP 客户端）
 
@@ -271,6 +271,31 @@ docker run -d --name yunxiao-mcp \
 服务器将在以下地址可用：
 - SSE 端点: `http://localhost:3000/sse`
 - 消息端点: `http://localhost:3000/messages?sessionId=<session-id>`
+
+##### HTTP 模式（Streamable HTTP，用于 smithery.ai）
+
+后台运行容器（使用官方镜像）：
+```shell
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=http \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
+  node dist/index.js --http
+```
+
+或使用 npm 脚本：
+```shell
+npm run start:http
+```
+
+> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
+
+服务器将在以下地址可用：
+- MCP 端点: `http://localhost:3000/mcp`
+
+此模式兼容 smithery.ai 平台部署要求。
 
 查看日志：
 ```shell
@@ -330,12 +355,16 @@ docker compose up -d
 }
 ```
 
-### SSE 模式下使用独立令牌
-在 SSE 模式下运行时，每个用户都可以通过查询参数或请求头传递自己的令牌：
+### HTTP/SSE 模式下使用独立令牌
+在 HTTP 或 SSE 模式下运行时，每个用户都可以通过查询参数或请求头传递自己的令牌：
 
 1. 通过查询参数：
 ```
+# SSE 模式
 http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
+
+# HTTP 模式
+http://localhost:3000/mcp?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
 2. 通过请求头：
@@ -343,7 +372,7 @@ http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 x-yunxiao-token: USER_SPECIFIC_TOKEN
 ```
 
-这允许多个用户共享同一个 SSE 服务，同时使用各自独立的令牌进行身份验证。
+这允许多个用户共享同一个服务，同时使用各自独立的令牌进行身份验证。
 
 ### 工具集（Toolsets）
 服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。

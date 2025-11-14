@@ -235,7 +235,7 @@ docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 
 #### 2. Run the Container
 
-The MCP server supports two modes: **stdio mode** (default) and **SSE mode** (HTTP).
+The MCP server supports three modes: **stdio mode** (default), **SSE mode**, and **HTTP mode** (Streamable HTTP).
 
 ##### Stdio Mode (for MCP clients)
 
@@ -274,6 +274,31 @@ docker run -d --name yunxiao-mcp \
 The server will be available at:
 - SSE endpoint: `http://localhost:3000/sse`
 - Messages endpoint: `http://localhost:3000/messages?sessionId=<session-id>`
+
+##### HTTP Mode (Streamable HTTP for smithery.ai)
+
+Run the container in background (using official image):
+```shell
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=http \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
+  node dist/index.js --http
+```
+
+Or use npm script:
+```shell
+npm run start:http
+```
+
+> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
+
+The server will be available at:
+- MCP endpoint: `http://localhost:3000/mcp`
+
+This mode is compatible with smithery.ai platform deployment requirements.
 
 View logs:
 ```shell
@@ -333,12 +358,16 @@ docker compose up -d
 }
 ```
 
-### SSE Mode with Custom Tokens
-When running in SSE mode, each user can use their own token by passing it as a query parameter or request header:
+### HTTP/SSE Mode with Custom Tokens
+When running in HTTP or SSE mode, each user can use their own token by passing it as a query parameter or request header:
 
 1. Via query parameter:
 ```
+# For SSE mode
 http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
+
+# For HTTP mode
+http://localhost:3000/mcp?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
 2. Via request header:
@@ -346,7 +375,7 @@ http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 x-yunxiao-token: USER_SPECIFIC_TOKEN
 ```
 
-This allows multiple users to share the same SSE service while using their own individual tokens for authentication.
+This allows multiple users to share the same service while using their own individual tokens for authentication.
 
 ### Toolsets
 The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.

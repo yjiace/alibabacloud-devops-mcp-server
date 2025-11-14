@@ -2,6 +2,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
@@ -184,11 +185,97 @@ const enabledToolsets = parseEnabledToolsets(
   process.env.DEVOPS_TOOLSETS
 );
 
-// Check if we should run in SSE mode
+// Check transport mode - only one can be active
 const useSSE = process.argv.includes('--sse') || process.env.MCP_TRANSPORT === 'sse';
+const useHTTP = process.argv.includes('--http') || process.env.MCP_TRANSPORT === 'http';
+
+// Validate that only one transport mode is selected
+if ((useSSE && useHTTP) || (useSSE && !useHTTP && !useSSE)) {
+    console.error('Error: Only one transport mode can be selected (stdio, sse, or http)');
+    process.exit(1);
+}
 
 async function runServer() {
-    if (useSSE) {
+    if (useHTTP) {
+        // HTTP mode (Streamable HTTP)
+        const { default: express } = await import('express');
+        const app: any = express();
+        const port = process.env.PORT || 3000;
+        
+        // Store sessions with their tokens
+        const sessions: Record<string, { transport: StreamableHTTPServerTransport; server: Server; yunxiao_access_token?: string }> = {};
+        
+        // Middleware to parse JSON bodies
+        app.use(express.json({ limit: '10mb' }));
+        
+        // MCP endpoint - handles both GET (SSE) and POST (messages)
+        app.all('/mcp', async (req: any, res: any) => {
+            console.log(`${req.method} /mcp from ${req.ip}`);
+            
+            // Get token from query parameters or headers
+            const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+            
+            // Create or reuse transport based on session
+            const sessionId = req.headers['mcp-session-id'] || req.query.sessionId;
+            let session = sessionId ? sessions[sessionId] : null;
+            
+            if (!session) {
+                // Create new transport with session management
+                const httpTransport = new StreamableHTTPServerTransport({
+                    sessionIdGenerator: () => {
+                        // Generate a simple session ID
+                        return `http-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                    },
+                    onsessioninitialized: async (sid) => {
+                        console.log(`HTTP session initialized: ${sid}`);
+                    },
+                    onsessionclosed: async (sid) => {
+                        console.log(`HTTP session closed: ${sid}`);
+                        delete sessions[sid];
+                    }
+                });
+                
+                session = { transport: httpTransport, server, yunxiao_access_token };
+                
+                // Connect the server to the transport
+                await server.connect(httpTransport);
+                console.info(`Yunxiao MCP Server connected via HTTP`);
+                
+                if (httpTransport.sessionId) {
+                    sessions[httpTransport.sessionId] = session;
+                }
+            }
+            
+            try {
+                // Set the session token before handling the request
+                const utils = await import('./common/utils.js');
+                utils.setCurrentSessionToken(session.yunxiao_access_token);
+                
+                // Handle the request using the transport
+                await session.transport.handleRequest(req, res, req.body);
+            } catch (error) {
+                console.error("Error handling HTTP request:", error);
+                if (!res.headersSent) {
+                    res.status(500).send("Server error");
+                }
+            }
+        });
+        
+        // Start server
+        const serverInstance: any = app.listen(port, () => {
+            console.log(`Yunxiao MCP Server running in HTTP mode on port ${port}`);
+            console.log(`MCP endpoint: http://localhost:${port}/mcp`);
+        });
+        
+        // Handle graceful shutdown
+        process.on('SIGINT', () => {
+            console.log('Shutting down HTTP server...');
+            serverInstance.close(() => {
+                console.log('Server closed.');
+                process.exit(0);
+            });
+        });
+    } else if (useSSE) {
         // Import express only when needed for SSE mode
         const { default: express } = await import('express');
         const app: any = express();

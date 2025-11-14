@@ -39,17 +39,73 @@ import { getAllTools, getEnabledTools } from "./tool-registry/index.js";
 import { handleToolRequest, handleEnabledToolRequest } from "./tool-handlers/index.js";
 import { Toolset } from "./common/toolsets.js";
 
-const server = new Server(
-    {
-        name: "alibabacloud-devops-mcp-server",
-        version: VERSION,
-    },
-    {
-        capabilities: {
-            tools: {},
+// Factory function to create a new Server instance with all handlers registered
+// This is used for HTTP mode where each request needs a fresh server instance
+function createServer(enabledToolsets: Toolset[]): Server {
+    const server = new Server(
+        {
+            name: "alibabacloud-devops-mcp-server",
+            version: VERSION,
         },
-    }
-);
+        {
+            capabilities: {
+                tools: {},
+            },
+        }
+    );
+
+    // Register ListTools handler
+    server.setRequestHandler(ListToolsRequestSchema, async () => {
+        let tools: any[];
+        
+        if (enabledToolsets.length > 0) {
+            // 获取基础工具（总是加载）
+            const baseTools = getEnabledTools([Toolset.BASE]);
+            
+            // 获取启用的工具集工具
+            const enabledTools = getEnabledTools(enabledToolsets);
+            
+            // 合并基础工具和启用的工具集工具
+            tools = [...baseTools, ...enabledTools];
+        } else {
+            // 如果没有指定启用的工具集，则获取所有工具（已包含基础工具）
+            tools = getAllTools();
+        }
+        
+        return {
+            tools,
+        };
+    });
+
+    // Register CallTool handler
+    server.setRequestHandler(CallToolRequestSchema, async (request) => {
+        try {
+            if (!request.params.arguments) {
+                throw new Error("Arguments are required");
+            }
+
+            // Delegate to our modular tool handler with toolset support
+            const result = enabledToolsets.length > 0 
+                ? await handleEnabledToolRequest(request, enabledToolsets)
+                : await handleToolRequest(request);
+                
+            return result;
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                throw new Error(`Invalid input: ${JSON.stringify(error.errors)}`);
+            }
+            if (isYunxiaoError(error)) {
+                throw new Error(formatYunxiaoError(error));
+            }
+            throw error;
+        }
+    });
+
+    return server;
+}
+
+// Create a global server instance for stdio and SSE modes
+const server = createServer([]);
 
 function formatYunxiaoError(error: YunxiaoError): string {
     let message = `Yunxiao API Error: ${error.message}`;
@@ -119,51 +175,6 @@ function formatYunxiaoError(error: YunxiaoError): string {
     return message;
 }
 
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-    let tools: any[];
-    
-    if (enabledToolsets.length > 0) {
-        // 获取基础工具（总是加载）
-        const baseTools = getEnabledTools([Toolset.BASE]);
-        
-        // 获取启用的工具集工具
-        const enabledTools = getEnabledTools(enabledToolsets);
-        
-        // 合并基础工具和启用的工具集工具
-        tools = [...baseTools, ...enabledTools];
-    } else {
-        // 如果没有指定启用的工具集，则获取所有工具（已包含基础工具）
-        tools = getAllTools();
-    }
-    
-    return {
-        tools,
-    };
-});
-
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    try {
-        if (!request.params.arguments) {
-            throw new Error("Arguments are required");
-        }
-
-        // Delegate to our modular tool handler with toolset support
-        const result = enabledToolsets.length > 0 
-            ? await handleEnabledToolRequest(request, enabledToolsets)
-            : await handleToolRequest(request);
-            
-        return result;
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new Error(`Invalid input: ${JSON.stringify(error.errors)}`);
-        }
-        if (isYunxiaoError(error)) {
-            throw new Error(formatYunxiaoError(error));
-        }
-        throw error;
-    }
-});
-
 config();
 
 // 解析启用的工具集
@@ -201,22 +212,9 @@ async function runServer() {
         // HTTP mode (Streamable HTTP)
         const port = process.env.PORT || 3000;
         
-        // Create a single transport instance for the server FIRST
-        const httpTransport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: () => randomUUID(),
-            onsessioninitialized: async (sid) => {
-                console.log(`HTTP session initialized: ${sid}`);
-            },
-            onsessionclosed: async (sid) => {
-                console.log(`HTTP session closed: ${sid}`);
-            }
-        });
+        console.info(`Yunxiao MCP Server starting in HTTP mode (stateless)`);
         
-        // Connect the server to the transport immediately after creation
-        await server.connect(httpTransport);
-        console.info(`Yunxiao MCP Server connected via HTTP transport`);
-        
-        // Now initialize Express application
+        // Initialize Express application
         const { default: express } = await import('express');
         const app: any = express();
         
@@ -235,6 +233,7 @@ async function runServer() {
         });
         
         // MCP endpoint handler function
+        // For Streamable HTTP, create a new Server and Transport for each request
         const handleMcpRequest = async (req: any, res: any) => {
             // Log detailed request information
             console.log(`[MCP Request] ${req.method} ${req.path} from ${req.ip}`);
@@ -259,8 +258,22 @@ async function runServer() {
                 const utils = await import('./common/utils.js');
                 utils.setCurrentSessionToken(yunxiao_access_token);
                 
-                // Handle the request using the singleton transport instance
+                // Create a fresh Server instance for this request
+                const requestServer = createServer(enabledToolsets);
+                
+                // Create a stateless transport for this request
+                const httpTransport = new StreamableHTTPServerTransport({
+                    sessionIdGenerator: undefined, // Stateless mode
+                });
+                
+                // Connect the server to the transport (only for this request)
+                await requestServer.connect(httpTransport);
+                
+                // Handle the request
                 await httpTransport.handleRequest(req, res, req.body);
+                
+                // Close the transport after handling
+                await httpTransport.close();
             } catch (error) {
                 console.error("[MCP Error] Error handling HTTP request:", error);
                 

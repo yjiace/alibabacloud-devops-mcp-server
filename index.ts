@@ -199,11 +199,9 @@ if (useSSE && useHTTP) {
 async function runServer() {
     if (useHTTP) {
         // HTTP mode (Streamable HTTP)
-        const { default: express } = await import('express');
-        const app: any = express();
         const port = process.env.PORT || 3000;
         
-        // Create a single transport instance for the server
+        // Create a single transport instance for the server FIRST
         const httpTransport = new StreamableHTTPServerTransport({
             sessionIdGenerator: () => randomUUID(),
             onsessioninitialized: async (sid) => {
@@ -214,39 +212,81 @@ async function runServer() {
             }
         });
         
-        // Connect the server to the transport once
+        // Connect the server to the transport immediately after creation
         await server.connect(httpTransport);
         console.info(`Yunxiao MCP Server connected via HTTP transport`);
+        
+        // Now initialize Express application
+        const { default: express } = await import('express');
+        const app: any = express();
         
         // Middleware to parse JSON bodies
         app.use(express.json({ limit: '10mb' }));
         
-        // MCP endpoint - handles both GET (SSE) and POST (messages)
-        app.all('/mcp', async (req: any, res: any) => {
-            console.log(`${req.method} /mcp from ${req.ip}`);
+        // Well-known MCP configuration endpoint
+        app.get('/.well-known/mcp-config', (req: any, res: any) => {
+            res.json({
+                mcpServers: {
+                    "alibabacloud-devops": {
+                        url: "/"
+                    }
+                }
+            });
+        });
+        
+        // MCP endpoint handler function
+        const handleMcpRequest = async (req: any, res: any) => {
+            // Log detailed request information
+            console.log(`[MCP Request] ${req.method} ${req.path} from ${req.ip}`);
+            console.log(`[MCP Request] Headers:`, JSON.stringify(req.headers, null, 2));
             
             try {
-                // Get token from query parameters or headers
+                // Get token from query parameters or headers (priority: query > header > env)
                 const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+                
+                // Log token source for debugging
+                if (req.query.yunxiao_access_token) {
+                    console.log('[MCP Auth] Using token from query parameter');
+                } else if (req.headers['x-yunxiao-token']) {
+                    console.log('[MCP Auth] Using token from request header');
+                } else if (process.env.YUNXIAO_ACCESS_TOKEN) {
+                    console.log('[MCP Auth] Using token from environment variable');
+                } else {
+                    console.warn('[MCP Auth] No authentication token provided');
+                }
                 
                 // Set the session token before handling the request
                 const utils = await import('./common/utils.js');
                 utils.setCurrentSessionToken(yunxiao_access_token);
                 
-                // Handle the request using the transport
+                // Handle the request using the singleton transport instance
                 await httpTransport.handleRequest(req, res, req.body);
             } catch (error) {
-                console.error("Error handling HTTP request:", error);
+                console.error("[MCP Error] Error handling HTTP request:", error);
+                
+                // Return JSON error response if headers not sent
                 if (!res.headersSent) {
-                    res.status(500).send("Server error");
+                    res.status(500).json({
+                        error: "Internal server error",
+                        message: error instanceof Error ? error.message : "Unknown error",
+                        timestamp: new Date().toISOString()
+                    });
                 }
             }
-        });
+        };
         
-        // Start server
-        const serverInstance: any = app.listen(port, () => {
-            console.log(`Yunxiao MCP Server running in HTTP mode on port ${port}`);
-            console.log(`MCP endpoint: http://localhost:${port}/mcp`);
+        // Register MCP endpoint on both root and /mcp paths
+        app.all('/', handleMcpRequest);
+        app.all('/mcp', handleMcpRequest);
+        
+        // Start server listening on all network interfaces
+        const serverInstance: any = app.listen(port, '0.0.0.0', () => {
+            console.log(`Yunxiao MCP Server running in HTTP mode on 0.0.0.0:${port}`);
+            console.log(`Well-known config: http://0.0.0.0:${port}/.well-known/mcp-config`);
+            console.log(`MCP endpoints: http://0.0.0.0:${port}/ and http://0.0.0.0:${port}/mcp`);
+        }).on('error', (error: any) => {
+            console.error('Failed to start server:', error);
+            process.exit(1);
         });
         
         // Handle graceful shutdown

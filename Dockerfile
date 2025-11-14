@@ -27,4 +27,4 @@ WORKDIR /app
 # 安装生产依赖
 RUN npm ci --ignore-scripts --omit=dev
 
-ENTRYPOINT ["node", "dist/index.js"]
+ENTRYPOINT ["node", "dist/index.js", "--http"]

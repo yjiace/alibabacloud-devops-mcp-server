@@ -241,11 +241,18 @@ async function runServer() {
             
             try {
                 // Get token from query parameters or headers (priority: query > header > env)
-                const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+                // Support both camelCase (Smithery) and snake_case (legacy) parameter names
+                const yunxiao_access_token = 
+                    req.query.yunxiaoAccessToken ||      // Smithery uses camelCase
+                    req.query.yunxiao_access_token ||    // Legacy snake_case
+                    req.headers['x-yunxiao-token'] || 
+                    process.env.YUNXIAO_ACCESS_TOKEN;
                 
                 // Log token source for debugging
-                if (req.query.yunxiao_access_token) {
-                    console.log('[MCP Auth] Using token from query parameter');
+                if (req.query.yunxiaoAccessToken) {
+                    console.log('[MCP Auth] Using token from query parameter (yunxiaoAccessToken)');
+                } else if (req.query.yunxiao_access_token) {
+                    console.log('[MCP Auth] Using token from query parameter (yunxiao_access_token)');
                 } else if (req.headers['x-yunxiao-token']) {
                     console.log('[MCP Auth] Using token from request header');
                 } else if (process.env.YUNXIAO_ACCESS_TOKEN) {
@@ -346,7 +353,12 @@ async function runServer() {
             console.log(`New SSE connection from ${req.ip}`);
             
             // Get token from query parameters or headers
-            const yunxiao_access_token = req.query.yunxiao_access_token || req.headers['x-yunxiao-token'] || process.env.YUNXIAO_ACCESS_TOKEN;
+            // Support both camelCase (Smithery) and snake_case (legacy) parameter names
+            const yunxiao_access_token = 
+                req.query.yunxiaoAccessToken ||      // Smithery uses camelCase
+                req.query.yunxiao_access_token ||    // Legacy snake_case
+                req.headers['x-yunxiao-token'] || 
+                process.env.YUNXIAO_ACCESS_TOKEN;
             
             // Create transport with endpoint for POST messages
             const sseTransport = new SSEServerTransport('/messages', res);

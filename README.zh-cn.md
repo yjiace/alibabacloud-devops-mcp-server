@@ -179,20 +179,14 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
   
   ![个人令牌授权页面](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.jpg)
 
-### 在 Smithery.ai 中使用云效 MCP 服务
+## 快速开始（推荐：使用 Stdio 模式）
 
-云效 MCP 服务已部署到 Smithery.ai 中，可以按照下列命令安装使用 [Smithery](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server):
+**Stdio 模式**是最简单、最常用的方式，适合大多数 MCP 客户端（如 Cursor、Claude Desktop、iFlow 等）。无需安装 Docker，直接通过 npx 运行即可。
 
-```bash
-npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
-```
+### 方式一：通过 npx 直接使用（最简单）
 
-### 通过 MCP市场 安装[云效](https://www.aliyun.com/product/yunxiao) MCP 服务
-通义灵码内置的MCP市场中已经提供了云效的MCP服务，在通义灵码中进入MCP市场并且找到「云效DevOps」，直接安装即可。
+在 MCP 客户端配置文件中添加以下配置：
 
-![MCP市场安装云效MCP服务](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_9.png)
-
-### 在Cursor、Claude code/iFlow等终端中配置mcp server。通过npx的方式来运行mcp server。
 ```json
 {
   "mcpServers": {
@@ -209,82 +203,51 @@ npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client cla
   }
 }
 ```
-### 通过 Docker 容器运行 MCP 服务器
 
-#### 方式一：使用官方镜像（推荐）
+> **说明**: 
+> - 将 `<YOUR_TOKEN>` 替换为您的云效访问令牌
+> - `-y` 参数会自动确认安装，无需手动确认
+> - 这种方式使用 **stdio 模式**，通过标准输入输出与 MCP 客户端通信
 
-您可以直接使用官方 Docker 镜像，无需自行构建：
+### 方式二：通过 MCP 市场安装
+
+通义灵码内置的 MCP 市场中已经提供了云效的 MCP 服务，在通义灵码中进入 MCP 市场并且找到「云效DevOps」，直接安装即可。
+
+### 方式三：通过 Smithery 安装
+
+云效 MCP 服务已部署到 Smithery.ai 中，可以按照下列命令安装使用：
+
+```bash
+npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
+```
+
+---
+
+## 使用 Docker（可选）
+
+如果您需要使用 Docker 运行 MCP 服务器，可以选择 **stdio 模式** 或 **SSE 模式**。
+
+### Docker 使用 Stdio 模式
+
+这种方式与直接使用 npx 类似，但通过 Docker 容器运行。
+
+#### 1. 获取 Docker 镜像
+
+**方式一：使用官方镜像（推荐）**
 
 ```shell
-# 拉取官方镜像
 docker pull build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
 
-然后在 docker run 命令中使用官方镜像名称，而不是 `alibabacloud/alibabacloud-devops-mcp-server`。
-
-#### 方式二：自行构建镜像
-
-如果您希望自行构建镜像：
+**方式二：自行构建镜像**
 
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
 
-#### 2. 运行容器
+#### 2. 配置 MCP 客户端
 
-MCP 服务器支持两种模式：**stdio 模式**（默认）和 **SSE 模式**（HTTP）。
-
-##### Stdio 模式（用于 MCP 客户端）
-
-直接运行容器（使用官方镜像）：
-```shell
-docker run -i --rm \
-  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
-```
-
-或使用环境变量文件：
-```shell
-# 创建 .env 文件，内容：YUNXIAO_ACCESS_TOKEN=your_token_here
-docker run -i --rm \
-  --env-file .env \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
-```
-
-> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
-
-##### SSE 模式（用于 HTTP 访问）
-
-后台运行容器（使用官方镜像）：
-```shell
-docker run -d --name yunxiao-mcp \
-  -p 3000:3000 \
-  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  -e PORT=3000 \
-  -e MCP_TRANSPORT=sse \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
-  node dist/index.js --sse
-```
-
-> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
-
-服务器将在以下地址可用：
-- SSE 端点: `http://localhost:3000/sse`
-- 消息端点: `http://localhost:3000/messages?sessionId=<session-id>`
-
-查看日志：
-```shell
-docker logs -f yunxiao-mcp
-```
-
-停止容器：
-```shell
-docker stop yunxiao-mcp
-```
-
-#### 3. 配置 MCP 客户端（用于 stdio 模式）
-
-如果使用 MCP 客户端（如 Claude Desktop、Cursor 等），配置其使用 Docker：
+在 MCP 客户端配置文件中添加：
 
 ```json
 {
@@ -307,43 +270,148 @@ docker stop yunxiao-mcp
 }
 ```
 
-> **注意**: 如果您自行构建了镜像，请将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`。
-### 通过 docker compose 运行MCP 服务器
-1. 环境设置
+> **注意**: 
+> - 如果使用自行构建的镜像，将镜像名称替换为 `alibabacloud/alibabacloud-devops-mcp-server`
+> - 这种方式使用 **stdio 模式**，容器通过标准输入输出与 MCP 客户端通信
+
+### Docker 使用 SSE 模式
+
+SSE 模式通过 HTTP 提供服务，适合需要独立运行服务或支持多用户的场景。
+
+#### 1. 启动 SSE 服务
+
+**使用官方镜像：**
+
 ```shell
-cd alibabacloud-devops-mcp-server
-cp .env.example
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
+  node dist/index.js --sse
 ```
 
-2. Docker Compose构建
+**使用自行构建的镜像：**
+
 ```shell
-docker compose up -d
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  alibabacloud/alibabacloud-devops-mcp-server \
+  node dist/index.js --sse
 ```
-3. 配置 MCP 服务器
+
+#### 2. 配置 MCP 客户端
+
+在 MCP 客户端配置文件中添加：
+
 ```json
 {
   "mcpServers": {
     "yunxiao": {
-      "url":"http://localhost:3000/sse"
+      "url": "http://localhost:3000/sse"
     }
   }
 }
 ```
 
-### SSE 模式下使用独立令牌
-在 SSE 模式下运行时，每个用户都可以通过查询参数或请求头传递自己的令牌：
+如果需要在连接时传递自己的令牌（而不是使用服务启动时的默认令牌）：
 
-1. 通过查询参数：
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse?yunxiao_access_token=YOUR_TOKEN_HERE"
+    }
+  }
+}
+```
+
+#### 3. 管理 SSE 服务
+
+查看日志：
+```shell
+docker logs -f yunxiao-mcp
+```
+
+停止服务：
+```shell
+docker stop yunxiao-mcp
+```
+
+### 使用 Docker Compose 运行 SSE 模式
+
+1. **环境设置**
+```shell
+cd alibabacloud-devops-mcp-server
+cp .env.example .env
+# 编辑 .env 文件，设置 YUNXIAO_ACCESS_TOKEN
+```
+
+2. **启动服务**
+```shell
+docker compose up -d
+```
+
+3. **配置 MCP 客户端**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+---
+
+## SSE 模式高级配置
+
+### 使用独立令牌
+
+在 SSE 模式下，每个用户可以通过以下方式传递自己的令牌：
+
+1. **通过查询参数**（推荐）：
 ```
 http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
-2. 通过请求头：
+2. **通过请求头**：
 ```
 x-yunxiao-token: USER_SPECIFIC_TOKEN
 ```
 
 这允许多个用户共享同一个 SSE 服务，同时使用各自独立的令牌进行身份验证。
+
+### 在 Codex 中配置 SSE 模式
+
+如果您的云效 MCP 服务器已经以 SSE 模式启动在 `http://localhost:3000`，可以在 Codex 中按以下方式配置：
+
+**使用默认令牌（服务启动时已配置）：**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+**在 URL 中传递令牌：**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse?yunxiao_access_token=YOUR_TOKEN_HERE"
+    }
+  }
+}
+```
 
 ### 工具集（Toolsets）
 服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。

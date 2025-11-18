@@ -181,20 +181,14 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 
   ![The personal token authorization page](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_8.jpg)
 
-### Installing via Smithery
+## Quick Start (Recommended: Using Stdio Mode)
 
-To install [AlibabaCloud DevOps](https://www.aliyun.com/product/yunxiao) Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server):
+**Stdio mode** is the simplest and most common way, suitable for most MCP clients (like Cursor, Claude Desktop, iFlow, etc.). No Docker installation required, just run via npx.
 
-```bash
-npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
-```
+### Option 1: Direct Use via NPX (Simplest)
 
-### Install Yunxiao MCP server via MCP marketplace
-The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provided the AlibabaCloud Devops MCP service. To install it, simply enter the MCP market in Lingma and search for "Yunxiao DevOps", then click install.
+Add the following configuration to your MCP client configuration file:
 
-![Install AlibabaCloud Devops MCP Service from the MCP Market](https://agent-install-beijing.oss-cn-beijing.aliyuncs.com/alibabacloud-devops-mcp-server/img_9.png)
-
-### Run MCP Server via NPX/Cursor/Claude code etc. 
 ```json
 {
   "mcpServers": {
@@ -212,82 +206,50 @@ The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provid
 }
 ```
 
-### Run MCP Server via Docker Container
+> **Note**: 
+> - Replace `<YOUR_TOKEN>` with your Yunxiao access token
+> - The `-y` flag automatically confirms installation without manual confirmation
+> - This method uses **stdio mode**, communicating with the MCP client via standard input/output
 
-#### Option 1: Use Official Image (Recommended)
+### Option 2: Install via MCP Marketplace
 
-You can use the official Docker image without building it yourself:
+The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provided the AlibabaCloud Devops MCP service. To install it, simply enter the MCP market in Lingma and search for "Yunxiao DevOps", then click install.
+
+### Option 3: Install via Smithery
+
+To install [AlibabaCloud DevOps](https://www.aliyun.com/product/yunxiao) Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server):
+
+```bash
+npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
+```
+
+---
+
+## Using Docker (Optional)
+
+If you need to run the MCP server using Docker, you can choose **stdio mode** or **SSE mode**.
+
+### Docker with Stdio Mode
+
+This method is similar to using npx directly, but runs through a Docker container.
+
+#### 1. Get Docker Image
+
+**Option 1: Use Official Image (Recommended)**
 
 ```shell
-# Pull the official image
 docker pull build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
 ```
 
-Then use the official image name in your docker run commands instead of `alibabacloud/alibabacloud-devops-mcp-server`.
-
-#### Option 2: Build Your Own Image
-
-If you prefer to build the image yourself:
+**Option 2: Build Your Own Image**
 
 ```shell
 docker build -t alibabacloud/alibabacloud-devops-mcp-server .
 ```
 
-#### 2. Run the Container
+#### 2. Configure MCP Client
 
-The MCP server supports two modes: **stdio mode** (default) and **SSE mode** (HTTP).
-
-##### Stdio Mode (for MCP clients)
-
-Run the container directly (using official image):
-```shell
-docker run -i --rm \
-  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
-```
-
-Or use an environment file:
-```shell
-# Create .env file with: YUNXIAO_ACCESS_TOKEN=your_token_here
-docker run -i --rm \
-  --env-file .env \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0
-```
-
-> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
-
-##### SSE Mode (for HTTP access)
-
-Run the container in background (using official image):
-```shell
-docker run -d --name yunxiao-mcp \
-  -p 3000:3000 \
-  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
-  -e PORT=3000 \
-  -e MCP_TRANSPORT=sse \
-  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
-  node dist/index.js --sse
-```
-
-> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
-
-The server will be available at:
-- SSE endpoint: `http://localhost:3000/sse`
-- Messages endpoint: `http://localhost:3000/messages?sessionId=<session-id>`
-
-View logs:
-```shell
-docker logs -f yunxiao-mcp
-```
-
-Stop the container:
-```shell
-docker stop yunxiao-mcp
-```
-
-#### 3. Configure MCP Client (for stdio mode)
-
-If you're using a MCP client (like Claude Desktop, Cursor, etc.), configure it to use Docker:
+Add the following to your MCP client configuration file:
 
 ```json
 {
@@ -310,43 +272,148 @@ If you're using a MCP client (like Claude Desktop, Cursor, etc.), configure it t
 }
 ```
 
-> **Note**: If you built your own image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`.
-###  Run MCP Server via Docker Compose
-1. Environment Setup
+> **Note**: 
+> - If using a self-built image, replace the image name with `alibabacloud/alibabacloud-devops-mcp-server`
+> - This method uses **stdio mode**, with the container communicating via standard input/output
+
+### Docker with SSE Mode
+
+SSE mode provides service via HTTP, suitable for scenarios requiring independent service or multi-user support.
+
+#### 1. Start SSE Service
+
+**Using Official Image:**
+
 ```shell
-cd alibabacloud-devops-mcp-server
-cp .env.example
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alibabacloud-devops-mcp-server:v0.2.0 \
+  node dist/index.js --sse
 ```
 
-2. Running the Services:
+**Using Self-Built Image:**
+
 ```shell
-docker compose up -d
+docker run -d --name yunxiao-mcp \
+  -p 3000:3000 \
+  -e YUNXIAO_ACCESS_TOKEN="your_token_here" \
+  -e PORT=3000 \
+  -e MCP_TRANSPORT=sse \
+  alibabacloud/alibabacloud-devops-mcp-server \
+  node dist/index.js --sse
 ```
-3. Configure MCP Server
+
+#### 2. Configure MCP Client
+
+Add the following to your MCP client configuration file:
+
 ```json
 {
   "mcpServers": {
     "yunxiao": {
-      "url":"http://localhost:3000/sse"
+      "url": "http://localhost:3000/sse"
     }
   }
 }
 ```
 
-### SSE Mode with Custom Tokens
-When running in SSE mode, each user can use their own token by passing it as a query parameter or request header:
+If you need to pass your own token when connecting (instead of using the default token from server startup):
 
-1. Via query parameter:
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse?yunxiao_access_token=YOUR_TOKEN_HERE"
+    }
+  }
+}
+```
+
+#### 3. Manage SSE Service
+
+View logs:
+```shell
+docker logs -f yunxiao-mcp
+```
+
+Stop service:
+```shell
+docker stop yunxiao-mcp
+```
+
+### Run SSE Mode via Docker Compose
+
+1. **Environment Setup**
+```shell
+cd alibabacloud-devops-mcp-server
+cp .env.example .env
+# Edit .env file and set YUNXIAO_ACCESS_TOKEN
+```
+
+2. **Start Service**
+```shell
+docker compose up -d
+```
+
+3. **Configure MCP Client**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+---
+
+## Advanced SSE Mode Configuration
+
+### Using Custom Tokens
+
+In SSE mode, each user can pass their own token in the following ways:
+
+1. **Via query parameter** (Recommended):
 ```
 http://localhost:3000/sse?yunxiao_access_token=USER_SPECIFIC_TOKEN
 ```
 
-2. Via request header:
+2. **Via request header**:
 ```
 x-yunxiao-token: USER_SPECIFIC_TOKEN
 ```
 
 This allows multiple users to share the same SSE service while using their own individual tokens for authentication.
+
+### Configure SSE Mode in Codex
+
+If your Yunxiao MCP server is already running in SSE mode at `http://localhost:3000`, you can configure it in Codex as follows:
+
+**Use default token (configured at server startup):**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+**Pass token in URL:**
+```json
+{
+  "mcpServers": {
+    "yunxiao": {
+      "url": "http://localhost:3000/sse?yunxiao_access_token=YOUR_TOKEN_HERE"
+    }
+  }
+}
+```
 
 ### Toolsets
 The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.

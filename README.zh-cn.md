@@ -417,22 +417,21 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。
 
 可用的工具集：
-- `base`: 基础工具集，总是被加载（get_current_user, get_current_organization_info, get_user_organizations）
-- `code-management`: 代码仓库管理工具（包含提交管理工具）
-- `organization-management`: 组织管理工具（不包含基础工具）
-- `project-management`: 项目管理工具（包含工时管理工具）
-- `pipeline-management`: 流水线管理工具（包含服务连接、资源成员和虚拟机部署单工具）
-- `packages-management`: 制品仓库管理工具
-- `application-delivery`: 应用交付工具
+- `code-management`: 代码仓库管理工具（代码仓库管理、分支管理、合并请求管理、文件树等）
+- `organization-management`: 组织管理工具（组织列表、组织信息、部门信息、组织角色、成员信息等）
+- `project-management`: 项目管理工具（项目管理、工作项管理、工作项字段、工作项评论、工时管理等）
+- `pipeline-management`: 流水线管理工具（流水线列表、流水线管理、资源管理、标签管理、部署管理等）
+- `packages-management`: 制品仓库管理工具(制品仓库、制品列表等)
+- `application-delivery`: 应用交付工具（部署单管理、应用管理、应用标签、变量组管理等）
 
 要使用工具集，您可以通过命令行参数或环境变量来指定：
 
-1. 通过命令行参数：
+1. 通过命令行参数，示例：
 ```bash
 npx -y alibabacloud-devops-mcp-server --toolsets=code-management,project-management
 ```
 
-2. 通过环境变量：
+2. 通过环境变量，示例：
 ```bash
 DEVOPS_TOOLSETS=code-management,project-management npx -y alibabacloud-devops-mcp-server
 ```

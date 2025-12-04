@@ -419,13 +419,12 @@ If your Yunxiao MCP server is already running in SSE mode at `http://localhost:3
 The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.
 
 Available toolsets:
-- `base`: Base tools that are always loaded (get_current_user, get_current_organization_info, get_user_organizations)
-- `code-management`: Code repository management tools (includes commit management tools)
-- `organization-management`: Organization management tools (excluding base tools)
-- `project-management`: Project management tools (includes effort management tools)
-- `pipeline-management`: Pipeline management tools (includes service connections, resource member, and VM deploy order tools)
-- `packages-management`: Package repository management tools
-- `application-delivery`: Application delivery tools
+- `code-management`: Code repository management tools (repository management, branch management, merge request management, file tree, etc.)
+- `organization-management`: Organization management tools (organization list, organization details, department information, organizational roles, member information, etc.)
+- `project-management`: Project management tools (project management, work item management, work item fields, work item comments, time tracking, etc.)
+- `pipeline-management`: Pipeline management tools (pipeline list, pipeline configuration, resource management, tag management, deployment management, etc.)
+- `packages-management`: Artifact repository management tools (artifact repositories, artifact lists, etc.)
+- `application-delivery`: Application delivery tools (deployment order management, application management, application tags, variable group management, etc.)
 
 To use toolsets, you can specify them via command line arguments or environment variables:
 

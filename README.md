@@ -9,13 +9,12 @@
 
 alibabacloud-devops-mcp-server provides the following capabilities for AI assistants:
 
-* **Code Repository Management**: Query code repositories and their branches, create branches
-* **File Operations**: Create, update, delete, and retrieve code file content
-* **Code Review**: Create and manage code review processes
-* **Project Management**: Search projects, get project details
-* **Pipeline Management**: Get pipeline details, get pipeline list, create a pipeline run instance, get the latest pipeline run instance, get pipeline run details, get pipeline run list, Query / Run a pipeline deployment task
-* **Package Management**: Get package repository details list, Get artifacts details list, Get single artifact details
-* **Application Delivery**: Create and manage deployment orders, applications, orchestrations, variable groups, templates, tags, global variables, and deployment resources
+- `organization-management`: Organization management tools (organization list, organization details, department information, organizational roles, member information, etc.)
+- `code-management`: Code repository management tools (repository management, branch management, merge request management, file tree, etc.)
+- `project-management`: Project management tools (project management, work item management, work item fields, work item comments, time tracking, etc.)
+- `pipeline-management`: Pipeline management tools (pipeline list, pipeline configuration, resource management, tag management, deployment management, etc.)
+- `application-delivery`: Application delivery tools (deployment order management, application management, application tags, variable group management, etc.)
+- `packages-management`: Artifact repository management tools (artifact repositories, artifact lists, etc.)
 
 ## Tools
 
@@ -99,17 +98,11 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_service_connections`: List service connections in organization
 - `create_pipeline_from_description`: Automatically generates YAML configuration and creates pipeline
 - `update_pipeline`: Update an existing pipeline in Yunxiao by pipelineId. Use this to update pipeline YAML, stages, jobs, etc.
-
-#### Resource Member Management Tools
-
 - `create_resource_member`: Create a resource member
 - `delete_resource_member`: Delete a resource member
 - `list_resource_members`: Get a list of resource members
 - `update_resource_member`: Update a resource member
 - `update_resource_owner`: Transfer resource owner
-
-#### Tag Management Tools
-
 - `create_tag`: Create a tag
 - `create_tag_group`: Create a tag group
 - `list_tag_groups`: Get a list of tag groups
@@ -118,21 +111,12 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_tag_group`: Get a tag group
 - `delete_tag`: Delete a tag
 - `update_tag`: Update a tag
-
-#### VM Deploy Order Management Tools
-
 - `stop_vm_deploy_order`: Stop VM deploy order
 - `skip_vm_deploy_machine`: Skip VM deploy machine
 - `retry_vm_deploy_machine`: Retry VM deploy machine
 - `resume_vm_deploy_order`: Resume VM deploy order
 - `get_vm_deploy_order`: Get VM deploy order details
 - `get_vm_deploy_machine_log`: Get VM deploy machine log
-
-### Packages Management Tools
-
-- `list_package_repositories`: Get package repositories details list
-- `list_artifacts`: Get artifacts details list
-- `get_artifact`: Get single artifact details
 
 ### Application Delivery Tools
 
@@ -172,6 +156,12 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_machine_deploy_log`: [application delivery] Get machine deployment log
 - `add_host_list_to_host_group`: [application delivery] Add host list to host group
 - `add_host_list_to_deploy_group`: [application delivery] Add host list to deploy group
+
+### Packages Management Tools
+
+- `list_package_repositories`: Get package repositories details list
+- `list_artifacts`: Get artifacts details list
+- `get_artifact`: Get single artifact details
 
 ## Usage
 
@@ -419,8 +409,8 @@ If your Yunxiao MCP server is already running in SSE mode at `http://localhost:3
 The server now supports toolsets, allowing you to enable only the tools you need. This can reduce the number of tools presented to the AI assistant and improve performance.
 
 Available toolsets:
-- `code-management`: Code repository management tools (repository management, branch management, merge request management, file tree, etc.)
 - `organization-management`: Organization management tools (organization list, organization details, department information, organizational roles, member information, etc.)
+- `code-management`: Code repository management tools (repository management, branch management, merge request management, file tree, etc.)
 - `project-management`: Project management tools (project management, work item management, work item fields, work item comments, time tracking, etc.)
 - `pipeline-management`: Pipeline management tools (pipeline list, pipeline configuration, resource management, tag management, deployment management, etc.)
 - `packages-management`: Artifact repository management tools (artifact repositories, artifact lists, etc.)

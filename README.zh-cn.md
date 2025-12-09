@@ -1,19 +1,18 @@
 <p align="center"><a href="README.md">English</a> | 中文<br></p>
 
 # alibabacloud-devops-mcp-server
-[云效](https://www.aliyun.com/product/yunxiao)mcp-server工具为 AI 助手提供了与云效平台交互的能力，能够让 AI 助手可以读取项目中工作项的内容，在理解需求后自动编写代码，并提交代码合并请求。企业研发团队可以使用它协助代码审查、优化任务管理、完成构建、部署等任务，从而专注于更重要的创新和产品交付。
+[云效](https://www.aliyun.com/product/yunxiao)mcp-server工具为 AI 助手提供了与云效平台交互的能力，能够与项目协作、代码管理、流水线、制品仓库、应用交付等模块等交互。企业研发团队可以使用它协助代码审查、优化任务管理、完成构建、部署等任务，从而专注于更重要的创新和产品交付。
 
 ## 功能特性
 
 alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 
-* **代码仓库管理**：查询代码仓库及其分支、创建分支
-* **文件操作**：创建、更新、删除和获取代码文件内容
-* **代码评审**：创建和管理代码评审流程
-* **项目管理**：搜索项目、获取项目详情
-* **流水线管理**：获取流水线详情、获取流水线列表、运行流水线、获取最近一次流水线运行信息、获取流水线运行实例、获取流水线运行实例列表、查询/运行流水线部署任务
-* **制品仓库管理**：查看制品仓库信息、查询制品信息、查看单个制品信息
-* **应用交付**：创建和管理部署单、应用、编排、变量组、模板、标签、全局变量和部署资源
+* **组织管理**：组织列表、组织信息、部门信息、组织角色、成员信息等
+* **代码管理**：代码仓库管理、分支管理、合并请求管理、操作文件树等
+* **项目管理**：项目管理、工作项管理、工作项字段、工作项评论、工时管理等
+* **流水线管理**：流水线列表、流水线管理、资源管理、标签管理、部署管理等
+* **制品仓库管理**：制品仓库、制品列表等
+* **应用交付**：部署单管理、应用管理、应用标签、变量组管理等
 
 ## 工具列表
 
@@ -95,17 +94,11 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `list_service_connections` - 获取服务连接列表
 - `create_pipeline_from_description`: 根据自然语言描述生成流水线 YAML 并创建流水线
 - `update_pipeline`: 更新流水线YAML内容
-
-#### 资源成员管理工具
-
 - `create_resource_member`: 创建资源成员
 - `delete_resource_member`: 删除资源成员
 - `list_resource_members`: 获取资源成员列表
 - `update_resource_member`: 更新资源成员
 - `update_resource_owner`: 移交资源对象拥有者
-
-#### 标签管理工具
-
 - `create_tag`: 创建标签
 - `create_tag_group`: 创建标签分类
 - `list_tag_groups`: 获取流水线分类列表
@@ -114,9 +107,6 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_tag_group`: 获取标签分类
 - `delete_tag`: 删除标签
 - `update_tag`: 更新标签
-
-#### VM部署单管理工具
-
 - `stop_vm_deploy_order`: 终止机器部署
 - `skip_vm_deploy_machine`: 跳过机器部署
 - `retry_vm_deploy_machine`: 重试机器部署
@@ -124,11 +114,6 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_vm_deploy_order`: 获取部署单详情
 - `get_vm_deploy_machine_log`: 查询机器部署日志
 
-### 制品仓库工具
-
-- `list_package_repositories`: 查看制品仓库信息
-- `list_artifacts`: 查询制品信息
-- `get_artifact`: 查看单个制品信息
 
 ### 应用交付工具
 
@@ -168,6 +153,12 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `get_machine_deploy_log`: [应用交付] 获取机器部署日志
 - `add_host_list_to_host_group`: [应用交付] 添加主机列表到主机组
 - `add_host_list_to_deploy_group`: [应用交付] 添加主机列表到部署组
+
+### 制品仓库工具
+
+- `list_package_repositories`: 查看制品仓库信息
+- `list_artifacts`: 查询制品信息
+- `get_artifact`: 查看单个制品信息
 
 ## 用法
 
@@ -417,8 +408,8 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 服务器现在支持工具集功能，允许您只启用需要的工具。这可以减少提供给AI助手的工具数量，提高性能。
 
 可用的工具集：
-- `code-management`: 代码仓库管理工具（代码仓库管理、分支管理、合并请求管理、文件树等）
 - `organization-management`: 组织管理工具（组织列表、组织信息、部门信息、组织角色、成员信息等）
+- `code-management`: 代码仓库管理工具（代码仓库管理、分支管理、合并请求管理、文件树等）
 - `project-management`: 项目管理工具（项目管理、工作项管理、工作项字段、工作项评论、工时管理等）
 - `pipeline-management`: 流水线管理工具（流水线列表、流水线管理、资源管理、标签管理、部署管理等）
 - `packages-management`: 制品仓库管理工具(制品仓库、制品列表等)

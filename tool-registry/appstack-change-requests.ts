@@ -16,27 +16,27 @@ export const getAppStackChangeRequestTools = () => [
     inputSchema: zodToJsonSchema(CreateChangeRequestRequestSchema),
   },
   {
-    name: 'get_change_request_audit_items',
+    name: 'get_appstack_change_request_audit_items',
     description: '[application delivery] Get audit items for a change request',
     inputSchema: zodToJsonSchema(GetChangeRequestAuditItemsRequestSchema),
   },
   {
-    name: 'list_change_request_executions',
+    name: 'list_appstack_change_request_executions',
     description: '[application delivery] List change request executions',
     inputSchema: zodToJsonSchema(ListChangeRequestExecutionsRequestSchema),
   },
   {
-    name: 'list_change_request_work_items',
+    name: 'list_appstack_change_request_work_items',
     description: '[application delivery] List work items for a change request',
     inputSchema: zodToJsonSchema(ListChangeRequestWorkItemsRequestSchema),
   },
   {
-    name: 'cancel_change_request',
+    name: 'cancel_appstack_change_request',
     description: '[application delivery] Cancel a change request',
     inputSchema: zodToJsonSchema(CancelChangeRequestRequestSchema),
   },
   {
-    name: 'close_change_request',
+    name: 'close_appstack_change_request',
     description: '[application delivery] Close a change request',
     inputSchema: zodToJsonSchema(CloseChangeRequestRequestSchema),
   }

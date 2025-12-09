@@ -21,42 +21,42 @@ import {
  */
 export async function handleAppStackChangeRequestTools(request: any) {
   switch (request.params.name) {
-    case 'create_change_request':
+    case 'create_appstack_change_request':
       const createParams = CreateChangeRequestRequestSchema.parse(request.params.arguments);
       const createResult = await createChangeRequest(createParams);
       return {
         content: [{ type: "text", text: JSON.stringify(createResult, null, 2) }],
       };
       
-    case 'get_change_request_audit_items':
+    case 'get_appstack_change_request_audit_items':
       const getAuditParams = GetChangeRequestAuditItemsRequestSchema.parse(request.params.arguments);
       const getAuditResult = await getChangeRequestAuditItems(getAuditParams);
       return {
         content: [{ type: "text", text: JSON.stringify(getAuditResult, null, 2) }],
       };
       
-    case 'list_change_request_executions':
+    case 'list_appstack_change_request_executions':
       const listExecParams = ListChangeRequestExecutionsRequestSchema.parse(request.params.arguments);
       const listExecResult = await listChangeRequestExecutions(listExecParams);
       return {
         content: [{ type: "text", text: JSON.stringify(listExecResult, null, 2) }],
       };
       
-    case 'list_change_request_work_items':
+    case 'list_appstack_change_request_work_items':
       const listWorkParams = ListChangeRequestWorkItemsRequestSchema.parse(request.params.arguments);
       const listWorkResult = await listChangeRequestWorkItems(listWorkParams);
       return {
         content: [{ type: "text", text: JSON.stringify(listWorkResult, null, 2) }],
       };
       
-    case 'cancel_change_request':
+    case 'cancel_appstack_change_request':
       const cancelParams = CancelChangeRequestRequestSchema.parse(request.params.arguments);
       const cancelResult = await cancelChangeRequest(cancelParams);
       return {
         content: [{ type: "text", text: JSON.stringify(cancelResult, null, 2) }],
       };
       
-    case 'close_change_request':
+    case 'close_appstack_change_request':
       const closeParams = CloseChangeRequestRequestSchema.parse(request.params.arguments);
       const closeResult = await closeChangeRequest(closeParams);
       return {

@@ -124,6 +124,12 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `find_task_operation_log`: [应用交付] 查询部署任务执行日志，其中通常包含下游部署引擎的调度细节信息
 - `execute_job_action`: [应用交付] 操作环境部署单
 - `list_change_orders_by_origin`: [应用交付] 根据创建来源查询部署单
+- `create_appstack_change_request`: [应用交付] 创建变更请求
+- `get_appstack_change_request_audit_items`: [应用交付] 获取变更请求的审批项
+- `list_appstack_change_request_executions`: [应用交付] 列出变更请求的执行记录
+- `list_appstack_change_request_work_items`: [应用交付] 列出变更请求的工作项
+- `cancel_appstack_change_request`: [应用交付] 取消变更请求
+- `close_appstack_change_request`: [应用交付] 关闭变更请求
 - `list_applications`: [应用交付] 分页获取组织中的应用列表
 - `get_application`: [应用交付] 根据应用名获取应用详情
 - `create_application`: [应用交付] 创建应用

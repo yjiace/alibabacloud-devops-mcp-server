@@ -162,6 +162,21 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `get_machine_deploy_log`: [application delivery] Get machine deployment log
 - `add_host_list_to_host_group`: [application delivery] Add host list to host group
 - `add_host_list_to_deploy_group`: [application delivery] Add host list to deploy group
+- `list_app_release_workflows`: [application delivery] List all release workflows for an application
+- `list_app_release_workflow_briefs`: [application delivery] List release workflow briefs for an application
+- `get_app_release_workflow_stage`: [application delivery] Get release workflow stage details
+- `list_app_release_stage_briefs`: [application delivery] List release stage briefs
+- `update_app_release_stage`: [application delivery] Update application release workflow stage
+- `list_app_release_stage_runs`: [application delivery] List release stage execution records
+- `execute_app_release_stage`: [application delivery] Execute release workflow stage for a change request
+- `cancel_app_release_stage_execution`: [application delivery] Cancel release workflow stage execution
+- `retry_app_release_stage_pipeline`: [application delivery] Retry release workflow stage pipeline
+- `skip_app_release_stage_pipeline`: [application delivery] Skip release workflow stage pipeline
+- `list_app_release_stage_execution_integrated_metadata`: [application delivery] List integrated metadata for stage execution
+- `get_app_release_stage_pipeline_run`: [application delivery] Get release stage pipeline run instance
+- `pass_app_release_stage_pipeline_validate`: [application delivery] Pass release workflow stage validation
+- `get_app_release_stage_execution_pipeline_job_log`: [application delivery] Get pipeline job execution log
+- `refuse_app_release_stage_pipeline_validate`: [application delivery] Refuse release workflow stage validation
 
 ### Packages Management Tools
 

@@ -14,14 +14,14 @@ export const ListApplicationsRequestSchema = z.object({
 
 export const ListApplicationsResponseSchema = z.object({
   data: z.array(z.object({
-    appTemplateDisplayName: z.string().nullable().optional().describe("应用模版展示名称"),
+    appTemplateDisplayName: z.string().nullable().optional().describe("应用模版显示名称"),
     appTemplateName: z.string().nullable().optional().describe("应用模版名称"),
     creatorId: z.string().optional().describe("应用创建者id"),
     description: z.string().optional().describe("应用描述"),
     gmtCreate: z.string().optional().describe("创建时间"),
     name: z.string().optional().describe("应用名"),
   })),
-  nextToken: z.string().optional(),
+  nextToken: z.string().nullable().optional(),
 });
 
 // Schema for the GetApplication API

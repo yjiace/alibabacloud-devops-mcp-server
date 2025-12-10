@@ -17,6 +17,7 @@ import { getAppStackOrchestrationTools } from '../tool-registry/appstack-orchest
 import { getAppStackChangeRequestTools } from '../tool-registry/appstack-change-requests.js';
 import { getAppStackDeploymentResourceTools } from '../tool-registry/appstack-deployment-resources.js';
 import { getAppStackChangeOrderTools } from '../tool-registry/appstack-change-orders.js';
+import { getAppStackAppReleaseWorkflowTools } from '../tool-registry/appstack-app-release-workflows.js';
 import { getEffortTools } from '../tool-registry/effort.js';
 import { getResourceMemberTools } from '../tool-registry/resourceMember.js';
 import { getVMDeployOrderTools } from '../tool-registry/vmDeployOrder.js';
@@ -87,7 +88,8 @@ const ALL_TOOLSET_CONFIGS: Record<Toolset, ToolsetConfig> = {
       ...getAppStackOrchestrationTools(),
       ...getAppStackChangeRequestTools(),
       ...getAppStackDeploymentResourceTools(),
-      ...getAppStackChangeOrderTools()
+      ...getAppStackChangeOrderTools(),
+      ...getAppStackAppReleaseWorkflowTools()
     ]) as () => Tool[]
   }
 };

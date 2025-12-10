@@ -121,7 +121,7 @@ export const ListResourceInstancesResponseSchema = z.object({
     resourceGroupId: z.string().optional().describe("云产品提供方所使用的资源唯一 ID"),
     type: z.string().optional().describe("资源子类型"),
   })).optional().describe("分页结果数据"),
-  nextToken: z.string().optional().describe("采用键值分页时存在该字段，用于传给分页接口，迭代获取下一页数据"),
+  nextToken: z.string().nullable().optional().describe("采用键值分页时存在该字段，用于传给分页接口，迭代获取下一页数据"),
   pages: z.number().optional().describe("页码分页时存在该字段，表示总页数"),
   perPage: z.number().optional().describe("页码分页时存在该字段，表示每页大小"),
   total: z.number().optional().describe("页码分页时存在该字段，表示结果总数"),

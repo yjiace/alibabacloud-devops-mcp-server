@@ -13,6 +13,7 @@ import { handleAppStackOrchestrationTools } from './appstack-orchestrations.js';
 import { handleAppStackChangeRequestTools } from './appstack-change-requests.js';
 import { handleAppStackDeploymentResourceTools } from './appstack-deployment-resources.js';
 import { handleAppStackChangeOrderTools } from './appstack-change-orders.js';
+import { handleAppStackAppReleaseWorkflowTools } from './appstack-app-release-workflows.js';
 import { handleEffortTools } from './effort.js';
 import { handleResourceMemberTools } from './resourceMember.js';
 import { handleVMDeployOrderTools } from './vmDeployOrder.js';
@@ -51,6 +52,7 @@ export const handleToolRequest = async (request: any) => {
     handleAppStackChangeRequestTools,
     handleAppStackDeploymentResourceTools,
     handleAppStackChangeOrderTools,
+    handleAppStackAppReleaseWorkflowTools,
     handleEffortTools,
     handleResourceMemberTools,
     handleVMDeployOrderTools,

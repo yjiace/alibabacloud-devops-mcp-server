@@ -23,6 +23,7 @@ import { getResourceMemberTools } from '../tool-registry/resourceMember.js';
 import { getVMDeployOrderTools } from '../tool-registry/vmDeployOrder.js';
 import { getCommitTools } from '../tool-registry/commit.js';
 import { getBaseTools } from '../tool-registry/base.js';
+import { getTestManagementTools } from '../tool-registry/test-management.js';
 
 // 定义所有工具集配置
 const ALL_TOOLSET_CONFIGS: Record<Toolset, ToolsetConfig> = {
@@ -91,6 +92,11 @@ const ALL_TOOLSET_CONFIGS: Record<Toolset, ToolsetConfig> = {
       ...getAppStackChangeOrderTools(),
       ...getAppStackAppReleaseWorkflowTools()
     ]) as () => Tool[]
+  },
+  [Toolset.TEST_MANAGEMENT]: {
+    name: Toolset.TEST_MANAGEMENT,
+    description: "Test management tools",
+    tools: getTestManagementTools as () => Tool[]
   }
 };
 

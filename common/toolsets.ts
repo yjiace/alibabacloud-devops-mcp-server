@@ -6,7 +6,8 @@ export enum Toolset {
   PROJECT_MANAGEMENT = "project-management",
   PIPELINE_MANAGEMENT = "pipeline-management",
   PACKAGES_MANAGEMENT = "packages-management",
-  APPLICATION_DELIVERY = "application-delivery"
+  APPLICATION_DELIVERY = "application-delivery",
+  TEST_MANAGEMENT = "test-management"
 }
 
 // 定义工具接口（与MCP SDK中的Tool接口兼容，但更宽松以适应zodToJsonSchema的输出）
@@ -59,5 +60,6 @@ export const DEFAULT_ENABLED_TOOLSETS: Toolset[] = [
   Toolset.PROJECT_MANAGEMENT,
   Toolset.PIPELINE_MANAGEMENT,
   Toolset.PACKAGES_MANAGEMENT,
-  Toolset.APPLICATION_DELIVERY
+  Toolset.APPLICATION_DELIVERY,
+  Toolset.TEST_MANAGEMENT
 ];

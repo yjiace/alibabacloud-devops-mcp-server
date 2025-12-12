@@ -13,6 +13,7 @@ alibabacloud-devops-mcp-server提供了以下功能，让AI助手能够：
 * **流水线管理**：流水线列表、流水线管理、资源管理、标签管理、部署管理等
 * **制品仓库管理**：制品仓库、制品列表等
 * **应用交付**：部署单管理、应用管理、应用标签、变量组管理等
+* **测试管理**：测试用例管理、测试用例目录、测试计划、测试结果等
 
 ## 工具列表
 
@@ -180,6 +181,19 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 - `list_package_repositories`: 查看制品仓库信息
 - `list_artifacts`: 查询制品信息
 - `get_artifact`: 查看单个制品信息
+
+### 测试管理工具
+
+- `list_testcase_directories`: [测试管理] 获取测试用例目录列表
+- `create_testcase_directory`: [测试管理] 创建测试用例目录
+- `get_testcase_field_config`: [测试管理] 获取测试用例字段配置
+- `create_testcase`: [测试管理] 创建测试用例
+- `search_testcases`: [测试管理] 搜索测试用例
+- `get_testcase`: [测试管理] 获取测试用例信息
+- `delete_testcase`: [测试管理] 删除测试用例
+- `list_test_plans`: [测试管理] 获取测试计划列表
+- `get_test_result_list`: [测试管理] 获取测试计划中测试用例列表
+- `update_test_result`: [测试管理] 更新测试结果
 
 ## 用法
 
@@ -435,6 +449,7 @@ x-yunxiao-token: USER_SPECIFIC_TOKEN
 - `pipeline-management`: 流水线管理工具（流水线列表、流水线管理、资源管理、标签管理、部署管理等）
 - `packages-management`: 制品仓库管理工具(制品仓库、制品列表等)
 - `application-delivery`: 应用交付工具（部署单管理、应用管理、应用标签、变量组管理等）
+- `test-management`: 测试管理工具（测试用例管理、测试用例目录、测试计划、测试结果等）
 
 要使用工具集，您可以通过命令行参数或环境变量来指定：
 

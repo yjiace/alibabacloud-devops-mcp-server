@@ -15,6 +15,7 @@ alibabacloud-devops-mcp-server provides the following capabilities for AI assist
 - `pipeline-management`: Pipeline management tools (pipeline list, pipeline configuration, resource management, tag management, deployment management, etc.)
 - `application-delivery`: Application delivery tools (deployment order management, application management, application tags, variable group management, etc.)
 - `packages-management`: Artifact repository management tools (artifact repositories, artifact lists, etc.)
+- `test-management`: Test management tools (test case management, test case directories, test plans, test results, etc.)
 
 ## Tools
 
@@ -183,6 +184,19 @@ alibabacloud-devops-mcp-server integrates various tools, including:
 - `list_package_repositories`: Get package repositories details list
 - `list_artifacts`: Get artifacts details list
 - `get_artifact`: Get single artifact details
+
+### Test Management Tools
+
+- `list_testcase_directories`: [test management] Get test case directory list
+- `create_testcase_directory`: [test management] Create a test case directory
+- `get_testcase_field_config`: [test management] Get test case field configuration
+- `create_testcase`: [test management] Create a test case
+- `search_testcases`: [test management] Search test cases
+- `get_testcase`: [test management] Get test case information
+- `delete_testcase`: [test management] Delete a test case
+- `list_test_plans`: [test management] Get test plan list
+- `get_test_result_list`: [test management] Get test case list in a test plan
+- `update_test_result`: [test management] Update test result
 
 ## Usage
 
@@ -436,6 +450,7 @@ Available toolsets:
 - `pipeline-management`: Pipeline management tools (pipeline list, pipeline configuration, resource management, tag management, deployment management, etc.)
 - `packages-management`: Artifact repository management tools (artifact repositories, artifact lists, etc.)
 - `application-delivery`: Application delivery tools (deployment order management, application management, application tags, variable group management, etc.)
+- `test-management`: Test management tools (test case management, test case directories, test plans, test results, etc.)
 
 To use toolsets, you can specify them via command line arguments or environment variables:
 

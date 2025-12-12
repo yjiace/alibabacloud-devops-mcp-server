@@ -19,6 +19,7 @@ import { handleResourceMemberTools } from './resourceMember.js';
 import { handleVMDeployOrderTools } from './vmDeployOrder.js';
 import { handleCommitTools } from './commit.js';
 import { handleBaseTools } from './base.js';
+import { handleTestManagementTools } from './test-management.js';
 import { Toolset } from '../common/toolsets.js';
 
 // 定义处理函数映射
@@ -30,6 +31,7 @@ const HANDLER_MAP: Record<Toolset, (request: any) => Promise<any>> = {
   [Toolset.PIPELINE_MANAGEMENT]: handlePipelineTools,
   [Toolset.PACKAGES_MANAGEMENT]: handlePackageManagementTools,
   [Toolset.APPLICATION_DELIVERY]: handleAppStackTools, // 注意：这里只使用了主处理函数，其他AppStack处理函数在内部处理
+  [Toolset.TEST_MANAGEMENT]: handleTestManagementTools,
 }
 
 // 保持向后兼容的接口
@@ -56,7 +58,8 @@ export const handleToolRequest = async (request: any) => {
     handleEffortTools,
     handleResourceMemberTools,
     handleVMDeployOrderTools,
-    handleCommitTools
+    handleCommitTools,
+    handleTestManagementTools
   ];
 
   for (const handler of handlers) {

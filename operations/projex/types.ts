@@ -299,6 +299,16 @@ export const SearchWorkitemsSchema = z.object({
   updatedBefore: z.string().nullable().optional().describe("Updated not later than, format: YYYY-MM-DD"),
   creator: z.string().nullable().optional().describe("Creator user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
   assignedTo: z.string().nullable().optional().describe("Assignee user ID, multiple values separated by commas. Special value 'self' can be used to represent the current user"),
+  sprint: z.string().nullable().optional().describe("Sprint ID, multiple values separated by commas"),
+  workitemType: z.string().nullable().optional().describe("Work item type ID, multiple values separated by commas"),
+  statusStage: z.string().nullable().optional().describe("Status stage ID, multiple values separated by commas"),
+  tag: z.string().nullable().optional().describe("Tag ID, multiple values separated by commas"),
+  priority: z.string().nullable().optional().describe("Priority ID, multiple values separated by commas"),
+  subjectDescription: z.string().nullable().optional().describe("Text contained in title or description"),
+  finishTimeAfter: z.string().nullable().optional().describe("Finish time not earlier than, format: YYYY-MM-DD"),
+  finishTimeBefore: z.string().nullable().optional().describe("Finish time not later than, format: YYYY-MM-DD"),
+  updateStatusAtAfter: z.string().nullable().optional().describe("Status update time not earlier than, format: YYYY-MM-DD"),
+  updateStatusAtBefore: z.string().nullable().optional().describe("Status update time not later than, format: YYYY-MM-DD"),
 
   // Advanced parameters
   advancedConditions: z.string().nullable().optional().describe("Advanced filter conditions, JSON format"),

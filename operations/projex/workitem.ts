@@ -39,6 +39,16 @@ export async function searchWorkitemsFunc(
   updatedBefore?: string,
   creator?: string,
   assignedTo?: string,
+  sprint?: string,
+  workitemType?: string,
+  statusStage?: string,
+  tag?: string,
+  priority?: string,
+  subjectDescription?: string,
+  finishTimeAfter?: string,
+  finishTimeBefore?: string,
+  updateStatusAtAfter?: string,
+  updateStatusAtBefore?: string,
   advancedConditions?: string,
   orderBy: string = "gmtCreate",
   includeDetails: boolean = false // 新增参数：是否自动补充缺失的description等详细信息
@@ -83,6 +93,16 @@ export async function searchWorkitemsFunc(
     updatedBefore,
     creator: finalCreator,
     assignedTo: finalAssignedTo,
+    sprint,
+    workitemType,
+    statusStage,
+    tag,
+    priority,
+    subjectDescription,
+    finishTimeAfter,
+    finishTimeBefore,
+    updateStatusAtAfter,
+    updateStatusAtBefore,
     advancedConditions
   });
   
@@ -198,6 +218,16 @@ function buildWorkitemConditions(args: {
   updatedBefore?: string;
   creator?: string;
   assignedTo?: string;
+  sprint?: string;
+  workitemType?: string;
+  statusStage?: string;
+  tag?: string;
+  priority?: string;
+  subjectDescription?: string;
+  finishTimeAfter?: string;
+  finishTimeBefore?: string;
+  updateStatusAtAfter?: string;
+  updateStatusAtBefore?: string;
   advancedConditions?: string;
 }): string | undefined {
 
@@ -283,6 +313,113 @@ function buildWorkitemConditions(args: {
       operator: "CONTAINS",
       toValue: null,
       value: values,
+    });
+  }
+
+  if (args.sprint) {
+    const sprintValues = args.sprint.split(",");
+    const values = sprintValues.map(v => v.trim());
+
+    filterConditions.push({
+      className: "sprint",
+      fieldIdentifier: "sprint",
+      format: "list",
+      operator: "CONTAINS",
+      toValue: null,
+      value: values,
+    });
+  }
+
+  if (args.workitemType) {
+    const workitemTypeValues = args.workitemType.split(",");
+    const values = workitemTypeValues.map(v => v.trim());
+
+    filterConditions.push({
+      className: "workitemType",
+      fieldIdentifier: "workitemType",
+      format: "list",
+      operator: "CONTAINS",
+      toValue: null,
+      value: values,
+    });
+  }
+
+  if (args.statusStage) {
+    const statusStageValues = args.statusStage.split(",");
+    const values = statusStageValues.map(v => v.trim());
+
+    filterConditions.push({
+      className: "statusStage",
+      fieldIdentifier: "statusStage",
+      format: "list",
+      operator: "CONTAINS",
+      toValue: null,
+      value: values,
+    });
+  }
+
+  if (args.tag) {
+    const tagValues = args.tag.split(",");
+    const values = tagValues.map(v => v.trim());
+
+    filterConditions.push({
+      className: "tag",
+      fieldIdentifier: "tag",
+      format: "multiList",
+      operator: "CONTAINS",
+      toValue: null,
+      value: values,
+    });
+  }
+
+  if (args.priority) {
+    const priorityValues = args.priority.split(",");
+    const values = priorityValues.map(v => v.trim());
+
+    filterConditions.push({
+      className: "option",
+      fieldIdentifier: "priority",
+      format: "list",
+      operator: "CONTAINS",
+      toValue: null,
+      value: values,
+    });
+  }
+
+  if (args.subjectDescription) {
+    filterConditions.push({
+      className: "string",
+      fieldIdentifier: "subject-description",
+      format: "input",
+      operator: "CONTAINS",
+      toValue: null,
+      value: [args.subjectDescription],
+    });
+  }
+
+  if (args.finishTimeAfter) {
+    const finishTimeBefore = args.finishTimeBefore ? `${args.finishTimeBefore} 23:59:59` : null;
+
+    filterConditions.push({
+      className: "date",
+      fieldIdentifier: "finishTime",
+      format: "input",
+      operator: "BETWEEN",
+      toValue: finishTimeBefore,
+      value: [`${args.finishTimeAfter} 00:00:00`],
+    });
+  }
+
+  if (args.updateStatusAtAfter) {
+    const updateStatusAtBefore = args.updateStatusAtBefore ? `${args.updateStatusAtBefore} 23:59:59` : null;
+
+    filterConditions.push({
+      className: "date",
+      fieldIdentifier: "updateStatusAt",
+      format: "input",
+      operator: "BETWEEN",
+      toValue: updateStatusAtBefore,
+      value: [`${args.updateStatusAtAfter} 00:00:00`],
     });
   }
 

@@ -349,6 +349,7 @@ export const CreateChangeRequestSchema = z.object({
   reviewerUserIds: z.array(z.string()).nullable().optional().describe("Reviewer user ID list"),
   workItemIds: z.array(z.string()).nullable().optional().describe("Associated work item ID list"),
   createFrom: z.string().optional().default("WEB").describe("Creation source. Possible values: WEB (created from web page), COMMAND_LINE (created from command line). Default is WEB"),
+  triggerAIReviewRun: z.boolean().optional().default(false).describe("Whether to trigger AI review, default is false"),
 });
 
 export const ListChangeRequestPatchSetsSchema = z.object({

@@ -228,7 +228,8 @@ export const handleCodeManagementTools = async (request: any) => {
         args.targetProjectId,
         args.reviewerUserIds ?? undefined,
         args.workItemIds ?? undefined,
-        args.createFrom
+        args.createFrom,
+        args.triggerAIReviewRun ?? false
       );
       return {
         content: [{ type: "text", text: JSON.stringify(changeRequest, null, 2) }],

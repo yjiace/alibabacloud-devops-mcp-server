@@ -239,14 +239,6 @@ alibabacloud-devops-mcp-server集成了多种工具，包括：
 
 通义灵码内置的 MCP 市场中已经提供了云效的 MCP 服务，在通义灵码中进入 MCP 市场并且找到「云效DevOps」，直接安装即可。
 
-### 方式三：通过 Smithery 安装
-
-云效 MCP 服务已部署到 Smithery.ai 中，可以按照下列命令安装使用：
-
-```bash
-npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
-```
-
 ---
 
 ## 使用 Docker（可选）

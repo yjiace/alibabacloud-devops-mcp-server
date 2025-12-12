@@ -1,7 +1,6 @@
 <p align="center">English | <a href="README.zh-cn.md">中文</a><br></p>
 
 # alibabacloud-devops-mcp-server
-[![smithery badge](https://smithery.ai/badge/@aliyun/alibabacloud-devops-mcp-server)](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server)
 
 [AlibabaCloud Devops](https://www.aliyun.com/product/yunxiao) MCP Server provides AI assistants with the ability to interact with the Yunxiao platform, enabling them to read work item contents in projects, automatically write code after understanding requirements, and submit code merge requests. Enterprise development teams can use it to assist with code reviews, optimize task management, reduce repetitive operations, and thus focus on more important innovation and product delivery.
 
@@ -239,14 +238,6 @@ Add the following configuration to your MCP client configuration file:
 ### Option 2: Install via MCP Marketplace
 
 The MCP market built into Lingma (AlibabaCloud Tongyi Lingma) has already provided the AlibabaCloud Devops MCP service. To install it, simply enter the MCP market in Lingma and search for "Yunxiao DevOps", then click install.
-
-### Option 3: Install via Smithery
-
-To install [AlibabaCloud DevOps](https://www.aliyun.com/product/yunxiao) Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@aliyun/alibabacloud-devops-mcp-server):
-
-```bash
-npx -y @smithery/cli install @aliyun/alibabacloud-devops-mcp-server --client claude
-```
 
 ---
 
